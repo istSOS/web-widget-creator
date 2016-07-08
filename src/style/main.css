@@ -1,0 +1,106 @@
+/* DEVELOPMENT */
+
+/* darkblue #175D7D */
+/* lighterblue #3398c4 */
+
+#header, #footer, #tools, #preview, #code, #server_data {
+    background-color: #175D7D;
+    color: white;
+}
+
+/* INITIAL SETTINGS */
+html, body {
+    font-family: Montserrat,sans-serif;
+}
+
+/* HEADER */
+#header {
+    margin-bottom: 10px;
+    min-height: 100px;
+}
+
+#title {
+    min-height: 100px !important;
+    font-size: 24pt;
+    font-weight: bold;
+}
+
+#title>p {
+    margin-top: 30px;
+}
+
+nav {
+    margin-top: 20px;
+}
+
+#categories_list>li>a {
+    color: white;
+    cursor: pointer;
+}
+
+#categories_list>li>a:hover {
+    color: #175D7D;
+    -webkit-transition: background-color 0.2s ease;
+    -moz-transition: background-color 0.2s ease;
+    -o-transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease;
+}
+
+#menu {
+    margin-top: 10px;
+    color: #175D7D;
+    background-color: white;
+    border-radius: 3px;
+    border: 0;
+    width: 25px;
+    height: 25px;
+}
+
+#admin_tools {
+    background-color: white;
+    min-width: 142px;
+}
+
+#admin_tools>li>a {
+    text-decoration: none;
+    cursor: pointer;
+    color: #175D7D;
+}
+#admin_tools>li>a:hover {
+    font-size: 10pt;
+    font-weight: bolder;
+    font-style: italic;
+    -webkit-transition: background-color 0.2s ease;
+    -moz-transition: background-color 0.2s ease;
+    -o-transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease;
+}
+
+
+
+
+/* CONTENT */
+#tools, #output, #server_data {
+    margin-bottom: 10px;
+}
+
+/* FOOTER */
+#footer {
+    min-height: 34px;
+}
+
+#footer_xs {
+    font-size: 8pt;
+}
+
+#footer_sm {
+    font-size: 9pt;
+}
+
+#footer_md {
+    font-size: 10pt;
+}
+
+#footer_lg {
+    font-size: 12pt;
+}

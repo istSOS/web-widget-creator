@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="src/style/main.css" type="text/css"/>
+    <script src="src/javascript/content.js"></script>
+    <title>IstSOS Web Widget Creator</title>
+</head>
+<body>
+<div id="container" class="container-fluid text-center">
+    <div id="header" class="row">
+        <div id="categories" class="col-md-8">
+            <div id="menu_container" class="visible-xs text-left">
+                <button id="menu" type="button">
+                    <span class="glyphicon glyphicon-align-justify"></span>
+                </button>
+                <span>MENU</span>
+            </div>
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <ul id="categories_list" class="nav navbar-nav">
+                        <li><a id="admin" data-toggle="collapse" data-target="#admin_tools">ADMINISTRATOR</a>
+                            <ul id="admin_tools" class="list-group collapse text-left">
+                                <li class="list-group-item"><a id="creation">CREATION</a></li>
+                                <li class="list-group-item"><a id="modification">MODIFICATION</a></li>
+                                <li class="list-group-item"><a id="deletion">DELETION</a></li>
+                            </ul>
+                        </li>
+                        <li><a id="map_tools">MAPS</a></li>
+                        <li><a>CHARTS</a></li>
+                        <li><a>OBSERVATIONS</a></li>
+                        <li><a>INFO</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div id="title" class="col-md-4">
+            <p id="title-xs" class="visible-xs">ISTSOS WEB WIDGET CREATOR</p>
+            <p id="title-sm" class="visible-sm">ISTSOS WEB WIDGET CREATOR</p>
+            <p id="title-md" class="visible-md">ISTSOS WEB WIDGET CREATOR</p>
+            <p id="title-lg" class="visible-lg">ISTSOS WEB WIDGET CREATOR</p>
+        </div>
+    </div>
+    <div id="content" class="row">
+        <div id="tools" class="col-md-3">TOOLS</div>
+        <div id="output" class="col-md-6">
+            <div id="preview">PREVIEW</div>
+            <div id="code">CODE</div>
+        </div>
+        <div id="server_data" class="col-md-3">SERVER DATA</div>
+    </div>
+    <div id="footer" class="row">
+        <p id="footer_xs" class="visible-xs">IstSOS Web Widget Creator</p>
+
+        <p id="footer_sm" class="visible-sm">IstSOS Web Widget Creator | <i>2016</i></p>
+
+        <p id="footer_md" class="visible-md">IstSOS Web Widget Creator | <i>2016</i></p>
+
+        <p id="footer_lg" class="visible-lg">IstSOS Web Widget Creator | <i>2016</i></p>
+    </div>
+</div>
+</body>
+</html>
