@@ -7,7 +7,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="src/style/main.css" type="text/css"/>
+    <script src="lib/istsos-core-compiled_1.0.1.js"></script>
     <script src="src/javascript/content.js"></script>
+    <script src="src/javascript/server_data.js"></script>
     <title>IstSOS Web Widget Creator</title>
 </head>
 <body>
@@ -98,7 +100,12 @@
                 </div>
             </div>
         </div>
-        <div id="server_data" class="col-md-3">SERVER DATA</div>
+        <div id="server_data" class="col-md-3">
+            <div id="server_data_container">
+                <h4>SERVICES</h4>
+                <ul id="service_list" class="list-group"></ul>
+            </div>
+        </div>
     </div>
     <div id="footer" class="row">
         <p id="footer_xs" class="visible-xs">istSOS Web Widget Creator</p>
