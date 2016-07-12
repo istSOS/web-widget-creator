@@ -151,10 +151,15 @@ nav {
 
 
 #code_container {
-    font-size: 9pt;
+    font-size: 10pt;
+    font-weight: bolder;
     text-align: left;
     border-radius: 5px;
     background-color: #EEEEEE;
+    color: #d43f3a;
+    padding: 10px;
+    display: none;
+    word-wrap: break-word;
 }
 
 #code_container>p {
@@ -165,13 +170,22 @@ nav {
 #server_data {
     padding-bottom: 10px;
 }
+
 #service_list>li {
     margin-top: 15px;
     padding: 5px;
     border-radius: 5px;
     background-color: #EEEEEE;
     color: #175D7D;
+    border: 0;
 }
+
+#service_list>li:hover {
+    background-color: #3398c4;
+    color: white;
+}
+
+
 /* FOOTER */
 #footer {
     min-height: 34px;
@@ -195,4 +209,8 @@ nav {
 
 #footer_lg {
     font-size: 12pt;
+}
+
+.jscolor {
+    z-index: -1 !important;
 }

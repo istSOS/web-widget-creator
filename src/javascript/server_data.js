@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var istsosContainer = new istsos.IstSOS();
     var db = new istsos.Database('istsos', 'localhost', 'postgres', 'postgres', 5432);
-    var server = new istsos.Server('istsos', 'http://localhost/istsos/', db);
+    var server = new istsos.Server('istsos', 'http://istsos.org/istsos/', db);
     istsosContainer.addServer(server);
     server.getServices();
 

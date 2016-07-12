@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.17.1/css/ol.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://openlayers.org/en/v3.17.1/build/ol.js" type="text/javascript"></script>
+    <title>Widget</title>
+</head>
+<body>
+<div id="widget"></div>
+<script type="text/javascript">
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    var mapParam = getUrlParameter('map');
+    if(mapParam === 'all') {
+        var centerX = parseFloat(getUrlParameter('centerX'));
+        var centerY = parseFloat(getUrlParameter('centerY'));
+        var pointsParam = getUrlParameter('points');
+        var height = getUrlParameter('height');
+        var width = getUrlParameter('width');
+        $('#widget').css({
+            'height': height + 'px',
+            'width': width + 'px'
+        });
+        var pointsCoords = pointsParam.split(',').map(function(item){
+            return parseFloat(item);
+        });
+        points = [];
+        for (var i = 0; i < pointsCoords.length - 1; i += 2) {
+            points.push(new ol.Feature({geometry: new ol.geom.Point([pointsCoords[i], pointsCoords[i+1]])}))
+        }
+        var feat_color =getUrlParameter('color');
+        var map = new ol.Map({
+            target: 'widget',
+            layers: [new ol.layer.Tile({
+                'source': new ol.source.OSM()
+            })],
+            view: new ol.View({
+                zoom: 5,
+                center: [centerX, centerY]
+            })
+        });
+        var point_source = new ol.source.Vector({
+            features: new ol.Collection(points)
+        });
+
+        var cluster_source = new ol.source.Cluster({
+            distance: 40,
+            source: point_source
+        });
+
+
+        var styleCache = {};
+        var point_layer = new ol.layer.Vector({
+            source: cluster_source,
+            style: function(feature) {
+                var size = feature.get('features').length;
+                var style = styleCache[size];
+                if (!style) {
+                    style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 13,
+                            stroke: new ol.style.Stroke({
+                                color:'#' + feat_color
+                            }),
+                            fill: new ol.style.Fill({
+                                color:'#' + feat_color
+                            })
+                        }),
+                        text: new ol.style.Text({
+                            text: size.toString(),
+                            fill: new ol.style.Fill({
+                                color: 'white'
+                            }),
+                            font: '12px Montserrat'
+                        })
+                    });
+                    styleCache[size] = style;
+                }
+                return style;
+            }
+        });
+
+        map.addLayer(point_layer);
+
+        var extent = point_source.getExtent();
+        map.getView().fit(extent, map.getSize());
+    }
+</script>
+</body>
+</html>
