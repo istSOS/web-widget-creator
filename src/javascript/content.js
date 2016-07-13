@@ -2,7 +2,6 @@ $(document).ready(function () {
     /**
      * INITIAL
      */
-
     var titlediv = $('#title').height();
     var title_p = $('#title_p').height();
     $('#title_p').css({
@@ -220,3 +219,5 @@ $(document).ready(function () {
     })
 
 });
+
+

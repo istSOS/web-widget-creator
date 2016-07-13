@@ -4,9 +4,9 @@ $(document).ready(function () {
         var istsosContainer = new istsos.IstSOS();
         var db = new istsos.Database('istsos', 'localhost', 'postgres', 'postgres', 5432);
         var server = new istsos.Server('istsos', 'http://istsos.org/istsos/', db);
-        var c = document.getElementById('service_list').children;
+        var c = $('.service_name');
         for (i = 0; i < c.length; i++) {
-            new istsos.Service(c[i].innerHTML, server);
+            new istsos.Service(c[i].getAttribute('value'), server);
 
         }
         var services = server.getServicesProperty();
