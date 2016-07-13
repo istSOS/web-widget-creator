@@ -171,22 +171,89 @@ nav {
     padding-bottom: 10px;
 }
 
+#server_data_container {
+    background-color: #EEEEEE;
+    color: #175D7D;
+    padding-bottom: 10px;
+}
+#service_list {
+    border-radius: 0 !important;
+    margin: 0 10px 0 10px;
+    background-color: #175D7D;
+}
+
+
 #service_list>li {
     margin-top: 15px;
     padding: 5px;
-    border-radius: 5px;
-    background-color: #EEEEEE;
+    border-radius: 0;
+    background-color: white;
     color: #175D7D;
+    text-align: left !important;
     border: 0;
+    cursor: pointer;
+    font-weight: bolder;
+    font-size: 12pt;
 }
+
 
 #service_list>li:hover {
     background-color: #3398c4;
     color: white;
 }
-
 .under_service {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-style: italic;
+}
+
+.under_service>h5 {
+    color:white;
+    font-family: Montserrat, sans-serif;
+    text-align: left;
+    padding-left: 15px !important;
+    padding-bottom: 5px;
+}
+
+.under_service > li {
     font-size: 10pt;
+    background-color: #175D7D !important;
+    color: white !important;
+    margin: 0;
+    cursor: pointer;
+}
+
+.under_service > li:hover {
+    background-color: #3398c4 !important;
+    color: white !important;
+}
+
+.plus {
+    cursor: pointer;
+    padding: 1px 1px 1px 2px;
+}
+
+.plus:hover {
+    background-color: white;
+    color: #175D7D;
+    border-radius: 100%;
+    text-align: center !important;
+}
+.minus {
+    display: none;
+    padding: 1px 1px 1px 2px;
+    cursor: pointer;
+}
+
+.procedure_name, .offering_name, .op_name {
+    display: none;
+}
+
+.minus:hover {
+    background-color: white;
+    color: #175D7D;
+    border-radius: 100%;
+    text-align: center !important;
 }
 
 /* FOOTER */
