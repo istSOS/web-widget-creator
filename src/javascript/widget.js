@@ -21,14 +21,29 @@ istsos.widget.TYPES[istsos.widget.TYPE_BOX] = {
     "class": "istsos.widget.Box"
 };
 
+
 istsos.widget.Widget = function () {
+    this.service = null;
     this.type = null;
     this.width = null;
     this.height = null;
     this.cssClass = null;
+
 };
 
 istsos.widget.Widget.prototype = {
+    setServerConf: function(serverConf) {
+        this.serverConf = serverConf;
+    },
+    getServerConf: function () {
+        return this.serverConf;
+    },
+    setService: function (serviceName) {
+        this.service = serviceName;
+    },
+    getService: function () {
+        return this.service;
+    },
     setType: function(type){
         this.type = type;
     },
@@ -73,15 +88,18 @@ istsos.widget.build = function(conf){
     switch (conf["type"]){
         case istsos.widget.TYPE_MAP:
             widget = new istsos.widget.Map();
+            widget.setElementId(conf["elementId"]);
             widget.setProcedure(conf["procedure"]);
             widget.setObservedProperty(conf["observedProperty"]);
-            widget.setProcedure(conf["procedure"]);
             break;
         default:
             // Draw the istSOS logo
             break;
     }
-    widget.setHeight(conf['height']);
-    widget.setWidth(conf['width']);
+    widget.setService(conf["service"]);
+    widget.setHeight(conf["height"]);
+    widget.setWidth(conf["width"]);
+    widget.setCssClass(conf["cssClass"]);
     widget.build();
 };
+
