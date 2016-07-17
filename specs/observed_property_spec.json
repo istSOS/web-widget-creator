@@ -1,0 +1,69 @@
+{
+  "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:humidity:relative": [
+    {
+      "from": 0,
+      "to": 10,
+      "url": "../img/humidity-cold.png"
+    }
+  ],
+  "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:temperature": [
+    {
+      "unit": "\u00B0 C",
+      "from": -9999,
+      "to": -20,
+      "url": "img/temp-freeze.png"
+    },
+    {
+      "unit": "\u00B0 C",
+      "from": -20,
+      "to": 0,
+      "url": "img/temp-semi-freeze.png"
+    },
+    {
+      "unit": "\u00B0 C",
+      "from": 0,
+      "to": 10,
+      "url": "img/temp-cold.png"
+    },
+    {
+      "unit": "\u00B0 C",
+      "from": 10,
+      "to": 20,
+      "url": "img/temp-moderate.png"
+    },
+    {
+      "unit": "\u00B0 C",
+      "from": 20,
+      "to": 30,
+      "url": "img/temp-warm.png"
+    },
+    {
+      "unit": "\u00B0 C",
+      "from": 30,
+      "to": 40,
+      "url": "img/temp-hot.png"
+    },
+    {
+      "unit": "\u00B0 C",
+      "from": 40,
+      "to": 100,
+      "url": "img/temp-extremely-hot.png"
+    }
+
+
+  ],
+  "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:rainfall": [
+    {
+      "from": 0,
+      "to": 10,
+      "url": "../img/humidity-cold.png"
+    }
+  ],
+  "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:wind:velocity": [
+    {
+      "from": 0,
+      "to": 10,
+      "url": "../img/humidity-cold.png"
+    }
+  ]
+}
