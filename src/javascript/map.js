@@ -95,11 +95,19 @@ istsos.widget.Map.prototype = {
             var off = new istsos.Offering(mapWidgetConf["procedure"], "", true, "", service);
             var op = new istsos.ObservedProperty(service, "", mapWidgetConf["observedProperty"]);
             var className = '.' + widget.getCssClass();
-            console.log(className);
-            $(className).css({
-                "height": mapWidgetConf["height"] + 'px',
-                "width": mapWidgetConf["width"] + 'px'
-            });
+            if (mapWidgetConf["width"].toString().endsWith('%')) {
+                $(className).css({
+                    "height": mapWidgetConf["height"],
+                    "width": mapWidgetConf["width"]
+                });
+            }
+            else {
+                $(className).css({
+                    "height": mapWidgetConf["height"] + 'px',
+                    "width": mapWidgetConf["width"] + 'px'
+                });
+            }
+
             service.getFeatureCollection(3857, off, proc);
 
             istsos.on(istsos.events.EventType.GEOJSON, function (evt) {
@@ -111,7 +119,6 @@ istsos.widget.Map.prototype = {
                 var x = geo["features"][0]["geometry"]["coordinates"][0];
                 var y = geo["features"][0]["geometry"]["coordinates"][1];
                 var coords = [x, y];
-                console.log(coords);
                 var feature = new ol.Feature({
                     geometry: new ol.geom.Point(coords)
                 });
@@ -135,9 +142,6 @@ istsos.widget.Map.prototype = {
                     var lastObs = obs[obs.length - 1]["measurement"];
                     var lastDate = obs[obs.length - 1]["date"];
 
-
-
-                    console.log(lastDate, lastObs);
                     $.getJSON('specs/observed_property_spec.json', function (data) {
                         var imageSrc = '';
                         var unit = '';
@@ -158,15 +162,15 @@ istsos.widget.Map.prototype = {
                                     src: imageSrc
                                 }),
                                 text: new ol.style.Text({
-                                    text: parseFloat(lastObs).toFixed(2).toString() + ' ' + unit + '\n' + lastDate.slice(0,10) +
-                                    '\n' + lastDate.slice(11, 19) + '\n GMT: ' + lastDate.slice(19, 22),
+                                    text: widget.getProcedure() + '\n\n\n\n\n\n' + parseFloat(lastObs).toFixed(2).toString() + ' ' + unit + '\n' + 'DATE: ' + lastDate.slice(0,10) +
+                                    '\n' + 'TIME: ' + lastDate.slice(11, 19) + '\nGMT: ' + lastDate.slice(19, 22),
                                     fill: new ol.style.Fill({
                                         color: 'black'
                                     }),
-                                    font: '12px Montserrat',
-                                    offsetY: 70,
-                                    offsetX: -10,
-                                    textAlign: 'center'
+                                    font: '12px Montserrat, sans-serif',
+                                    offsetY: 25,
+                                    offsetX: -30,
+                                    textAlign: 'left'
                                 })
                             });
 
@@ -177,10 +181,9 @@ istsos.widget.Map.prototype = {
                             layers: mapWidgetConf["layers"],
                             view: new ol.View({
                                 center: [x,y],
-                                zoom: 18
+                                zoom: 17
                             })
                         });
-
                     });
                 });
 
@@ -192,6 +195,8 @@ istsos.widget.Map.prototype = {
 
             });
         });
+
+
 
 
     },

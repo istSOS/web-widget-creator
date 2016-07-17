@@ -77,7 +77,7 @@ istsos.widget.Widget.prototype = {
 };
 
 istsos.widget.getCode = function(config){
-    return "<script src=\"http://istsos.org/istsos-widget.js\"></script>\n" +
+    return "<script src=\"http://localhost:63342/web-widget-creator/src/javascript/widget.js\"></script>\n" +
         "<script>\n" +
         "istsos.widget.build(" + JSON.stringify(config) + ");\n" +
         "</script>";
