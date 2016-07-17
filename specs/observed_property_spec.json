@@ -11,13 +11,13 @@
       "unit": "\u00B0 C",
       "from": -9999,
       "to": -20,
-      "url": "img/temp-freeze.png"
+      "url": "img/temp-extreme-freeze.png"
     },
     {
       "unit": "\u00B0 C",
       "from": -20,
       "to": 0,
-      "url": "img/temp-semi-freeze.png"
+      "url": "img/temp-freeze.png"
     },
     {
       "unit": "\u00B0 C",
