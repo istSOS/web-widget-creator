@@ -1,0 +1,33 @@
+html, body {
+    font-family: Montserrat, sans-serif;
+}
+
+/* HEADER */
+#categories_list {
+    margin-top: 3px;
+    border: 0;
+}
+
+#categories_list li {
+    cursor: pointer;
+}
+
+#title>p {
+    font-size: 20pt;
+    font-weight: bolder;
+}
+
+/* CONTENT */
+td#preview {
+    min-height: 500px !important;
+    height: 100%;
+}
+#tools, #server_data {
+    width: 25%;
+    min-width: 200px;
+}
+
+#code_output {
+    width: 100% !important;
+    height: 100% !important;
+}
