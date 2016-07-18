@@ -11,59 +11,115 @@
       "unit": "\u00B0 C",
       "from": -9999,
       "to": -20,
-      "url": "img/temp-extreme-freeze.png"
+      "url": "img/temperature/temp-extreme-freeze.png"
     },
     {
       "unit": "\u00B0 C",
       "from": -20,
       "to": 0,
-      "url": "img/temp-freeze.png"
+      "url": "img/temperature/temp-freeze.png"
     },
     {
       "unit": "\u00B0 C",
       "from": 0,
       "to": 10,
-      "url": "img/temp-cold.png"
+      "url": "img/temperature/temp-cold.png"
     },
     {
       "unit": "\u00B0 C",
       "from": 10,
       "to": 20,
-      "url": "img/temp-moderate.png"
+      "url": "img/temperature/temp-moderate.png"
     },
     {
       "unit": "\u00B0 C",
       "from": 20,
       "to": 30,
-      "url": "img/temp-warm.png"
+      "url": "img/temperature/temp-warm.png"
     },
     {
       "unit": "\u00B0 C",
       "from": 30,
       "to": 40,
-      "url": "img/temp-hot.png"
+      "url": "img/temperature/temp-hot.png"
     },
     {
       "unit": "\u00B0 C",
       "from": 40,
       "to": 100,
-      "url": "img/temp-extremely-hot.png"
+      "url": "img/temperature/temp-extremely-hot.png"
     }
 
 
   ],
   "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:rainfall": [
     {
+      "unit": "mm",
       "from": 0,
-      "to": 10,
-      "url": "../img/humidity-cold.png"
+      "to": 0.1,
+      "url": "img/rainfall/rainfall-none.png"
+    },
+    {
+      "unit": "mm",
+      "from": 0.1,
+      "to": 0.5,
+      "url": "img/rainfall/rainfall-very-little.png"
+    },
+    {
+      "unit": "mm",
+      "from": 0.5,
+      "to": 1.0,
+      "url": "img/rainfall/rainfall-little.png"
+    },
+    {
+      "unit": "mm",
+      "from": 1.0,
+      "to": 1.5,
+      "url": "img/rainfall/rainfall-moderate.png"
+    },
+    {
+      "unit": "mm",
+      "from": 1.5,
+      "to": 2.0,
+      "url": "img/rainfall/rainfall.png"
+    },
+    {
+      "unit": "mm",
+      "from": 2.0,
+      "to": 2.5,
+      "url": "img/rainfall/rainfall-little-more.png"
+    },
+    {
+      "unit": "mm",
+      "from": 2.5,
+      "to": 3.0,
+      "url": "img/rainfall/rainfall-more.png"
+    },
+    {
+      "unit": "mm",
+      "from": 3.0,
+      "to": 4.0,
+      "url": "img/rainfall/rainfall-much-more.png"
+    },
+    {
+      "unit": "mm",
+      "from": 4.0,
+      "to": 9999,
+      "url": "img/rainfall/rainfall-too-much.png"
     }
   ],
   "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:wind:velocity": [
     {
-      "from": 0,
-      "to": 10,
-      "url": "../img/humidity-cold.png"
+      "from": 0.1,
+      "to": 0.5,
+      "url": "img/rainfall-little.png"
+    }
+],
+    "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:wind:velocity": [
+    {
+    "from": 0.1,
+    "to": 0.5,
+    "url": "../img/rainfall-little.png"
     }
   ]
 }
