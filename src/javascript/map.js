@@ -83,6 +83,8 @@ istsos.widget.Map.prototype = {
     build: function () {
         // build the ol3 map
         // ...
+        this.map = null;
+        document.getElementById('preview').innerHTML = null;
         var widget = this;
         var mapWidgetConf = this.getConfig();
         $.getJSON('specs/server_config.json', function (data) {
@@ -107,10 +109,9 @@ istsos.widget.Map.prototype = {
                     "width": mapWidgetConf["width"] + 'px'
                 });
             }
-
             service.getFeatureCollection(3857, off, proc);
 
-            istsos.on(istsos.events.EventType.GEOJSON, function (evt) {
+            istsos.once(istsos.events.EventType.GEOJSON, function (evt) {
 
                 var geo = evt.getData();
                 var begin = geo["features"][0]["properties"]["samplingTime"]["beginposition"];
@@ -134,10 +135,20 @@ istsos.widget.Map.prototype = {
                 });
 
                 widget.addLayer(new ol.layer.Tile({
-                    source: new ol.source.OSM()
+                    source: new ol.source.OSM({
+                        attributions: [
+                            new ol.Attribution({
+                                html: 'Tiles courtesy of ' + '<a href="http://hot.openstreetmap.org">' +
+                                'Humanitarian OpenStreetMap Team </a>'
+                            }),
+                            ol.source.OSM.ATTRIBUTION
+                        ],
+                        url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
+                    })
                 }));
+
                 widget.addLayer(feature_layer);
-                istsos.on(istsos.events.EventType.GETOBSERVATIONS_BY_PROPERTY, function (e) {
+                istsos.once(istsos.events.EventType.GETOBSERVATIONS_BY_PROPERTY, function (e) {
                     var obs = e.getData();
                     var lastObs = obs[obs.length - 1]["measurement"];
                     var lastDate = obs[obs.length - 1]["date"];
@@ -151,7 +162,7 @@ istsos.widget.Map.prototype = {
                                 imageSrc = dataUrn[i]["url"];
                                 unit = dataUrn[i]["unit"];
                             }
-                        };
+                        }
                         feature_layer.setStyle(function () {
                             style = new ol.style.Style({
                                 image: new ol.style.Icon({
@@ -162,7 +173,7 @@ istsos.widget.Map.prototype = {
                                     src: imageSrc
                                 }),
                                 text: new ol.style.Text({
-                                    text: widget.getProcedure() + '\n\n\n\n\n\n' + parseFloat(lastObs).toFixed(2).toString() + ' ' + unit + '\n' + 'DATE: ' + lastDate.slice(0,10) +
+                                    text: widget.getProcedure() + '\n\n\n\n\n\n' + parseFloat(lastObs).toFixed(2).toString() + unit + '\n' + 'DATE: ' + lastDate.slice(0,10) +
                                     '\n' + 'TIME: ' + lastDate.slice(11, 19) + '\nGMT: ' + lastDate.slice(19, 22),
                                     fill: new ol.style.Fill({
                                         color: 'black'
@@ -176,7 +187,7 @@ istsos.widget.Map.prototype = {
 
                         return style;
                         });
-                        var map = new ol.Map({
+                        widget.map = new ol.Map({
                             target: mapWidgetConf["elementId"],
                             layers: mapWidgetConf["layers"],
                             view: new ol.View({
@@ -186,14 +197,8 @@ istsos.widget.Map.prototype = {
                         });
                     });
                 });
-
-
-
-
-
-
-
             });
+
         });
 
 
