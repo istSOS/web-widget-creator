@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     $('#preview').css({
         'height': (content.height() - 232).toString() + 'px'
-    })
+    });
 
 
 });

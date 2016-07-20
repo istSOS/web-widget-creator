@@ -54,55 +54,55 @@
   ],
   "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:rainfall": [
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 0,
       "to": 0.1,
       "url": "img/rainfall/rainfall-none.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 0.1,
       "to": 0.5,
       "url": "img/rainfall/rainfall-very-little.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 0.5,
       "to": 1.0,
       "url": "img/rainfall/rainfall-little.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 1.0,
       "to": 1.5,
       "url": "img/rainfall/rainfall-moderate.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 1.5,
       "to": 2.0,
       "url": "img/rainfall/rainfall.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 2.0,
       "to": 2.5,
       "url": "img/rainfall/rainfall-little-more.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 2.5,
       "to": 3.0,
       "url": "img/rainfall/rainfall-more.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 3.0,
       "to": 4.0,
       "url": "img/rainfall/rainfall-much-more.png"
     },
     {
-      "unit": "mm",
+      "unit": " mm",
       "from": 4.0,
       "to": 9999,
       "url": "img/rainfall/rainfall-too-much.png"
