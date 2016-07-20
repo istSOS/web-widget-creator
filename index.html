@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="bower_components/OpenLayers/css/ol.css" />
-    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="src/style/main.css" />
-    <script src="lib/istsos-core/compiled/istsos-core-compiled_1.0.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="bower_components/OpenLayers/css/ol.css"/>
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="src/style/main.css"/>
+    <script src="lib/istsos-core/compiled/istsos-core-2.0.js"></script>
     <script src="bower_components/google-closure-library/closure/goog/base.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/moment/min/moment.min.js"></script>
     <script src="http://openlayers.org/en/v3.17.1/build/ol.js" type="text/javascript"></script>
     <script src="src/javascript/widget.js"></script>
     <script src="src/javascript/map.js"></script>
     <script src="src/javascript/mapForm.js"></script>
-    <script src="src/javascript/styleManagement.js"></script>
-<!--
-    <script src="test.js"></script> -->
+    <script src="src/javascript/contentManagement.js"></script>
+
+     <!-- <script src="test.js"></script> -->
     <title>istSOS Widget Creator</title>
 </head>
 <body>
@@ -23,9 +24,9 @@
     <div id="header" class="row">
         <div id="categories" class="col-sm-6">
             <ul id="categories_list" class="nav nav-tabs">
-                <li><a>MAP TOOL</a></li>
-                <li><a>CHART TOOL</a></li>
-                <li><a>BOX TOOL</a></li>
+                <li id="map_tool"><a>MAP TOOL</a></li>
+                <li id="chart_tool"><a>CHART TOOL</a></li>
+                <li id="box_tool"><a>BOX TOOL</a></li>
             </ul>
         </div>
         <div id="title" class="col-sm-6">
@@ -36,64 +37,92 @@
         <table class="table table-bordered table-responsive">
             <tr>
                 <td id="tools" rowspan="2">
-                    <div class="form-group">
-                        <label for="service_list">SERVICE:</label>
-                        <select class="form-control" id="service_list">
-                        </select>
+                    <div id="map_tool_container">
+                        <div class="form-group common">
+                            <label for="service_list">SERVICE:</label>
+                            <select class="form-control" id="service_list">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="procedure_list">OFFERING:</label>
+                            <select class="form-control" id="offering_list">
+                                <option>-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="procedure_list">PROCEDURE:</label>
+                            <form role="form" id="procedure_list" class="text-left">
+                                <hr/>
+                            </form>
+                            <!-- <select class="form-control" id="procedure_list">
+                                <option>-</option>
+                            </select> -->
+                        </div>
+                        <div class="form-group">
+                            <label for="op_list">OBSERVED PROPERTY:</label>
+                            <select class="form-control" id="op_list">
+                                <option>-</option>
+                            </select>
+                        </div>
+
+                        <form class="form-horizontal common" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="elementId">ID:</label>
+
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="elementId"
+                                           placeholder="Enter element ID"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="css_class">CLASS:</label>
+
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="css_class"
+                                           placeholder="Enter CSS class">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="height">HEIGHT:</label>
+
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="height" placeholder="Enter map height">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="width">WIDTH:</label>
+
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="width" placeholder="Enter map width">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-3">
+                                    <button id="generate" type="button" class="btn btn-default">Generate</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="procedure_list">PROCEDURE:</label>
-                        <select class="form-control" id="procedure_list">
-                            <option>-</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="op_list">OBSERVED PROPERTY:</label>
-                        <select class="form-control" id="op_list">
-                            <option>-</option>
-                        </select>
-                    </div>
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label class="control-label col-sm-3" for="elementId">ID:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="elementId" placeholder="Enter element ID" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-3" for="css_class">CLASS:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="css_class" placeholder="Enter CSS class">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-3" for="height">HEIGHT:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="height" placeholder="Enter map height">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-3" for="width">WIDTH:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="width" placeholder="Enter map width">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-3">
-                                <button id="generate" type="button" class="btn btn-default">Generate</button>
-                            </div>
-                        </div>
-                    </form>
+                    <div id="chart_tool_container"></div>
+                    <div id="box_tool_container"></div>
+
 
                 </td>
                 <td id="preview" class="preview"></td>
                 <td id="server_data" rowspan="2" class="text-left">
                     <h4 class="text-center">MAP TOOL</h4>
                     <hr/>
-                    <p>Use map tool to generate code, that will provide embedded map. Map preview will be shown above the code.</p>
+                    <p>Use map tool to generate code, that will provide embedded OpenLayers 3 map. Map preview will be shown above
+                        the code.</p>
                     <br/>
-                    <p>Code will be shown in textarea HTML element, which means that user can easily change the code by typing what he finds
-                    suitable.</p>
+                    <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
+                        typing what he finds
+                        suitable.</p>
+                    <br/>
+                    <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
+                        typing what he finds
+                        suitable.</p>
                 </td>
             </tr>
             <tr>

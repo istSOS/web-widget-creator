@@ -20,6 +20,44 @@ istsos.widget.TYPES[istsos.widget.TYPE_BOX] = {
     "description": "",
     "class": "istsos.widget.Box"
 };
+/**
+ * @param {String} dt1
+ * @param {String} dt2
+ */
+istsos.widget.newerDate = function(dt1, dt2) {
+    var dateTime1 = moment(dt1);
+    var dateTime2 = moment(dt2);
+    if (dateTime1.diff(dateTime2) >= 0) {
+        return dt1;
+    } else {
+        return dt2;
+    }
+
+};
+
+/**
+ * @param {String} dt1
+ * @param {String} dt2
+ */
+istsos.widget.olderDate = function(dt1, dt2) {
+    var dateTime1 = moment(dt1);
+    var dateTime2 = moment(dt2);
+    if (dateTime1.diff(dateTime2) <= 0) {
+        return dt1;
+    } else {
+        return dt2;
+    }
+
+};
+
+istsos.widget.SERVER_PROMISE = $.getJSON('specs/server_config.json', function (data) {
+});
+
+istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE = $.getJSON('specs/observed_property_urns.json', function (data) {
+});
+
+istsos.widget.OBSERVED_PROPERTIES_PROMISE = $.getJSON('specs/observed_property_spec.json', function (data) {
+});
 
 
 istsos.widget.Widget = function () {
@@ -28,16 +66,11 @@ istsos.widget.Widget = function () {
     this.width = null;
     this.height = null;
     this.cssClass = null;
+    this.elementId = null;
 
 };
 
 istsos.widget.Widget.prototype = {
-    setServerConf: function(serverConf) {
-        this.serverConf = serverConf;
-    },
-    getServerConf: function () {
-        return this.serverConf;
-    },
     setService: function (serviceName) {
         this.service = serviceName;
     },
@@ -49,6 +82,12 @@ istsos.widget.Widget.prototype = {
     },
     getType: function () {
        return this.type;
+    },
+    setElementId: function(id){
+        this.elementId = id;
+    },
+    getElementId: function () {
+        return this.elementId;
     },
     setCssClass: function(cssClass){
         this.cssClass = cssClass;
@@ -89,8 +128,17 @@ istsos.widget.build = function(conf){
         case istsos.widget.TYPE_MAP:
             widget = new istsos.widget.Map();
             widget.setElementId(conf["elementId"]);
-            widget.setProcedure(conf["procedure"]);
+            widget.setOffering(conf["offering"]);
+            widget.setProcedures(conf["procedures"]);
             widget.setObservedProperty(conf["observedProperty"]);
+            break;
+        case istsos.widget.TYPE_BOX:
+            widget = new istsos.widget.Box();
+            widget.setElementId(conf["elementId"]);
+            widget.setProcedures(conf["procedures"]);
+            widget.setObservedProperties(conf["observedProperties"]);
+            break;
+        case istsos.widget.TYPE_CHART:
             break;
         default:
             // Draw the istSOS logo

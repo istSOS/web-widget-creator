@@ -11,7 +11,9 @@ istsos.widget.Map = function () {
     this.elementId = null;
     this.layers = [];
     this.map = null;
-    this.procedure = null;
+    this.offering = null;
+    this.procedures = [];
+    //this.procedure = null;
     this.observedProperty = null;
 
     istsos.widget.Widget.prototype.setType.call(this, istsos.widget.TYPE_MAP);
@@ -29,40 +31,48 @@ istsos.widget.Map.prototype = {
     getService: function () {
         return istsos.widget.Widget.prototype.getService.call(this);
     },
-    setHeight: function ( height) {
-       istsos.widget.Widget.prototype.setHeight.call(this, height);
+    setHeight: function (height) {
+        istsos.widget.Widget.prototype.setHeight.call(this, height);
     },
-    setWidth: function(width) {
+    setWidth: function (width) {
         istsos.widget.Widget.prototype.setWidth.call(this, width);
     },
-    setCssClass: function(cssClass) {
+    setCssClass: function (cssClass) {
         istsos.widget.Widget.prototype.setCssClass.call(this, cssClass);
     },
     getCssClass: function () {
         return istsos.widget.Widget.prototype.getCssClass.call(this);
     },
-    getServerConf: function () {
-        return istsos.widget.Widget.prototype.getServerConf.call(this);
-    },
+
     /**
      * @param {string} id
      */
-    setElementId: function(id){
-        this.elementId = id;
+    setElementId: function (id) {
+        istsos.widget.Widget.prototype.setElementId.call(this, id);
+    },
+    getElementId: function () {
+        istsos.widget.Widget.prototype.getElementId.call(this);
+    },
+    /** -------------------------------------------------------------- */
+    setOffering: function (offering) {
+        this.offering = offering;
+    },
+    getOffering: function () {
+        return this.offering;
     },
     /**
      * @param {string} procedure
-    */
-    setProcedure: function(procedure){
-        this.procedure = (procedure);
+     */
+    setProcedures: function (proceduresList) {
+        this.procedures = proceduresList;
     },
-    getProcedure: function(){
-        return this.procedure;
+    getProcedures: function () {
+        return this.procedures;
     },
     /**
      * @param {string} observedProperty
-    */
-    setObservedProperty: function(observedProperty){
+     */
+    setObservedProperty: function (observedProperty) {
         this.observedProperty = observedProperty;
     },
     /**
@@ -87,14 +97,13 @@ istsos.widget.Map.prototype = {
         document.getElementById('preview').innerHTML = null;
         var widget = this;
         var mapWidgetConf = this.getConfig();
-        $.getJSON('specs/server_config.json', function (data) {
+        istsos.widget.SERVER_PROMISE.done(function (data) {
             var serverConf = data;
             var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
                 serverConf["db"]["port"]);
             var server = new istsos.Server(serverConf["name"], serverConf["url"], db);
-            var service = new istsos.Service(mapWidgetConf["service"] , server);
-            var proc = new istsos.Procedure(service, mapWidgetConf["procedure"], "", "", "", 3857, 5, 5 , 5, [], 'insitu-fixed-point', "");
-            var off = new istsos.Offering(mapWidgetConf["procedure"], "", true, "", service);
+            var service = new istsos.Service(mapWidgetConf["service"], server);
+            var off = new istsos.Offering(mapWidgetConf["offering"], "", true, "", service);
             var op = new istsos.ObservedProperty(service, "", mapWidgetConf["observedProperty"]);
             var className = '.' + widget.getCssClass();
             if (mapWidgetConf["width"].toString().endsWith('%')) {
@@ -109,72 +118,137 @@ istsos.widget.Map.prototype = {
                     "width": mapWidgetConf["width"] + 'px'
                 });
             }
-            service.getFeatureCollection(3857, off, proc);
+            service.getFeatureCollection(3857, off);
 
             istsos.once(istsos.events.EventType.GEOJSON, function (evt) {
-
+                //
                 var geo = evt.getData();
-                var begin = geo["features"][0]["properties"]["samplingTime"]["beginposition"];
-                var end = geo["features"][0]["properties"]["samplingTime"]["endposition"];
-                service.getObservationsBySingleProperty(off, proc, op, begin, end );
-                var x = geo["features"][0]["geometry"]["coordinates"][0];
-                var y = geo["features"][0]["geometry"]["coordinates"][1];
-                var coords = [x, y];
-                var feature = new ol.Feature({
-                    geometry: new ol.geom.Point(coords)
-                });
+                var procedureList = mapWidgetConf["procedures"].split(',');
+                console.log("1 - " + procedureList);
+                var procedureConfig = [];
 
-                var feature_source = new ol.source.Vector({
-                    features: [feature]
-                });
+                for (var p = 0; p < procedureList.length; p++) {
+                    var obj = {
+                        "procedure": "",
+                        "uom": "",
+                        "type": "",
+                        "samplingTime": {"begin":"", "end":""},
+                        "geometry": {},
+                        "lastObs": [],
+                        "imageSrc": ""
+                    };
+                    for (var g = 0; g < geo["features"].length; g++) {
+                        if (procedureList[p] === geo["features"][g]["properties"]["name"]) {
+                            obj["procedure"] = procedureList[p];
+                            obj["type"] = geo["features"][g]["properties"]["sensortype"];
+                            obj["geometry"]["x"] = geo["features"][g]["geometry"]["coordinates"][0];
+                            obj["geometry"]["y"] = geo["features"][g]["geometry"]["coordinates"][1];
+                            break;
+                        }
+                    }
+                    procedureConfig.push(obj);
+                }
+                if (procedureConfig.length === 1) {
 
-                var feature_layer = new ol.layer.Vector({
-                    source: feature_source
-                    //styling
-                    //...
-                });
-
-                widget.addLayer(new ol.layer.Tile({
-                    source: new ol.source.OSM({
-                        attributions: [
-                            new ol.Attribution({
-                                html: 'Tiles courtesy of ' + '<a href="http://hot.openstreetmap.org">' +
-                                'Humanitarian OpenStreetMap Team </a>'
-                            }),
-                            ol.source.OSM.ATTRIBUTION
-                        ],
-                        url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
-                    })
-                }));
-
-                widget.addLayer(feature_layer);
-                istsos.once(istsos.events.EventType.GETOBSERVATIONS_BY_PROPERTY, function (e) {
-                    var obs = e.getData();
-                    var lastObs = obs[obs.length - 1]["measurement"];
-                    var lastDate = obs[obs.length - 1]["date"];
-
-                    $.getJSON('specs/observed_property_spec.json', function (data) {
-                        var imageSrc = '';
-                        var unit = '';
-                        var dataUrn = data[mapWidgetConf["observedProperty"]];
-                        for(var i = 0; i < dataUrn.length; i++){
-                            if(lastObs >= dataUrn[i]["from"] && lastObs < dataUrn[i]["to"]) {
-                                imageSrc = dataUrn[i]["url"];
-                                unit = dataUrn[i]["unit"];
+                    procedureConfig[0]["samplingTime"]["begin"] = geo["features"][0]["properties"]["samplingTime"]["beginposition"];
+                    procedureConfig[0]["samplingTime"]["end"] = geo["features"][0]["properties"]["samplingTime"]["endposition"];
+                } else {
+                    for (var pc = 0; pc < procedureConfig.length; pc++) {
+                        for (var gc = 0; gc < geo["features"].length; gc++) {
+                            if (procedureConfig[pc]["procedure"] === geo["features"][gc]["properties"]["name"]) {
+                                if (pc === 0) {
+                                    procedureConfig[pc]["samplingTime"]["begin"] = geo["features"][gc]["properties"]["samplingTime"]["beginposition"];
+                                    procedureConfig[pc]["samplingTime"]["end"] = geo["features"][gc]["properties"]["samplingTime"]["endposition"];
+                                } else {
+                                    procedureConfig[pc]["samplingTime"]["begin"] = istsos.widget.olderDate(procedureConfig[pc - 1]["samplingTime"]["begin"], geo["features"][gc]["properties"]["samplingTime"]["beginposition"]);
+                                    procedureConfig[pc]["samplingTime"]["end"] = istsos.widget.newerDate(procedureConfig[pc - 1]["samplingTime"]["end"], geo["features"][gc]["properties"]["samplingTime"]["endposition"]);
+                                }
                             }
                         }
-                        feature_layer.setStyle(function () {
-                            style = new ol.style.Style({
+                    }
+                }
+
+                var proc_obs = [];
+
+                for (var c = 0; c < procedureConfig.length; c++) {
+                    if (procedureConfig[c]["type"] === "virtual") {
+                        proc_obs.push(new istsos.VirtualProcedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "virtual","","", {}));
+                    } else {
+                        proc_obs.push(new istsos.Procedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "insitu-fixed-point",""));
+                    }
+                }
+
+                service.getObservations(off, proc_obs, [op], procedureConfig[procedureConfig.length - 1]["samplingTime"]["begin"], procedureConfig[procedureConfig.length - 1]["samplingTime"]["end"]);
+
+                istsos.once(istsos.events.EventType.GETOBSERVATIONS, function (evt) {
+                    var observations = evt.getData();
+                    var coords;
+                    var centerX = 0;
+                    var centerY = 0;
+                    var sumX = 0;
+                    var sumY = 0;
+                    var feature_source = new ol.source.Vector({
+                        features: []
+                    });
+
+
+                    var osm = new ol.layer.Tile({
+                        source: new ol.source.OSM({
+                            attributions: [
+                                new ol.Attribution({
+                                    html: 'Tiles courtesy of ' + '<a href="http://hot.openstreetmap.org">' +
+                                    'Humanitarian OpenStreetMap Team </a>'
+                                }),
+                                ol.source.OSM.ATTRIBUTION
+                            ],
+                            url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
+                        })
+                    });
+                    widget.addLayer(osm);
+
+
+
+                    istsos.widget.OBSERVED_PROPERTIES_PROMISE.done(function (data) {
+                        var values;
+                        for (var c = 0; c < procedureConfig.length; c++) {
+                            for (var o = 0; o < observations.length; o++) {
+                                values = observations[o]["result"]["DataArray"]["values"];
+                                if (procedureConfig[c]["procedure"] === observations[o]["name"]) {
+                                    procedureConfig[c]["uom"] = observations[0]["result"]["DataArray"]["field"][1]["uom"];
+                                    procedureConfig[c]["lastObs"].push(values[values.length - 1][0]);
+                                    procedureConfig[c]["lastObs"].push(values[values.length - 1][1]);
+                                    for (var i = 0; i < data[widget.getObservedProperty()].length; i++) {
+                                        if (procedureConfig[c]["lastObs"][1] >= data[widget.getObservedProperty()][i]["from"] && procedureConfig[c]["lastObs"][1] < data[widget.getObservedProperty()][i]["to"]) {
+                                            procedureConfig[c]["imageSrc"] = data[widget.getObservedProperty()][i]["url"];
+                                        }
+                                    }
+                                    coords = [procedureConfig[c]["geometry"]["x"], procedureConfig[c]["geometry"]["y"]];
+                                    sumX += procedureConfig[c]["geometry"]["x"];
+                                    sumY += procedureConfig[c]["geometry"]["y"];
+                                    console.log(c + ')' + procedureConfig[c]["procedure"] + ' : ' +  procedureConfig[c]["lastObs"][0].slice(19, 22));
+                                    var feature = new ol.Feature({
+                                        geometry: new ol.geom.Point(coords),
+                                        name: procedureConfig[c]["procedure"] + '\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
+                                        '\n' + 'TIME: ' + procedureConfig[c]["lastObs"][0].slice(11, 19) + '\nGMT: ' + procedureConfig[c]["lastObs"][0].slice(19, 22) + '&&' + procedureConfig[c]["imageSrc"]
+                                    });
+                                    feature_source.addFeature(feature);
+                                }
+                            }
+                        }
+                        centerX = sumX / procedureConfig.length;
+                        centerY = sumY / procedureConfig.length;
+                        var styleFunc = function(feature) {
+                            var textSplit = feature.getProperties()["name"].split('&&');
+                            var style = new ol.style.Style({
                                 image: new ol.style.Icon({
                                     anchor: [0.5, 0.5],
                                     offset: [0, 0],
                                     opacity: 1,
-                                    scale: 0.25 ,
-                                    src: imageSrc
+                                    scale: 0.25,
+                                    src: textSplit[1]
                                 }),
                                 text: new ol.style.Text({
-                                    text: widget.getProcedure() + '\n\n\n\n\n\n' + parseFloat(lastObs).toFixed(2).toString() + unit + '\n' + 'DATE: ' + lastDate.slice(0,10) +
-                                    '\n' + 'TIME: ' + lastDate.slice(11, 19) + '\nGMT: ' + lastDate.slice(19, 22),
+                                    text: textSplit[0],
                                     fill: new ol.style.Fill({
                                         color: 'black'
                                     }),
@@ -184,33 +258,44 @@ istsos.widget.Map.prototype = {
                                     textAlign: 'left'
                                 })
                             });
-
-                        return style;
+                            return style;
+                        };
+                        feature_source.getFeatures().forEach(function(feat) {
+                            feat.setStyle(styleFunc(feat));
                         });
+                        var feature_layer = new ol.layer.Vector({
+                            source: feature_source
+                        });
+
+
+                        widget.addLayer(feature_layer);
+
                         widget.map = new ol.Map({
                             target: mapWidgetConf["elementId"],
-                            layers: mapWidgetConf["layers"],
+                            layers: [],
                             view: new ol.View({
-                                center: [x,y],
-                                zoom: 17
+                                center: [centerX, centerY],
+                                zoom: 15
                             })
                         });
+                        widget.map.addLayer(osm);
+                        widget.map.addLayer(feature_layer);
+
+
                     });
                 });
             });
-
         });
 
 
-
-
     },
-    getConfig: function(){
+    getConfig: function () {
         return {
             "service": this.service,
             "elementId": this.elementId,
             "type": this.type,
-            "procedure": this.procedure,
+            "offering": this.offering,
+            "procedures": this.procedures,
             "observedProperty": this.observedProperty,
             "layers": this.layers,
             "width": this.width,
