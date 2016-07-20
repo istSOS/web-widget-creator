@@ -51,6 +51,11 @@ td#preview {
 #tools {
     padding: 20px;
 }
+
+#box_form_offerings input {
+    margin: 4px;
+}
+
 #code {
     height: 200px;
     background-color: #175D7D;
