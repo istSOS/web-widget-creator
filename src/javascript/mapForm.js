@@ -131,7 +131,6 @@ $(document).ready(function () {
                         $('#op_list').change(function (evt) {
                             istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE.done(function (data) {
                                 $('#op_list').attr('value', data[evt.target.value]);
-                                console.log(evt.target.value);
                             })
                         });
                     });
@@ -153,7 +152,6 @@ $(document).ready(function () {
         newMap.setCssClass('preview');
         newMap.setOffering($('#offering_list').attr("value"));
         newMap.setProcedures($('#procedure_list').attr("value"));
-        console.log($('#op_list').attr("value"));
         newMap.setObservedProperty($('#op_list').attr("value"));
         newMap.build();
         newMap.setCssClass($('#css_class').val());

@@ -132,7 +132,7 @@ istsos.widget.Map.prototype = {
                         "procedure": "",
                         "uom": "",
                         "type": "",
-                        "samplingTime": {"begin":"", "end":""},
+                        "samplingTime": {"begin": "", "end": ""},
                         "geometry": {},
                         "lastObs": [],
                         "imageSrc": ""
@@ -177,9 +177,9 @@ istsos.widget.Map.prototype = {
 
                 for (var c = 0; c < procedureConfig.length; c++) {
                     if (procedureConfig[c]["type"] === "virtual") {
-                        proc_obs.push(new istsos.VirtualProcedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "virtual","","", {}));
+                        proc_obs.push(new istsos.VirtualProcedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "virtual", "", "", {}));
                     } else {
-                        proc_obs.push(new istsos.Procedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "insitu-fixed-point",""));
+                        proc_obs.push(new istsos.Procedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "insitu-fixed-point", ""));
                     }
                 }
                 service.getObservations(off, proc_obs, [op], procedureConfig[procedureConfig.length - 1]["samplingTime"]["begin"], procedureConfig[procedureConfig.length - 1]["samplingTime"]["end"]);
@@ -198,22 +198,23 @@ istsos.widget.Map.prototype = {
                     var osm = new ol.layer.Tile({
                         source: new ol.source.OSM()
                     });
-/*
-                    var osm = new ol.layer.Tile({
-                        source: new ol.source.OSM({
-                            attributions: [
-                                new ol.Attribution({
-                                    html: 'Tiles courtesy of ' + '<a href="http://hot.openstreetmap.org">' +
-                                    'Humanitarian OpenStreetMap Team </a>'
-                                }),
-                                ol.source.OSM.ATTRIBUTION
-                            ],
-                            url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
-                        })
-                    });
-                    widget.addLayer(osm);
+                    //USAGE OF HUMANITARIAN LAYER - OSM
+                    /*
+                     var osm = new ol.layer.Tile({
+                     source: new ol.source.OSM({
+                     attributions: [
+                     new ol.Attribution({
+                     html: 'Tiles courtesy of ' + '<a href="http://hot.openstreetmap.org">' +
+                     'Humanitarian OpenStreetMap Team </a>'
+                     }),
+                     ol.source.OSM.ATTRIBUTION
+                     ],
+                     url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
+                     })
+                     });
+                     widget.addLayer(osm);
 
-*/
+                     */
 
                     istsos.widget.OBSERVED_PROPERTIES_PROMISE.done(function (data) {
                         var values;
@@ -232,7 +233,7 @@ istsos.widget.Map.prototype = {
                                     coords = [procedureConfig[c]["geometry"]["x"], procedureConfig[c]["geometry"]["y"]];
                                     sumX += procedureConfig[c]["geometry"]["x"];
                                     sumY += procedureConfig[c]["geometry"]["y"];
-                                    console.log(c + ')' + procedureConfig[c]["procedure"] + ' : ' +  procedureConfig[c]["lastObs"][0].slice(19, 22));
+                                    console.log(c + ')' + procedureConfig[c]["procedure"] + ' : ' + procedureConfig[c]["lastObs"][0].slice(19, 22));
                                     var feature = new ol.Feature({
                                         geometry: new ol.geom.Point(coords),
                                         name: procedureConfig[c]["procedure"] + '\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
@@ -244,38 +245,82 @@ istsos.widget.Map.prototype = {
                         }
                         centerX = sumX / procedureConfig.length;
                         centerY = sumY / procedureConfig.length;
-                        var styleFunc = function(feature) {
-                            var textSplit = feature.getProperties()["name"].split('&&');
-                            var style = new ol.style.Style({
-                                image: new ol.style.Icon({
-                                    anchor: [0.5, 0.5],
-                                    offset: [0, 0],
-                                    opacity: 1,
-                                    scale: 0.25,
-                                    src: textSplit[1]
-                                }),
-                                text: new ol.style.Text({
-                                    text: textSplit[0],
-                                    fill: new ol.style.Fill({
-                                        color: 'black'
-                                    }),
-                                    stroke: new ol.style.Stroke ({
-                                        width: 1,
-                                        color: 'black'
-                                    }),
-                                    font: '12px Montserrat, sans-serif',
-                                    offsetY: 25,
-                                    offsetX: -30,
-                                    textAlign: 'left'
-                                })
-                            });
-                            return style;
-                        };
-                        feature_source.getFeatures().forEach(function(feat) {
-                            feat.setStyle(styleFunc(feat));
-                        });
-                        var feature_layer = new ol.layer.Vector({
+                        var cluster_source = new ol.source.Cluster({
+                            distance: 150,
                             source: feature_source
+                        });
+
+                        var styleCache = {}
+                        var feature_layer = new ol.layer.Vector({
+                            source: cluster_source,
+                            style: function (feature) {
+                                if (feature.get('features').length != 1) {
+                                    var size = feature.get('features').length;
+                                    var style = styleCache[size];
+                                    var text = "";
+                                    var offsetY = 36;
+                                    feature.get('features').forEach(function (f) {
+                                        text += f.getProperties()["name"].split('\n\n\n\n\n')[0] + '\n';
+                                        if(feature.get('features').indexOf(f) > 1) {
+                                            offsetY += 9;
+                                        }
+                                    });
+                                    if (!style) {
+                                        style = new ol.style.Style({
+                                            image: new ol.style.Circle({
+                                                radius: 16,
+                                                stroke: new ol.style.Stroke({
+                                                    color: '#ea5252'
+                                                }),
+                                                fill: new ol.style.Fill({
+                                                    color: '#ea5252'
+                                                })
+                                            }),
+                                            text: new ol.style.Text({
+                                                text: size.toString() + '\n\n' + text,
+                                                fill: new ol.style.Fill({
+                                                    color: 'white'
+                                                }),
+                                                stroke: new ol.style.Stroke({
+                                                    width: 3,
+                                                    color: 'black'
+                                                }),
+                                                font: '12px Montserrat, sans-serif',
+                                                offsetY: offsetY
+                                            })
+                                        });
+                                        styleCache[size] = style;
+                                    }
+                                    return style;
+                                } else {
+                                    var textSplit = feature.get('features')[0].getProperties()["name"].split('&&');
+                                    var style = new ol.style.Style({
+                                        image: new ol.style.Icon({
+                                            anchor: [0.5, 0.5],
+                                            offset: [0, 0],
+                                            opacity: 1,
+                                            scale: 0.25,
+                                            src: textSplit[1]
+                                        }),
+                                        text: new ol.style.Text({
+                                            text: textSplit[0],
+                                            fill: new ol.style.Fill({
+                                                color: 'white'
+                                            }),
+                                            stroke: new ol.style.Stroke({
+                                                width: 3,
+                                                color: 'black'
+                                            }),
+                                            font: '12px Montserrat, sans-serif',
+                                            offsetY: 25,
+                                            offsetX: -30,
+                                            textAlign: 'left'
+                                        })
+                                    });
+                                    return style;
+                                }
+
+                            }
                         });
 
 
@@ -295,8 +340,6 @@ istsos.widget.Map.prototype = {
                         } else {
                             widget.map.getView().setZoom(15);
                         }
-
-
 
 
                     });
