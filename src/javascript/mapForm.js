@@ -75,7 +75,14 @@ $(document).ready(function () {
                 });
                 $('#procedure_list').change(function (evt) {
                     var op_list = document.getElementById('op_list');
-                    if (op_list.childNodes[0].innerHTML !== '-- select observed property --') {
+                    op_list.innerHTML = null;
+                    var defaultOption = document.createElement('option');
+                    defaultOption.setAttribute('disabled', '');
+                    defaultOption.setAttribute('selected', '');
+                    defaultOption.setAttribute('value', '');
+                    defaultOption.innerHTML = '-- select observed property --';
+                    op_list.appendChild(defaultOption);
+                    /*if (op_list.childNodes[0].innerHTML !== '-- select observed property --') {
                         op_list.innerHTML = null;
                         var defaultOption = document.createElement('option');
                         defaultOption.setAttribute('disabled', '');
@@ -83,7 +90,7 @@ $(document).ready(function () {
                         defaultOption.setAttribute('value', '');
                         defaultOption.innerHTML = '-- select observed property --';
                         op_list.appendChild(defaultOption);
-                    }
+                    }*/
                     while (op_list.childNodes.length > 1) {
                         op_list.removeChild(op_list.lastChild);
                     }
@@ -124,6 +131,7 @@ $(document).ready(function () {
                         $('#op_list').change(function (evt) {
                             istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE.done(function (data) {
                                 $('#op_list').attr('value', data[evt.target.value]);
+                                console.log(evt.target.value);
                             })
                         });
                     });
@@ -145,6 +153,7 @@ $(document).ready(function () {
         newMap.setCssClass('preview');
         newMap.setOffering($('#offering_list').attr("value"));
         newMap.setProcedures($('#procedure_list').attr("value"));
+        console.log($('#op_list').attr("value"));
         newMap.setObservedProperty($('#op_list').attr("value"));
         newMap.build();
         newMap.setCssClass($('#css_class').val());

@@ -20,11 +20,13 @@ istsos.widget.TYPES[istsos.widget.TYPE_BOX] = {
     "description": "",
     "class": "istsos.widget.Box"
 };
+
 /**
  * @param {String} dt1
  * @param {String} dt2
  */
 istsos.widget.newerDate = function(dt1, dt2) {
+
     var dateTime1 = moment(dt1);
     var dateTime2 = moment(dt2);
     if (dateTime1.diff(dateTime2) >= 0) {
@@ -32,7 +34,6 @@ istsos.widget.newerDate = function(dt1, dt2) {
     } else {
         return dt2;
     }
-
 };
 
 /**

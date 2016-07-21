@@ -149,9 +149,14 @@ istsos.widget.Map.prototype = {
                     procedureConfig.push(obj);
                 }
                 if (procedureConfig.length === 1) {
+                    for (var gs = 0; gs < geo["features"].length; gs++) {
+                        if (procedureConfig[0]["procedure"] === geo["features"][gs]["properties"]["name"]) {
+                            procedureConfig[0]["samplingTime"]["begin"] = geo["features"][gs]["properties"]["samplingTime"]["beginposition"];
+                            procedureConfig[0]["samplingTime"]["end"] = geo["features"][gs]["properties"]["samplingTime"]["endposition"];
+                            console.log(procedureConfig[0]["samplingTime"]);
+                        }
+                    }
 
-                    procedureConfig[0]["samplingTime"]["begin"] = geo["features"][0]["properties"]["samplingTime"]["beginposition"];
-                    procedureConfig[0]["samplingTime"]["end"] = geo["features"][0]["properties"]["samplingTime"]["endposition"];
                 } else {
                     for (var pc = 0; pc < procedureConfig.length; pc++) {
                         for (var gc = 0; gc < geo["features"].length; gc++) {
@@ -177,7 +182,6 @@ istsos.widget.Map.prototype = {
                         proc_obs.push(new istsos.Procedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "insitu-fixed-point",""));
                     }
                 }
-
                 service.getObservations(off, proc_obs, [op], procedureConfig[procedureConfig.length - 1]["samplingTime"]["begin"], procedureConfig[procedureConfig.length - 1]["samplingTime"]["end"]);
 
                 istsos.once(istsos.events.EventType.GETOBSERVATIONS, function (evt) {
@@ -191,7 +195,10 @@ istsos.widget.Map.prototype = {
                         features: []
                     });
 
-
+                    var osm = new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    });
+/*
                     var osm = new ol.layer.Tile({
                         source: new ol.source.OSM({
                             attributions: [
@@ -206,7 +213,7 @@ istsos.widget.Map.prototype = {
                     });
                     widget.addLayer(osm);
 
-
+*/
 
                     istsos.widget.OBSERVED_PROPERTIES_PROMISE.done(function (data) {
                         var values;
@@ -252,6 +259,10 @@ istsos.widget.Map.prototype = {
                                     fill: new ol.style.Fill({
                                         color: 'black'
                                     }),
+                                    stroke: new ol.style.Stroke ({
+                                        width: 1,
+                                        color: 'black'
+                                    }),
                                     font: '12px Montserrat, sans-serif',
                                     offsetY: 25,
                                     offsetX: -30,
@@ -274,12 +285,18 @@ istsos.widget.Map.prototype = {
                             target: mapWidgetConf["elementId"],
                             layers: [],
                             view: new ol.View({
-                                center: [centerX, centerY],
-                                zoom: 15
+                                center: [centerX, centerY]
                             })
                         });
                         widget.map.addLayer(osm);
                         widget.map.addLayer(feature_layer);
+                        if (procedureConfig.length > 1) {
+                            widget.map.getView().fit(feature_source.getExtent(), widget.map.getSize());
+                        } else {
+                            widget.map.getView().setZoom(15);
+                        }
+
+
 
 
                     });
