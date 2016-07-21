@@ -39,6 +39,8 @@ td#preview {
     background-color: #175D7D;
     color: white;
 }
+
+/* TOOLS */
 #tools, #server_data {
     width: 20%;
     min-width: 200px;
@@ -52,8 +54,8 @@ td#preview {
     padding: 20px;
 }
 
-#box_form_offerings input {
-    margin: 4px;
+#map_tool_container {
+    display: none;
 }
 
 #code {
