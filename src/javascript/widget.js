@@ -27,8 +27,8 @@ istsos.widget.TYPES[istsos.widget.TYPE_BOX] = {
  */
 istsos.widget.newerDate = function(dt1, dt2) {
 
-    var dateTime1 = moment(dt1);
-    var dateTime2 = moment(dt2);
+    var dateTime1 = moment(dt1).utc();
+    var dateTime2 = moment(dt2).utc();
     if (dateTime1.diff(dateTime2) >= 0) {
         return dt1;
     } else {

@@ -38,7 +38,6 @@ $(document).ready(function () {
         if (serviceName && serviceName !== "") {
             var service = new istsos.Service(serviceName, server);
             service.getOfferingNames();
-
             istsos.once(istsos.events.EventType.OFFERING_NAMES, function (evt) {
                 document.getElementById('offering_list').innerHTML = null;
                 var offering_obj = evt.getData();
@@ -56,12 +55,14 @@ $(document).ready(function () {
             });
 
             $('#offering_list').change(function (evt) {
+                document.getElementById('op_list').innerHTML = '<option>-</option>';
                 document.getElementById('offering_list').setAttribute("value", evt.target.value);
                 var offering = new istsos.Offering(evt.target.value, "", true, "", service);
                 offering.getMemberProcedures();
                 istsos.once(istsos.events.EventType.MEMBERLIST, function (evt) {
                     document.getElementById('procedure_list').innerHTML = null;
                     var member_obj = evt.getData();
+                    console.log(member_obj);
                     for (var i = 0; i < member_obj.length; i++) {
                         var label = document.createElement('label');
                         var br = document.createElement('br');
@@ -73,89 +74,108 @@ $(document).ready(function () {
                         document.getElementById('procedure_list').appendChild(br);
                     }
                 });
-                $('#procedure_list').change(function (evt) {
-                    var op_list = document.getElementById('op_list');
-                    op_list.innerHTML = null;
-                    var defaultOption = document.createElement('option');
-                    defaultOption.setAttribute('disabled', '');
-                    defaultOption.setAttribute('selected', '');
-                    defaultOption.setAttribute('value', '');
-                    defaultOption.innerHTML = '-- select observed property --';
-                    op_list.appendChild(defaultOption);
-                    /*if (op_list.childNodes[0].innerHTML !== '-- select observed property --') {
-                        op_list.innerHTML = null;
-                        var defaultOption = document.createElement('option');
-                        defaultOption.setAttribute('disabled', '');
-                        defaultOption.setAttribute('selected', '');
-                        defaultOption.setAttribute('value', '');
-                        defaultOption.innerHTML = '-- select observed property --';
-                        op_list.appendChild(defaultOption);
-                    }*/
-                    while (op_list.childNodes.length > 1) {
-                        op_list.removeChild(op_list.lastChild);
+            });
+            $('#procedure_list').change(function (evt) {
+                var op_list = document.getElementById('op_list');
+                op_list.innerHTML = null;
+                var defaultOption = document.createElement('option');
+                defaultOption.setAttribute('disabled', '');
+                defaultOption.setAttribute('selected', '');
+                defaultOption.setAttribute('value', '');
+                defaultOption.innerHTML = '-- select observed property --';
+                op_list.appendChild(defaultOption);
+                while (op_list.childNodes.length > 1) {
+                    op_list.removeChild(op_list.lastChild);
+                }
+                var checkedList = [];
+                var observedPropertiesList = [];
+                $('#procedure_list label').children().each(function () {
+                    if (this.checked) {
+                        checkedList.push(this.parentNode.innerText.trim());
+                    } else {
+                        checkedList.splice($('#procedure_list label').children().index(this), 1);
                     }
-                    var checkedList = [];
-                    $('#procedure_list label').children().each(function () {
-                        if(this.checked) {
-                            checkedList.push(this.parentNode.innerText.trim());
-                        } else {
-                            checkedList.splice($('#procedure_list label').children().index(this),1);
+                });
+                document.getElementById('procedure_list').setAttribute("value", checkedList);
+                service.getProcedures();
+                istsos.once(istsos.events.EventType.PROCEDURES, function (evt) {
+                    var procedure_obj = evt.getData();
+                    for (var j = 0; j < procedure_obj.length; j++) {
+                        if (checkedList.indexOf(procedure_obj[j]["name"]) !== -1) {
+                            observedPropertiesList.push(procedure_obj[j]["observedproperties"]);
                         }
-                    });
-                    document.getElementById('procedure_list').setAttribute("value", checkedList);
-                    console.log(checkedList);
-                    service.getProcedures();
-                    istsos.once(istsos.events.EventType.PROCEDURES, function (evt) {
-                        var procedure_obj = evt.getData();
-                        for (var j = 0; j < procedure_obj.length; j++) {
-                            if(checkedList.indexOf(procedure_obj[j]["name"]) !== -1 ) {
-                                for (var k = 0; k < procedure_obj[j]["observedproperties"].length; k++) {
-                                    var exists = false;
-                                    for (var l = 0; l < op_list.childNodes.length; l++) {
-                                        if(procedure_obj[j]["observedproperties"][k]["name"] === op_list.childNodes[l].innerText.trim()) {
-                                            exists = true;
-                                            break;
-                                        }
-                                    }
-                                    if (exists === false) {
-                                        var option = document.createElement('option');
-                                        option.innerHTML = procedure_obj[j]["observedproperties"][k]["name"];
-                                        document.getElementById('op_list').appendChild(option);
-                                        op_list.appendChild(option);
-                                    }
+                    }
+                    var result = [];
+                    var names = [];
+                    var final = [];
+                    if (observedPropertiesList.length === 1) {
+                        for (var opl = 0; opl < observedPropertiesList[0].length; opl++) {
+                            var option = document.createElement('option');
+                            option.innerHTML = observedPropertiesList[0][opl]["name"];
+                            document.getElementById('op_list').appendChild(option);
+                            op_list.appendChild(option);
+                        }
+                    } else {
+                        for (var isct = 0; isct < observedPropertiesList.length; isct++) {
+                            result = result.concat(observedPropertiesList[isct]);
+                        }
+                        for (var r = 0; r < result.length; r++) {
+                            var count = 0;
+                            for (var ag = 0; ag < result.length; ag++) {
+                                if (result[r]["name"] === result[ag]["name"]) {
 
+                                    count += 1;
                                 }
                             }
-
+                            if (count === checkedList.length) {
+                                names.push(result[r]["name"]);
+                            }
                         }
-                        $('#op_list').change(function (evt) {
-                            istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE.done(function (data) {
-                                $('#op_list').attr('value', data[evt.target.value]);
-                            })
-                        });
+
+                    }
+
+                    for (var i = 0, n = names.length; i < n; i++) {
+                        if (final.indexOf(names[i]) == -1)
+                            final.push(names[i]);
+                    }
+
+                    for (var fopl = 0; fopl < final.length; fopl++) {
+                        var options = document.createElement('option');
+                        options.innerHTML = final[fopl];
+                        document.getElementById('op_list').appendChild(options);
+                        op_list.appendChild(options);
+                    }
+                    $('#op_list').change(function (evt) {
+                        istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE.done(function (data) {
+                            $('#op_list').attr('value', data[evt.target.value]);
+                        })
                     });
                 });
-            });
 
+            });
 
 
         }
     });
 
     $('#generate').click(function () {
-        document.getElementById('preview').innerHTML = null;
+        var preview = document.getElementById('preview');
         var newMap = new istsos.widget.Map();
-        newMap.setElementId('preview');
         newMap.setService($('#service_list').attr("value"));
-        newMap.setHeight('100%');
-        newMap.setWidth(parseInt('100%'));
-        newMap.setCssClass('preview');
         newMap.setOffering($('#offering_list').attr("value"));
         newMap.setProcedures($('#procedure_list').attr("value"));
         newMap.setObservedProperty($('#op_list').attr("value"));
-        newMap.build();
-        newMap.setCssClass($('#css_class').val());
+        if (preview !== null) {
+            console.log('PREVIEW EXISTS');
+            document.getElementById('preview').innerHTML = null;
+            newMap.setElementId('preview');
+            newMap.setCssClass('preview');
+            newMap.setHeight('100%');
+            newMap.setWidth(parseInt('100%'));
+            newMap.build();
+        }
         newMap.setElementId($('#elementId').val());
+        newMap.setCssClass($('#css_class').val());
         newMap.setHeight(parseInt($('#height').val()));
         newMap.setWidth(parseInt($('#width').val()));
         var code = istsos.widget.getCode(newMap.getConfig());

@@ -13,7 +13,6 @@ istsos.widget.Map = function () {
     this.map = null;
     this.offering = null;
     this.procedures = [];
-    //this.procedure = null;
     this.observedProperty = null;
 
     istsos.widget.Widget.prototype.setType.call(this, istsos.widget.TYPE_MAP);
@@ -61,7 +60,7 @@ istsos.widget.Map.prototype = {
         return this.offering;
     },
     /**
-     * @param {string} procedure
+     * @param {Array<string>} proceduresList
      */
     setProcedures: function (proceduresList) {
         this.procedures = proceduresList;
@@ -94,7 +93,10 @@ istsos.widget.Map.prototype = {
         // build the ol3 map
         // ...
         this.map = null;
-        document.getElementById('preview').innerHTML = null;
+        var preview = document.getElementById('preview');
+        if (preview !== null) {
+            document.getElementById('preview').innerHTML = null;
+        }
         var widget = this;
         var mapWidgetConf = this.getConfig();
         istsos.widget.SERVER_PROMISE.done(function (data) {
@@ -124,7 +126,6 @@ istsos.widget.Map.prototype = {
                 //
                 var geo = evt.getData();
                 var procedureList = mapWidgetConf["procedures"].split(',');
-                console.log("1 - " + procedureList);
                 var procedureConfig = [];
 
                 for (var p = 0; p < procedureList.length; p++) {
@@ -153,10 +154,8 @@ istsos.widget.Map.prototype = {
                         if (procedureConfig[0]["procedure"] === geo["features"][gs]["properties"]["name"]) {
                             procedureConfig[0]["samplingTime"]["begin"] = geo["features"][gs]["properties"]["samplingTime"]["beginposition"];
                             procedureConfig[0]["samplingTime"]["end"] = geo["features"][gs]["properties"]["samplingTime"]["endposition"];
-                            console.log(procedureConfig[0]["samplingTime"]);
                         }
                     }
-
                 } else {
                     for (var pc = 0; pc < procedureConfig.length; pc++) {
                         for (var gc = 0; gc < geo["features"].length; gc++) {
@@ -198,7 +197,6 @@ istsos.widget.Map.prototype = {
                     var osm = new ol.layer.Tile({
                         source: new ol.source.OSM()
                     });
-                    //USAGE OF HUMANITARIAN LAYER - OSM
                     /*
                      var osm = new ol.layer.Tile({
                      source: new ol.source.OSM({
@@ -233,7 +231,6 @@ istsos.widget.Map.prototype = {
                                     coords = [procedureConfig[c]["geometry"]["x"], procedureConfig[c]["geometry"]["y"]];
                                     sumX += procedureConfig[c]["geometry"]["x"];
                                     sumY += procedureConfig[c]["geometry"]["y"];
-                                    console.log(c + ')' + procedureConfig[c]["procedure"] + ' : ' + procedureConfig[c]["lastObs"][0].slice(19, 22));
                                     var feature = new ol.Feature({
                                         geometry: new ol.geom.Point(coords),
                                         name: procedureConfig[c]["procedure"] + '\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
@@ -337,6 +334,8 @@ istsos.widget.Map.prototype = {
                         widget.map.addLayer(feature_layer);
                         if (procedureConfig.length > 1) {
                             widget.map.getView().fit(feature_source.getExtent(), widget.map.getSize());
+                            var z = widget.map.getView().getZoom();
+                            widget.map.getView().setZoom(z - 0.5);
                         } else {
                             widget.map.getView().setZoom(15);
                         }
