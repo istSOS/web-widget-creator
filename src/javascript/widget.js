@@ -26,13 +26,12 @@ istsos.widget.TYPES[istsos.widget.TYPE_BOX] = {
  * @param {String} dt2
  */
 istsos.widget.newerDate = function(dt1, dt2) {
-
     var dateTime1 = moment(dt1).utc();
     var dateTime2 = moment(dt2).utc();
     if (dateTime1.diff(dateTime2) >= 0) {
-        return dt1;
+        return dateTime1.format();
     } else {
-        return dt2;
+        return dateTime2.format();
     }
 };
 

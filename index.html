@@ -1,142 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="bower_components/OpenLayers/css/ol.css"/>
-    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="src/style/main.css"/>
-    <script src="lib/istsos-core/compiled/istsos-core-2.0.js"></script>
-    <script src="bower_components/google-closure-library/closure/goog/base.js"></script>
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/moment/min/moment.min.js"></script>
-    <script src="http://openlayers.org/en/v3.17.1/build/ol.js" type="text/javascript"></script>
-    <script src="src/javascript/widget.js"></script>
-    <script src="src/javascript/map.js"></script>
-    <script src="src/javascript/mapForm.js"></script>
-    <script src="src/javascript/contentManagement.js"></script>
-
-    <!-- <script src="test.js"></script> -->
-    <title>istSOS Widget Creator</title>
-</head>
-<body>
-<div class="container-fluid text-center">
-    <div id="header" class="row">
-        <div id="categories" class="col-sm-6">
-            <ul id="categories_list" class="nav nav-tabs">
-                <li id="map_tool"><a>MAP TOOL</a></li>
-                <li id="chart_tool"><a>CHART TOOL</a></li>
-                <li id="box_tool"><a>BOX TOOL</a></li>
-            </ul>
-        </div>
-        <div id="title" class="col-sm-6">
-            <p>ISTSOS WEB WIDGET CREATOR</p>
-        </div>
-    </div>
-    <div id="content" class="row">
-        <table class="table table-bordered table-responsive">
-            <tr>
-                <td id="tools" rowspan="2">
-                    <div id="map_tool_container">
-                        <div class="form-group common">
-                            <label for="service_list">SERVICE:</label>
-                            <select class="form-control" id="service_list">
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="offering_list">OFFERING:</label>
-                            <select class="form-control" id="offering_list">
-                                <option>-</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="procedure_list">PROCEDURE:</label>
-                            <form role="form" id="procedure_list" class="text-left">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="bower_components/OpenLayers/css/ol.css"/>
+        <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="src/style/main.css"/>
+        <script src="lib/istsos-core/compiled/istsos-core-2.0.js"></script>
+        <script src="bower_components/google-closure-library/closure/goog/base.js"></script>
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="bower_components/moment/min/moment.min.js"></script>
+        <script src="http://openlayers.org/en/v3.17.1/build/ol.js" type="text/javascript"></script>
+        <script src="src/javascript/widget.js"></script>
+        <script src="src/javascript/map.js"></script>
+        <script src="src/javascript/mapForm.js"></script>
+        <script src="src/javascript/contentManagement.js"></script>
+        <script src="test.js"></script>
+        <title>istSOS Widget Creator</title>
+    </head>
+    <body>
+        <div class="container-fluid text-center">
+            <div id="header" class="row">
+                <div id="categories" class="col-sm-6">
+                    <ul id="categories_list" class="nav nav-tabs">
+                        <li id="map_tool"><a>MAP TOOL</a></li>
+                        <li id="chart_tool"><a>CHART TOOL</a></li>
+                        <li id="box_tool"><a>BOX TOOL</a></li>
+                    </ul>
+                </div>
+                <div id="title" class="col-sm-6">
+                    <p>ISTSOS WEB WIDGET CREATOR</p>
+                </div>
+            </div>
+            <div id="content" class="row">
+                <table class="table table-bordered table-responsive">
+                    <tr>
+                        <td id="tools" rowspan="2">
+                            <div id="default_info">
+                                <h4>istSOS Web Widget Creator</h4>
+                                <div class="info_text">
+                                    <p>An Online Web Application for building feature­rich web widget that will be easily embeddable into existing web pages.</p>
+                                </div>
                                 <hr/>
-                            </form>
-                            <!-- <select class="form-control" id="procedure_list">
-                                <option>-</option>
-                            </select> -->
-                        </div>
-                        <div class="form-group">
-                            <label for="op_list">OBSERVED PROPERTY:</label>
-                            <select class="form-control" id="op_list">
-                                <option>-</option>
-                            </select>
-                        </div>
-
-                        <form class="form-horizontal common" role="form">
-                            <div class="form-group">
-                                <label class="control-label col-sm-3" for="elementId">ID:</label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="elementId"
-                                           placeholder="Enter element ID"
-                                           required>
+                                <h4>istSOS core library</h4>
+                                <div class="info_text">
+                                    <p><b>IstSOS Web widget creator</b> uses istSOS core JavaScript library for interacting with the istSOS server and its data.</p>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-sm-3" for="css_class">CLASS:</label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="css_class"
-                                           placeholder="Enter CSS class">
+                                <hr/>
+                                <h4>Use tools or customize even more</h4>
+                                <div class="info_text">
+                                    <p>Developers can use <b>Web widget creator</b> tools to easily generate embeddable code, but, considering the fact that
+                                    this application is built upon istSOS core JavaScript library, developers can also use the library directly to raise customization
+                                level even more</p>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-sm-3" for="height">HEIGHT:</label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="height" placeholder="Enter map height">
+                                <hr/>
+                                <h4>Links</h4>
+                                <div class="info_text">
+                                    <a href="http://istsos.org/" target="_blank">istSOS - OGC SOS server implementation</a><br/>
+                                    <a href="https://github.com/istSOS/javascript-core" target="_blank">istSOS core JavaScript library</a><br/>
+                                    <a href="https://github.com/istSOS/web-widget-creator" target="_blank">istSOS Web widget creator</a>
                                 </div>
+                                <hr/>
+                                
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-sm-3" for="width">WIDTH:</label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="width" placeholder="Enter map width">
+                            <div id="map_tool_container">
+                                <div class="form-group common">
+                                    <label for="service_list">SERVICE:</label>
+                                    <select class="form-control" id="service_list">
+                                    </select>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-3">
-                                    <button id="generate" type="button" class="btn btn-default">Generate</button>
+                                <div class="form-group">
+                                    <label for="offering_list">OFFERING:</label>
+                                    <select class="form-control" id="offering_list">
+                                        <option>-</option>
+                                    </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="procedure_list">PROCEDURE:</label>
+                                    <form role="form" id="procedure_list" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                                <div class="form-group">
+                                    <label for="op_list">OBSERVED PROPERTY:</label>
+                                    <select class="form-control" id="op_list">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <form class="form-horizontal common" role="form">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="elementId">ID:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="elementId"
+                                            placeholder="Enter element ID"
+                                            required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="css_class">CLASS:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="css_class"
+                                            placeholder="Enter CSS class">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="height">HEIGHT:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="height" placeholder="Enter map height">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="width">WIDTH:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="width" placeholder="Enter map width">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-3">
+                                            <button id="generate" type="button" class="btn btn-default">Generate</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
-                    </div>
-                    <div id="chart_tool_container"></div>
-                    <div id="box_tool_container"></div>
-
-
-                </td>
-                <td id="preview" class="preview"></td>
-                <td id="server_data" rowspan="2" class="text-left">
-                    <h4 class="text-center">MAP TOOL</h4>
-                    <hr/>
-                    <p>Use map tool to generate code, that will provide embedded OpenLayers 3 map. Map preview will be shown above
-                        the code.</p>
-                    <br/>
-                    <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
-                        typing what he finds
-                        suitable.</p>
-                    <br/>
-                    <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
-                        typing what he finds
-                        suitable.</p>
-                </td>
-            </tr>
-            <tr>
-                <td id="code">
-                    <div class="form-group">
-                        <label for="code_output">Embedded code:</label>
-                        <textarea class="form-control" rows="6" id="code_output"></textarea>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div id="footer" class="row"><p><i>istSOS Web Widget Creator | 2016</i></p></div>
-    <div id="map" class="map"></div>
-</div>
-</body>
+                            <div id="chart_tool_container"></div>
+                            <div id="box_tool_container"></div>
+                        </td>
+                        <td id="preview" class="preview"></td>
+                        <td id="server_data" rowspan="2" class="text-left">
+                            <div id="home_info">
+                                
+                            </div>
+                            <div id="map_tool_info">
+                                <h4 class="text-center">MAP TOOL</h4>
+                                <hr/>
+                                <p>Use map tool to generate code, that will provide embedded OpenLayers 3 map. Map preview will be shown above
+                                the code.</p>
+                                <br/>
+                                <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
+                                    typing what he finds
+                                suitable.</p>
+                                <br/>
+                                <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
+                                    typing what he finds
+                                suitable.</p>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="code">
+                            <div class="form-group">
+                                <label for="code_output">Embedded code:</label>
+                                <textarea class="form-control" rows="6" id="code_output"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="footer" class="row"><p><i>istSOS Web Widget Creator | 2016</i></p></div>
+            <div id="map" class="map"></div>
+        </div>
+    </body>
 </html>

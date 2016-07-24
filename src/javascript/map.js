@@ -221,7 +221,7 @@ istsos.widget.Map.prototype = {
                                 values = observations[o]["result"]["DataArray"]["values"];
                                 if (procedureConfig[c]["procedure"] === observations[o]["name"]) {
                                     procedureConfig[c]["uom"] = observations[0]["result"]["DataArray"]["field"][1]["uom"];
-                                    procedureConfig[c]["lastObs"].push(values[values.length - 1][0]);
+                                    procedureConfig[c]["lastObs"].push(moment(values[values.length - 1][0]).utc().format());
                                     procedureConfig[c]["lastObs"].push(values[values.length - 1][1]);
                                     for (var i = 0; i < data[widget.getObservedProperty()].length; i++) {
                                         if (procedureConfig[c]["lastObs"][1] >= data[widget.getObservedProperty()][i]["from"] && procedureConfig[c]["lastObs"][1] < data[widget.getObservedProperty()][i]["to"]) {
@@ -233,8 +233,8 @@ istsos.widget.Map.prototype = {
                                     sumY += procedureConfig[c]["geometry"]["y"];
                                     var feature = new ol.Feature({
                                         geometry: new ol.geom.Point(coords),
-                                        name: procedureConfig[c]["procedure"] + '\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
-                                        '\n' + 'TIME: ' + procedureConfig[c]["lastObs"][0].slice(11, 19) + '\nGMT: ' + procedureConfig[c]["lastObs"][0].slice(19, 22) + '&&' + procedureConfig[c]["imageSrc"]
+                                        name: procedureConfig[c]["procedure"] + '\n\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
+                                        '\n' + 'TIME: ' + procedureConfig[c]["lastObs"][0].slice(11, 19) + ' (UTC)' + '&&' + procedureConfig[c]["imageSrc"]
                                     });
                                     feature_source.addFeature(feature);
                                 }
@@ -309,7 +309,7 @@ istsos.widget.Map.prototype = {
                                                 color: 'black'
                                             }),
                                             font: '13px sans-serif',
-                                            offsetY: 25,
+                                            offsetY: 20,
                                             offsetX: -30,
                                             textAlign: 'left'
                                         })
