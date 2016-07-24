@@ -1,5 +1,6 @@
 html, body {
-    font-family: Montserrat, sans-serif;
+    font-family: sans-serif;
+    font-weight: bold;
     background-color: #dddddd;
 }
 
@@ -41,6 +42,18 @@ td#preview {
 }
 
 /* TOOLS */
+.info_text {
+    text-align: left;
+    background-color: white;
+    color: #175D7D;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.info_text a {
+    font-style: italic;
+}
+
 #tools, #server_data {
     width: 20%;
     min-width: 200px;
@@ -55,6 +68,10 @@ td#preview {
 }
 
 #map_tool_container {
+    display: none;
+}
+
+#map_tool_info {
     display: none;
 }
 
