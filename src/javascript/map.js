@@ -95,7 +95,7 @@ istsos.widget.Map.prototype = {
         this.map = null;
         var preview = document.getElementById('preview');
         if (preview !== null) {
-            document.getElementById('preview').innerHTML = null;
+            document.getElementById('preview').innerHTML = "";
         }
         var widget = this;
         var mapWidgetConf = this.getConfig();
@@ -108,7 +108,7 @@ istsos.widget.Map.prototype = {
             var off = new istsos.Offering(mapWidgetConf["offering"], "", true, "", service);
             var op = new istsos.ObservedProperty(service, "", mapWidgetConf["observedProperty"]);
             var className = '.' + widget.getCssClass();
-            if (mapWidgetConf["width"].toString().endsWith('%')) {
+            if (mapWidgetConf["width"].toString().charAt(mapWidgetConf["width"].toString().length - 1) === '%') {
                 $(className).css({
                     "height": mapWidgetConf["height"],
                     "width": mapWidgetConf["width"]
@@ -255,11 +255,11 @@ istsos.widget.Map.prototype = {
                                     var size = feature.get('features').length;
                                     var style = styleCache[size];
                                     var text = "";
-                                    var offsetY = 36;
+                                    var offsetY = 34;
                                     feature.get('features').forEach(function (f) {
                                         text += f.getProperties()["name"].split('\n\n\n\n\n')[0] + '\n';
                                         if(feature.get('features').indexOf(f) > 1) {
-                                            offsetY += 9;
+                                            offsetY += 8;
                                         }
                                     });
                                     if (!style) {
@@ -282,7 +282,7 @@ istsos.widget.Map.prototype = {
                                                     width: 3,
                                                     color: 'black'
                                                 }),
-                                                font: '12px Montserrat, sans-serif',
+                                                font: '13px sans-serif',
                                                 offsetY: offsetY
                                             })
                                         });
@@ -308,7 +308,7 @@ istsos.widget.Map.prototype = {
                                                 width: 3,
                                                 color: 'black'
                                             }),
-                                            font: '12px Montserrat, sans-serif',
+                                            font: '13px sans-serif',
                                             offsetY: 25,
                                             offsetX: -30,
                                             textAlign: 'left'

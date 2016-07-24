@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var server;
     istsos.widget.SERVER_PROMISE.done(function (data) {
-        document.getElementById('preview').innerHTML = null;
+        document.getElementById('preview').innerHTML = "";
         var serverConf = data;
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
             serverConf["db"]["port"]);
@@ -13,7 +13,7 @@ $(document).ready(function () {
         defaultOption.innerHTML = '-- select service --';
         document.getElementById('service_list').appendChild(defaultOption);
 
-        document.getElementById('service_list').innerHTML = null;
+        document.getElementById('service_list').innerHTML = "";
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
         defaultOption.setAttribute('selected', '');
@@ -39,7 +39,7 @@ $(document).ready(function () {
             var service = new istsos.Service(serviceName, server);
             service.getOfferingNames();
             istsos.once(istsos.events.EventType.OFFERING_NAMES, function (evt) {
-                document.getElementById('offering_list').innerHTML = null;
+                document.getElementById('offering_list').innerHTML = "";
                 var offering_obj = evt.getData();
                 var defaultOption = document.createElement('option');
                 defaultOption.setAttribute('disabled', '');
@@ -60,7 +60,7 @@ $(document).ready(function () {
                 var offering = new istsos.Offering(evt.target.value, "", true, "", service);
                 offering.getMemberProcedures();
                 istsos.once(istsos.events.EventType.MEMBERLIST, function (evt) {
-                    document.getElementById('procedure_list').innerHTML = null;
+                    document.getElementById('procedure_list').innerHTML = "";
                     var member_obj = evt.getData();
                     console.log(member_obj);
                     for (var i = 0; i < member_obj.length; i++) {
@@ -77,7 +77,7 @@ $(document).ready(function () {
             });
             $('#procedure_list').change(function (evt) {
                 var op_list = document.getElementById('op_list');
-                op_list.innerHTML = null;
+                op_list.innerHTML = "";
                 var defaultOption = document.createElement('option');
                 defaultOption.setAttribute('disabled', '');
                 defaultOption.setAttribute('selected', '');
@@ -167,7 +167,7 @@ $(document).ready(function () {
         newMap.setObservedProperty($('#op_list').attr("value"));
         if (preview !== null) {
             console.log('PREVIEW EXISTS');
-            document.getElementById('preview').innerHTML = null;
+            document.getElementById('preview').innerHTML = "";
             newMap.setElementId('preview');
             newMap.setCssClass('preview');
             newMap.setHeight('100%');
