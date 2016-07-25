@@ -10,7 +10,7 @@ istsos.widget.Box = function () {
     istsos.widget.Widget.call(this);
     this.elementId = null;
     this.box = null;
-    this.procedures = [];
+    this.procedure = null;
     this.observedProperties = [];
 
     istsos.widget.Widget.prototype.setType.call(this, istsos.widget.TYPE_BOX);
@@ -47,14 +47,11 @@ istsos.widget.Box.prototype = {
     getElementId: function () {
         return this.elementId;
     },
-    addProcedure: function (procedure) {
-        this.procedures.push(procedure);
+    setProcedure: function (procedure) {
+        this.procedure = procedure;
     },
-    setProcedures: function (procedureArray) {
-        this.procedures = procedureArray;
-    },
-    getProcedures: function () {
-        return this.procedures;
+    getProcedure: function () {
+        return this.procedure;
     },
     addObservedProperty: function (observedProperty) {
         this.observedProperties.push(observedProperty);
@@ -74,7 +71,7 @@ istsos.widget.Box.prototype = {
             "service": this.service,
             "elementId": this.elementId,
             "type": this.type,
-            "procedures": this.procedures,
+            "procedure": this.procedure,
             "observedProperties": this.observedProperties,
             "width": this.width,
             "height": this.height,

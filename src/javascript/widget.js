@@ -116,7 +116,7 @@ istsos.widget.Widget.prototype = {
 };
 
 istsos.widget.getCode = function(config){
-    return "<script src=\"http://localhost:63342/web-widget-creator/src/javascript/widget.js\"></script>\n" +
+    return "<script src=\"http://localhost/html/web-widget-creator/src/javascript/widget.js\"></script>\n" +
         "<script>\n" +
         "istsos.widget.build(" + JSON.stringify(config) + ");\n" +
         "</script>";
@@ -135,7 +135,7 @@ istsos.widget.build = function(conf){
         case istsos.widget.TYPE_BOX:
             widget = new istsos.widget.Box();
             widget.setElementId(conf["elementId"]);
-            widget.setProcedures(conf["procedures"]);
+            widget.setProcedure(conf["procedure"]);
             widget.setObservedProperties(conf["observedProperties"]);
             break;
         case istsos.widget.TYPE_CHART:

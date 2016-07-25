@@ -13,21 +13,39 @@ $(document).ready(function () {
     });
 
     $('#map_tool').click(function () {
+        $('#elementId').val("");
+        $('#css_class').val("");
+        $('#height').val("");
+        $('#width').val("");
+        $('#preview').html("");
         $('#tools>div').hide();
         $('#server_data>div').hide();
         $('#map_tool_container').show();
+        $('#common_settings').show();
         $('#map_tool_info').show();
     });
     $('#chart_tool').click(function () {
+        $('#elementId').val("");
+        $('#css_class').val("");
+        $('#height').val("");
+        $('#width').val("");
+        $('#preview').html("");
         $('#tools>div').hide();
         $('#server_data>div').hide();
         $('#chart_tool_container').show();
+        $('#common_settings').show();
         $('#chart_tool_info').show();
     });
     $('#box_tool').click(function () {
+        $('#elementId').val("");
+        $('#css_class').val("");
+        $('#height').val("");
+        $('#width').val("");
+        $('#preview').html("");
         $('#tools>div').hide();
         $('#server_data>div').hide();
         $('#box_tool_container').show();
+        $('#common_settings').show();
         $('#box_tool_info').show();
     });
 });

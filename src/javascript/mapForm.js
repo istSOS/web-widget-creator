@@ -11,56 +11,56 @@ $(document).ready(function () {
         defaultOption.setAttribute('selected', '');
         defaultOption.setAttribute('value', '');
         defaultOption.innerHTML = '-- select service --';
-        document.getElementById('service_list').appendChild(defaultOption);
+        document.getElementById('service_list_map').appendChild(defaultOption);
 
-        document.getElementById('service_list').innerHTML = "";
+        document.getElementById('service_list_map').innerHTML = "";
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
         defaultOption.setAttribute('selected', '');
         defaultOption.setAttribute('value', '');
         defaultOption.innerHTML = '-- select service --';
-        document.getElementById('service_list').appendChild(defaultOption);
+        document.getElementById('service_list_map').appendChild(defaultOption);
         server.getServices();
         istsos.once(istsos.events.EventType.SERVICES, function (evt) {
             var services_obj = evt.getData();
             for (var i = 0; i < services_obj.length; i++) {
                 var option = document.createElement('option');
                 option.innerHTML = services_obj[i]["service"];
-                document.getElementById('service_list').appendChild(option);
+                document.getElementById('service_list_map').appendChild(option);
             }
         });
     });
 
 
-    $('#service_list').change(function (evt) {
-        document.getElementById('service_list').setAttribute('value', evt.target.value);
+    $('#service_list_map').change(function (evt) {
+        document.getElementById('service_list_map').setAttribute('value', evt.target.value);
         var serviceName = evt.target.value;
         if (serviceName && serviceName !== "") {
             var service = new istsos.Service(serviceName, server);
             service.getOfferingNames();
             istsos.once(istsos.events.EventType.OFFERING_NAMES, function (evt) {
-                document.getElementById('offering_list').innerHTML = "";
+                document.getElementById('offering_list_map').innerHTML = "";
                 var offering_obj = evt.getData();
                 var defaultOption = document.createElement('option');
                 defaultOption.setAttribute('disabled', '');
                 defaultOption.setAttribute('selected', '');
                 defaultOption.setAttribute('value', '');
                 defaultOption.innerHTML = '-- select offering --';
-                document.getElementById('offering_list').appendChild(defaultOption);
+                document.getElementById('offering_list_map').appendChild(defaultOption);
                 for (var i = 0; i < offering_obj.length; i++) {
                     var option = document.createElement('option');
                     option.innerHTML = offering_obj[i]["name"];
-                    document.getElementById('offering_list').appendChild(option);
+                    document.getElementById('offering_list_map').appendChild(option);
                 }
             });
 
-            $('#offering_list').change(function (evt) {
-                document.getElementById('op_list').innerHTML = '<option>-</option>';
-                document.getElementById('offering_list').setAttribute("value", evt.target.value);
+            $('#offering_list_map').change(function (evt) {
+                document.getElementById('op_list_map').innerHTML = '<option>-</option>';
+                document.getElementById('offering_list_map').setAttribute("value", evt.target.value);
                 var offering = new istsos.Offering(evt.target.value, "", true, "", service);
                 offering.getMemberProcedures();
                 istsos.once(istsos.events.EventType.MEMBERLIST, function (evt) {
-                    document.getElementById('procedure_list').innerHTML = "";
+                    document.getElementById('procedure_list_map').innerHTML = "";
                     var member_obj = evt.getData();
                     console.log(member_obj);
                     for (var i = 0; i < member_obj.length; i++) {
@@ -70,13 +70,13 @@ $(document).ready(function () {
                         input.setAttribute('type', 'checkbox');
                         label.appendChild(input);
                         label.innerHTML += '&nbsp;&nbsp;' + member_obj[i]["name"];
-                        document.getElementById('procedure_list').appendChild(label);
-                        document.getElementById('procedure_list').appendChild(br);
+                        document.getElementById('procedure_list_map').appendChild(label);
+                        document.getElementById('procedure_list_map').appendChild(br);
                     }
                 });
             });
-            $('#procedure_list').change(function (evt) {
-                var op_list = document.getElementById('op_list');
+            $('#procedure_list_map').change(function (evt) {
+                var op_list = document.getElementById('op_list_map');
                 op_list.innerHTML = "";
                 var defaultOption = document.createElement('option');
                 defaultOption.setAttribute('disabled', '');
@@ -89,14 +89,14 @@ $(document).ready(function () {
                 }
                 var checkedList = [];
                 var observedPropertiesList = [];
-                $('#procedure_list label').children().each(function () {
+                $('#procedure_list_map label').children().each(function () {
                     if (this.checked) {
                         checkedList.push(this.parentNode.innerText.trim());
                     } else {
-                        checkedList.splice($('#procedure_list label').children().index(this), 1);
+                        checkedList.splice($('#procedure_list_map label').children().index(this), 1);
                     }
                 });
-                document.getElementById('procedure_list').setAttribute("value", checkedList);
+                document.getElementById('procedure_list_map').setAttribute("value", checkedList);
                 service.getProcedures();
                 istsos.once(istsos.events.EventType.PROCEDURES, function (evt) {
                     var procedure_obj = evt.getData();
@@ -112,7 +112,7 @@ $(document).ready(function () {
                         for (var opl = 0; opl < observedPropertiesList[0].length; opl++) {
                             var option = document.createElement('option');
                             option.innerHTML = observedPropertiesList[0][opl]["name"];
-                            document.getElementById('op_list').appendChild(option);
+                            document.getElementById('op_list_map').appendChild(option);
                             op_list.appendChild(option);
                         }
                     } else {
@@ -142,12 +142,12 @@ $(document).ready(function () {
                     for (var fopl = 0; fopl < final.length; fopl++) {
                         var options = document.createElement('option');
                         options.innerHTML = final[fopl];
-                        document.getElementById('op_list').appendChild(options);
+                        document.getElementById('op_list_map').appendChild(options);
                         op_list.appendChild(options);
                     }
-                    $('#op_list').change(function (evt) {
+                    $('#op_list_map').change(function (evt) {
                         istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE.done(function (data) {
-                            $('#op_list').attr('value', data[evt.target.value]);
+                            $('#op_list_map').attr('value', data[evt.target.value]);
                         })
                     });
                 });
@@ -161,10 +161,10 @@ $(document).ready(function () {
     $('#generate').click(function () {
         var preview = document.getElementById('preview');
         var newMap = new istsos.widget.Map();
-        newMap.setService($('#service_list').attr("value"));
-        newMap.setOffering($('#offering_list').attr("value"));
-        newMap.setProcedures($('#procedure_list').attr("value"));
-        newMap.setObservedProperty($('#op_list').attr("value"));
+        newMap.setService($('#service_list_map').attr("value"));
+        newMap.setOffering($('#offering_list_map').attr("value"));
+        newMap.setProcedures($('#procedure_list_map').attr("value"));
+        newMap.setObservedProperty($('#op_list_map').attr("value"));
         if (preview !== null) {
             console.log('PREVIEW EXISTS');
             document.getElementById('preview').innerHTML = "";

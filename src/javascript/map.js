@@ -193,26 +193,28 @@ istsos.widget.Map.prototype = {
                     var feature_source = new ol.source.Vector({
                         features: []
                     });
-
+                    /*
                     var osm = new ol.layer.Tile({
+                        preload: Infinity,
                         source: new ol.source.OSM()
                     });
-                    /*
-                     var osm = new ol.layer.Tile({
-                     source: new ol.source.OSM({
-                     attributions: [
-                     new ol.Attribution({
-                     html: 'Tiles courtesy of ' + '<a href="http://hot.openstreetmap.org">' +
-                     'Humanitarian OpenStreetMap Team </a>'
-                     }),
-                     ol.source.OSM.ATTRIBUTION
-                     ],
-                     url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
-                     })
-                     });
-                     widget.addLayer(osm);
+                    */
+                    var osm = new ol.layer.Tile({
+                        preload: Infinity,
+                        source: new ol.source.OSM({
+                            attributions: [
+                                new ol.Attribution({
+                                    html: 'Tiles courtesy of ' + '<a href="http://hot.openstreetmap.org">' +
+                                    'Humanitarian OpenStreetMap Team </a>'
+                                }),
+                            ol.source.OSM.ATTRIBUTION
+                            ],
+                            url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
+                        })
+                    });
+                    widget.addLayer(osm);
 
-                     */
+                     
 
                     istsos.widget.OBSERVED_PROPERTIES_PROMISE.done(function (data) {
                         var values;
@@ -316,7 +318,6 @@ istsos.widget.Map.prototype = {
                                     });
                                     return style;
                                 }
-
                             }
                         });
 

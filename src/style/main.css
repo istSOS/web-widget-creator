@@ -54,6 +54,10 @@ td#preview {
     font-style: italic;
 }
 
+#default_info h4 {
+    font-weight: bolder;
+}
+
 #tools, #server_data {
     width: 20%;
     min-width: 200px;
@@ -67,11 +71,11 @@ td#preview {
     padding: 20px;
 }
 
-#map_tool_container {
+#map_tool_container, #box_tool_container, #chart_tool_container, #common_settings {
     display: none;
 }
 
-#map_tool_info {
+#map_tool_info, #box_tool_info, #chart_tool_info {
     display: none;
 }
 

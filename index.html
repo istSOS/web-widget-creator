@@ -14,8 +14,10 @@
         <script src="src/javascript/widget.js"></script>
         <script src="src/javascript/map.js"></script>
         <script src="src/javascript/mapForm.js"></script>
+        <script type="text/javascript" src="src/javascript/box.js"></script>
+        <script type="text/javascript" src="src/javascript/boxForm.js"></script>
         <script src="src/javascript/contentManagement.js"></script>
-        <script src="test.js"></script>
+        <!-- <script src="test.js"></script> -->
         <title>istSOS Widget Creator</title>
     </head>
     <body>
@@ -50,8 +52,8 @@
                                 <h4>Use tools or customize even more</h4>
                                 <div class="info_text">
                                     <p>Developers can use <b>Web widget creator</b> tools to easily generate embeddable code, but, considering the fact that
-                                    this application is built upon istSOS core JavaScript library, developers can also use the library directly to raise customization
-                                level even more</p>
+                                        this application is built upon istSOS core JavaScript library, developers can also use the library directly to raise customization
+                                    level even more</p>
                                 </div>
                                 <hr/>
                                 <h4>Links</h4>
@@ -61,33 +63,71 @@
                                     <a href="https://github.com/istSOS/web-widget-creator" target="_blank">istSOS Web widget creator</a>
                                 </div>
                                 <hr/>
-                                
                             </div>
+                            <!-- MAP TOOL CONTAINER -->
                             <div id="map_tool_container">
-                                <div class="form-group common">
-                                    <label for="service_list">SERVICE:</label>
-                                    <select class="form-control" id="service_list">
+                                <div class="form-group">
+                                    <label for="service_list_map">SERVICE:</label>
+                                    <select class="form-control" id="service_list_map">
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="offering_list">OFFERING:</label>
-                                    <select class="form-control" id="offering_list">
+                                    <label for="offering_list_map">OFFERING:</label>
+                                    <select class="form-control" id="offering_list_map">
                                         <option>-</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="procedure_list">PROCEDURE:</label>
-                                    <form role="form" id="procedure_list" class="text-left">
+                                    <label for="procedure_list_map">PROCEDURE:</label>
+                                    <form role="form" id="procedure_list_map" class="text-left">
                                         <hr/>
                                     </form>
                                 </div>
                                 <div class="form-group">
-                                    <label for="op_list">OBSERVED PROPERTY:</label>
-                                    <select class="form-control" id="op_list">
+                                    <label for="op_list_map">OBSERVED PROPERTY:</label>
+                                    <select class="form-control" id="op_list_map">
                                         <option>-</option>
                                     </select>
                                 </div>
-                                <form class="form-horizontal common" role="form">
+                                <hr/>
+                            </div>
+                            
+                            <!-- CHART TOOL CONTAINER -->
+                            <div id="chart_tool_container"></div>
+                            
+                            <!-- BOX TOOL CONTAINER -->
+                            <div id="box_tool_container">
+                                <div class="form-group">
+                                    <label for="service_list_box">SERVICE:</label>
+                                    <select class="form-control" id="service_list_box">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="offering_list_box">OFFERING:</label>
+                                    <select class="form-control" id="offering_list_box">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="procedure_list_box">PROCEDURE:</label>
+                                    <select class="form-control" id="procedure_list_box">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="op_list_box">OBSERVED PROPERTIES:</label>
+                                    <form role="form" id="op_list_box" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- COMMON WIDGET SETTINGS -->
+                            <div id=common_settings>
+                                <label>WIDGET SETTINGS</label>
+                                <br/>
+                                <br/>
+                                <form class="form-horizontal" role="form">
                                     <div class="form-group">
                                         <label class="control-label col-sm-3" for="elementId">ID:</label>
                                         <div class="col-sm-9">
@@ -106,13 +146,13 @@
                                     <div class="form-group">
                                         <label class="control-label col-sm-3" for="height">HEIGHT:</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="height" placeholder="Enter map height">
+                                            <input type="text" class="form-control" id="height" placeholder="Enter widget height">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-3" for="width">WIDTH:</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="width" placeholder="Enter map width">
+                                            <input type="text" class="form-control" id="width" placeholder="Enter widget width">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -122,8 +162,6 @@
                                     </div>
                                 </form>
                             </div>
-                            <div id="chart_tool_container"></div>
-                            <div id="box_tool_container"></div>
                         </td>
                         <td id="preview" class="preview"></td>
                         <td id="server_data" rowspan="2" class="text-left">
