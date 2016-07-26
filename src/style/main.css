@@ -70,6 +70,9 @@ td#preview {
 #tools {
     padding: 20px;
 }
+.buttons {
+    display: none;
+}
 
 #map_tool_container, #box_tool_container, #chart_tool_container, #common_settings {
     display: none;
@@ -77,6 +80,10 @@ td#preview {
 
 #map_tool_info, #box_tool_info, #chart_tool_info {
     display: none;
+}
+
+#preview td {
+    padding: 1px 5px 1px 5px;
 }
 
 #code {
