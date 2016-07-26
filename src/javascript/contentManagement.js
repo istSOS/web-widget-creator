@@ -12,7 +12,7 @@ $(document).ready(function () {
         'height': (content.height() - 232).toString() + 'px'
     });
 
-    $('#map_tool').click(function () {
+    $('#map_tool').click(function () { 
         $('#elementId').val("");
         $('#css_class').val("");
         $('#height').val("");
@@ -23,6 +23,7 @@ $(document).ready(function () {
         $('#map_tool_container').show();
         $('#common_settings').show();
         $('#map_tool_info').show();
+        $('#map_button').show();
     });
     $('#chart_tool').click(function () {
         $('#elementId').val("");
@@ -35,6 +36,7 @@ $(document).ready(function () {
         $('#chart_tool_container').show();
         $('#common_settings').show();
         $('#chart_tool_info').show();
+        $('#chart_button').show();
     });
     $('#box_tool').click(function () {
         $('#elementId').val("");
@@ -47,5 +49,6 @@ $(document).ready(function () {
         $('#box_tool_container').show();
         $('#common_settings').show();
         $('#box_tool_info').show();
+        $('#box_button').show();
     });
 });

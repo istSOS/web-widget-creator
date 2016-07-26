@@ -6,9 +6,8 @@ goog.require("istsos.widget.Widget");
 /**
  * @constructor
  */
-istsos.widget.Map = function () {
+istsos.widget.Map = function() {
     istsos.widget.Widget.call(this);
-    this.elementId = null;
     this.layers = [];
     this.map = null;
     this.offering = null;
@@ -21,75 +20,76 @@ istsos.widget.Map = function () {
 goog.inherits(istsos.widget.Map, istsos.widget.Widget);
 
 istsos.widget.Map.prototype = {
+    setOffering: function(offering) {
+        this.offering = offering;
+    },
+    getOffering: function() {
+        return this.offering;
+    },
+    /**
+     * @param {Array<string>} proceduresList
+     */
+    setProcedures: function(proceduresList) {
+        this.procedures = proceduresList;
+    },
+    getProcedures: function() {
+        return this.procedures;
+    },
+    /**
+     * @param {string} observedProperty
+     */
+    setObservedProperty: function(observedProperty) {
+        this.observedProperty = observedProperty;
+    },
+    /**
+     * @returns {string}
+     */
+    getObservedProperty: function() {
+        return this.observedProperty;
+    },
+    /**
+     * @param {ol.Layer} layer
+     */
+    addLayer: function(layer) {
+        this.layers.push(layer);
+    },
     /**
      * INHERITED
      */
-    setService: function (serviceName) {
+    setService: function(serviceName) {
         istsos.widget.Widget.prototype.setService.call(this, serviceName);
     },
-    getService: function () {
+    getService: function() {
         return istsos.widget.Widget.prototype.getService.call(this);
     },
-    setHeight: function (height) {
+    setHeight: function(height) {
         istsos.widget.Widget.prototype.setHeight.call(this, height);
     },
-    setWidth: function (width) {
+    setWidth: function(width) {
         istsos.widget.Widget.prototype.setWidth.call(this, width);
     },
-    setCssClass: function (cssClass) {
+    setCssClass: function(cssClass) {
         istsos.widget.Widget.prototype.setCssClass.call(this, cssClass);
     },
-    getCssClass: function () {
+    getCssClass: function() {
         return istsos.widget.Widget.prototype.getCssClass.call(this);
     },
 
     /**
      * @param {string} id
      */
-    setElementId: function (id) {
+    setElementId: function(id) {
         istsos.widget.Widget.prototype.setElementId.call(this, id);
     },
-    getElementId: function () {
+    getElementId: function() {
         istsos.widget.Widget.prototype.getElementId.call(this);
     },
     /** -------------------------------------------------------------- */
-    setOffering: function (offering) {
-        this.offering = offering;
-    },
-    getOffering: function () {
-        return this.offering;
-    },
-    /**
-     * @param {Array<string>} proceduresList
-     */
-    setProcedures: function (proceduresList) {
-        this.procedures = proceduresList;
-    },
-    getProcedures: function () {
-        return this.procedures;
-    },
-    /**
-     * @param {string} observedProperty
-     */
-    setObservedProperty: function (observedProperty) {
-        this.observedProperty = observedProperty;
-    },
-    /**
-     * @returns {string}
-     */
-    getObservedProperty: function () {
-        return this.observedProperty;
-    },
-    /**
-     * @param {ol.Layer} layer
-     */
-    addLayer: function (layer) {
-        this.layers.push(layer);
-    },
+
     /**
      * @returns {ol.Map}
      */
-    build: function () {
+    build: function() {
         // build the ol3 map
         // ...
         this.map = null;
@@ -99,7 +99,7 @@ istsos.widget.Map.prototype = {
         }
         var widget = this;
         var mapWidgetConf = this.getConfig();
-        istsos.widget.SERVER_PROMISE.done(function (data) {
+        istsos.widget.SERVER_PROMISE.done(function(data) {
             var serverConf = data;
             var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
                 serverConf["db"]["port"]);
@@ -113,8 +113,7 @@ istsos.widget.Map.prototype = {
                     "height": mapWidgetConf["height"],
                     "width": mapWidgetConf["width"]
                 });
-            }
-            else {
+            } else {
                 $(className).css({
                     "height": mapWidgetConf["height"] + 'px',
                     "width": mapWidgetConf["width"] + 'px'
@@ -122,7 +121,7 @@ istsos.widget.Map.prototype = {
             }
             service.getFeatureCollection(3857, off);
 
-            istsos.once(istsos.events.EventType.GEOJSON, function (evt) {
+            istsos.once(istsos.events.EventType.GEOJSON, function(evt) {
                 //
                 var geo = evt.getData();
                 var procedureList = mapWidgetConf["procedures"].split(',');
@@ -133,7 +132,10 @@ istsos.widget.Map.prototype = {
                         "procedure": "",
                         "uom": "",
                         "type": "",
-                        "samplingTime": {"begin": "", "end": ""},
+                        "samplingTime": {
+                            "begin": "",
+                            "end": ""
+                        },
                         "geometry": {},
                         "lastObs": [],
                         "imageSrc": ""
@@ -183,7 +185,7 @@ istsos.widget.Map.prototype = {
                 }
                 service.getObservations(off, proc_obs, [op], procedureConfig[procedureConfig.length - 1]["samplingTime"]["begin"], procedureConfig[procedureConfig.length - 1]["samplingTime"]["end"]);
 
-                istsos.once(istsos.events.EventType.GETOBSERVATIONS, function (evt) {
+                istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
                     var observations = evt.getData();
                     var coords;
                     var centerX = 0;
@@ -193,12 +195,12 @@ istsos.widget.Map.prototype = {
                     var feature_source = new ol.source.Vector({
                         features: []
                     });
-                    /*
+
                     var osm = new ol.layer.Tile({
                         preload: Infinity,
                         source: new ol.source.OSM()
                     });
-                    */
+                    /*
                     var osm = new ol.layer.Tile({
                         preload: Infinity,
                         source: new ol.source.OSM({
@@ -212,11 +214,12 @@ istsos.widget.Map.prototype = {
                             url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
                         })
                     });
+                    */
                     widget.addLayer(osm);
 
-                     
 
-                    istsos.widget.OBSERVED_PROPERTIES_PROMISE.done(function (data) {
+
+                    istsos.widget.OBSERVED_PROPERTIES_PROMISE.done(function(data) {
                         var values;
                         for (var c = 0; c < procedureConfig.length; c++) {
                             for (var o = 0; o < observations.length; o++) {
@@ -236,7 +239,7 @@ istsos.widget.Map.prototype = {
                                     var feature = new ol.Feature({
                                         geometry: new ol.geom.Point(coords),
                                         name: procedureConfig[c]["procedure"] + '\n\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
-                                        '\n' + 'TIME: ' + procedureConfig[c]["lastObs"][0].slice(11, 19) + ' (UTC)' + '&&' + procedureConfig[c]["imageSrc"]
+                                            '\n' + 'TIME: ' + procedureConfig[c]["lastObs"][0].slice(11, 19) + ' (UTC)' + '&&' + procedureConfig[c]["imageSrc"]
                                     });
                                     feature_source.addFeature(feature);
                                 }
@@ -252,15 +255,15 @@ istsos.widget.Map.prototype = {
                         var styleCache = {}
                         var feature_layer = new ol.layer.Vector({
                             source: cluster_source,
-                            style: function (feature) {
+                            style: function(feature) {
                                 if (feature.get('features').length != 1) {
                                     var size = feature.get('features').length;
                                     var style = styleCache[size];
                                     var text = "";
                                     var offsetY = 34;
-                                    feature.get('features').forEach(function (f) {
+                                    feature.get('features').forEach(function(f) {
                                         text += f.getProperties()["name"].split('\n\n\n\n\n')[0] + '\n';
-                                        if(feature.get('features').indexOf(f) > 1) {
+                                        if (feature.get('features').indexOf(f) > 1) {
                                             offsetY += 8;
                                         }
                                     });
@@ -341,6 +344,10 @@ istsos.widget.Map.prototype = {
                             widget.map.getView().setZoom(15);
                         }
 
+                        if(preview != null) {
+                            preview.setAttribute("data-map", widget.map);
+                        }
+
 
                     });
                 });
@@ -349,7 +356,7 @@ istsos.widget.Map.prototype = {
 
 
     },
-    getConfig: function () {
+    getConfig: function() {
         return {
             "service": this.service,
             "elementId": this.elementId,
@@ -364,5 +371,3 @@ istsos.widget.Map.prototype = {
         };
     }
 };
-
-
