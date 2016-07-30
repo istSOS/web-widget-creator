@@ -36,7 +36,7 @@ html, body {
     color: #175D7D;
 }
 
-td#preview {
+#preview {
     background-color: #175D7D;
     color: white;
 }
@@ -81,10 +81,37 @@ td#preview {
 #map_tool_info, #box_tool_info, #chart_tool_info {
     display: none;
 }
-
+/* BOX WIDGET 
 #preview td {
-    padding: 1px 5px 1px 5px;
+    margin: 5px !important;
+    border: 0 !important;
 }
+
+#preview table {
+    width: auto !important;
+    border: 0 !important;
+    margin: 5px 5px;
+}
+
+#preview tr {
+    border: 0 !important;
+}*/
+
+#icon>img{
+    margin: 5px !important;
+}
+
+#preview ul {
+    float: left;
+    text-align: left;
+    list-style-type: none;
+}
+
+.layout {
+    padding-left: 20px !important;
+}
+
+/* ---------------------------*/
 
 #code {
     height: 200px;

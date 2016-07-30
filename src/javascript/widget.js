@@ -59,6 +59,9 @@ istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE = $.getJSON('specs/observed_proper
 istsos.widget.OBSERVED_PROPERTIES_PROMISE = $.getJSON('specs/observed_property_spec.json', function (data) {
 });
 
+istsos.widget.OBSERVED_PROPERTIES_NAMES_PROMISE = $.getJSON('specs/observed_property_names.json', function (data) {
+});
+
 
 istsos.widget.Widget = function () {
     this.service = null;
