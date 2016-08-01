@@ -4,7 +4,7 @@ $(document).ready(function () {
     var footerHeight = $('#footer').height();
 
     content.css({
-        'min-height': ($(window).height() - headerHeight - footerHeight).toString() - 20 + 'px'
+        'min-height': ($(window).height() - headerHeight - footerHeight).toString() + 'px'
     });
 
     $('#preview').css({
@@ -24,7 +24,7 @@ $(document).ready(function () {
         $('#map_button').show();
     });
     $('#chart_tool').click(function () {
-        ('.common-item').val("");
+        $('.common-item').val("");
         $('#preview').html("");
         $('#tools>div').hide();
         $('#server_data>div').hide();

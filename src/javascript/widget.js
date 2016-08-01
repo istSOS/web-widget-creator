@@ -138,10 +138,14 @@ istsos.widget.build = function(conf){
         case istsos.widget.TYPE_BOX:
             widget = new istsos.widget.Box();
             widget.setElementId(conf["elementId"]);
+            widget.setOffering(conf["offering"]);
             widget.setProcedure(conf["procedure"]);
             widget.setObservedProperties(conf["observedProperties"]);
+            widget.setInterval(conf["interval"]);
+            widget.setLayout(conf["layout"]);
             break;
         case istsos.widget.TYPE_CHART:
+            widget = new istsos.widget.Chart();
             break;
         default:
             // Draw the istSOS logo

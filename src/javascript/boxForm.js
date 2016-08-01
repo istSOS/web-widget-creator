@@ -56,7 +56,7 @@ $(document).ready(function() {
     });
 
     $('#offering_list_box').change(function(evt) {
-    	var service = new istsos.Service(serviceName, server);
+        var service = new istsos.Service(serviceName, server);
         document.getElementById('op_list_box').innerHTML = '<hr/>';
         document.getElementById('offering_list_box').setAttribute("value", evt.target.value);
         var offering = new istsos.Offering(evt.target.value, "", true, "", service);
@@ -91,11 +91,12 @@ $(document).ready(function() {
         istsos.once(istsos.events.EventType.PROCEDURE, function(evt) {
             document.getElementById('op_list_box').innerHTML = "";
             var procedure_obj = evt.getData()["outputs"];
-            
+
             //STORE TIME INTERVAL
-            var sTimeInfo = document.createElement('span');
-            sTimeInfo.setAttribute("name", procedure_obj[0]["constraint"]["interval"]);
-            document.getElementById('procedure_list_box').appendChild(sTimeInfo);
+            $("#time-info").val(procedure_obj[0]["constraint"]["interval"]);
+            //sTimeInfo.setAttribute("name", procedure_obj[0]["constraint"]["interval"]);
+            //sTimeInfo.setAttribute("id", "time-info");
+            //document.getElementById('procedure_list_box').appendChild(sTimeInfo);
 
             var classification = evt.getData()["classification"];
             document.getElementById('procedure_list_box').setAttribute("name", classification[0]["value"]);
@@ -133,12 +134,22 @@ $(document).ready(function() {
     });
 
     $('#generate_box').click(function() {
+        var begin = $('#time-info').val().split(',')[0];
+        var end = ($('#time-info').val().split(',')[1]);
         var preview = document.getElementById('preview');
         var newBox = new istsos.widget.Box();
         newBox.setService($('#service_list_box').attr("value"));
         newBox.setOffering($('#offering_list_box').attr("value"));
         newBox.setProcedure($('#procedure_list_box').attr("value"));
         newBox.setObservedProperties($('#op_list_box').attr("value").split(','));
+        newBox.setInterval([begin, end]);
+        if(document.getElementById("radVert").checked) {
+            newBox.setLayout(true);
+        } else {
+            newBox.setLayout(false);
+        }
+        
+        console.log(newBox.getLayout())
         if (preview !== null) {
             document.getElementById('preview').innerHTML = "";
             newBox.setElementId('preview');
