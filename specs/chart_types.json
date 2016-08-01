@@ -1,0 +1,11 @@
+{
+    "chart-types-attr": {
+        "line": [],
+        "bar": [],
+        "punch-card": [],
+        "scatterplot": [],
+        "overview-detail": [],
+        "multivariable": [],
+        "trellis": []
+    }
+}
