@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
     var content = $('#content');
     var headerHeight = $('#header').height();
     var footerHeight = $('#footer').height();
@@ -12,7 +12,7 @@ $(document).ready(function () {
     });
 
 
-    $('#map_tool').click(function () { 
+    $('#map_tool').click(function() {
         $('.common-item').val("");
         $('#preview').html("");
         $('#tools>div').hide();
@@ -23,17 +23,18 @@ $(document).ready(function () {
         $('#map_tool_info').show();
         $('#map_button').show();
     });
-    $('#chart_tool').click(function () {
+    $('#chart_tool').click(function() {
         $('.common-item').val("");
         $('#preview').html("");
         $('#tools>div').hide();
         $('#server_data>div').hide();
+        $('.widget-layout').hide();
         $('#chart_tool_container').show();
         $('#common_settings').show();
         $('#chart_tool_info').show();
         $('#chart_button').show();
     });
-    $('#box_tool').click(function () {
+    $('#box_tool').click(function() {
         $('.common-item').val("");
         $('#preview').html("");
         $('#tools>div').hide();
@@ -44,4 +45,15 @@ $(document).ready(function () {
         $('#box_tool_info').show();
         $('#box_button').show();
     });
+    
+    var tz = ["−12:00", "−11:00", "−10:00", "−09:30", "−09:00", "−08:00", "−07:00", "−06:00", "−05:00", "−04:00", "−03:30", "−03:00", "−02:00", "−01:00", "Z", "+01:00", "+02:00", "+03:00", "+03:30", "+04:00", "+04:30", "+05:00", "+05:30", "+05:45", "+06:00", "+06:30", "+07:00", "+08:00", "+08:30", "+08:45", "+09:00", "+09:30", "+10:00", "+10:30", "+11:00", "+12:00", "+12:45", "+13:00", "+14:00"]
+    tz.forEach(function(t) {
+        var option = document.createElement('option');
+        option.innerHTML = t;
+        if(t === "Z") {
+            option.setAttribute('selected','');
+        }
+        document.getElementById('timeZone').appendChild(option);
+    });
+
 });

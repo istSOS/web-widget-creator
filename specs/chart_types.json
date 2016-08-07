@@ -1,11 +1,9 @@
 {
     "chart-types-attr": {
-        "line": [],
-        "bar": [],
-        "punch-card": [],
-        "scatterplot": [],
-        "overview-detail": [],
-        "multivariable": [],
-        "trellis": []
+        "line": ["timeUnit", "timeFormat", "color", "strokeWidth"],
+        "bar": ["timeUnit", "timeFormat","color"],
+        "overview-detail": ["timeUnit", "timeFormat","color", "color2"],
+        "multivariable": ["timeUnit", "timeFormat","strokeWidth"],
+        "trellis": ["timeUnit", "timeFormat", "color", "rowTimeUnit", "xTimeUnit", "yTimeUnit"]
     }
 }
