@@ -40,12 +40,12 @@ istsos.widget.newerDate = function(dt1, dt2) {
  * @param {String} dt2
  */
 istsos.widget.olderDate = function(dt1, dt2) {
-    var dateTime1 = moment(dt1);
-    var dateTime2 = moment(dt2);
+    var dateTime1 = moment(dt1).utc();
+    var dateTime2 = moment(dt2).utc();
     if (dateTime1.diff(dateTime2) <= 0) {
-        return dt1;
+        return dateTime1.format();
     } else {
-        return dt2;
+        return dateTime2.format();
     }
 
 };
@@ -60,6 +60,9 @@ istsos.widget.OBSERVED_PROPERTIES_PROMISE = $.getJSON('specs/observed_property_s
 });
 
 istsos.widget.OBSERVED_PROPERTIES_NAMES_PROMISE = $.getJSON('specs/observed_property_names.json', function (data) {
+});
+
+istsos.widget.CHART_TYPES = $.getJSON('specs/chart_types.json', function (data) {
 });
 
 

@@ -42,6 +42,10 @@ html, body {
 }
 
 /* TOOLS */
+.datepicker, .timepicker {
+background-color: #fff ;
+color: #333 ;
+}
 .info_text {
     text-align: left;
     background-color: white;

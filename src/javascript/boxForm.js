@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var server = null;
-    istsos.widget.SERVER_PROMISE.done(function(data) {
+    istsos.widget.SERVER_PROMISE.then(function(data) {
         document.getElementById('preview').innerHTML = "";
         var serverConf = data;
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],

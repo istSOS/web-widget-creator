@@ -5,17 +5,21 @@
         <link rel="stylesheet" type="text/css" href="bower_components/OpenLayers/css/ol.css"/>
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="src/style/main.css"/>
+        <link rel="stylesheet" type="text/css" href="bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
         <script src="lib/istsos-core/compiled/istsos-core-2.0.js"></script>
         <script src="bower_components/google-closure-library/closure/goog/base.js"></script>
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="bower_components/moment/min/moment.min.js"></script>
+        <script src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
         <script src="http://openlayers.org/en/v3.17.1/build/ol.js" type="text/javascript"></script>
         <script src="src/javascript/widget.js"></script>
         <script src="src/javascript/map.js"></script>
         <script type="text/javascript" src="src/javascript/box.js"></script>
+        <script type="text/javascript" src="src/javascript/chart.js"></script>
         <script src="src/javascript/mapForm.js"></script>
         <script type="text/javascript" src="src/javascript/boxForm.js"></script>
+        <script type="text/javascript" src="src/javascript/chartForm.js"></script>
         <script src="src/javascript/contentManagement.js"></script>
         <!-- <script src="test.js"></script> -->
         <title>istSOS Widget Creator</title>
@@ -93,8 +97,78 @@
                             </div>
                             
                             <!-- CHART TOOL CONTAINER -->
-                            <div id="chart_tool_container"></div>
-                            
+                            <div id="chart_tool_container">
+                                <div class="form-group">
+                                    <label for="service_list_chart">SERVICE:</label>
+                                    <select class="form-control" id="service_list_chart">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="offering_list_chart">OFFERING:</label>
+                                    <select class="form-control" id="offering_list_chart">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="procedure_list_chart">PROCEDURE:</label>
+                                    <form role="form" id="procedure_list_chart" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                                <div class="form-group">
+                                    <label for="op_list_chart">OBSERVED PROPERTY:</label>
+                                    <form role="form" id="op_list_chart" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                                <form class="form-horizontal" role="form" id="interval">
+                                    <div class="form-group">
+                                        <label for="beginTime" class="col-sm-3 control-label">FROM:</label>
+                                        <div class="col-sm-9">
+                                            <div class='input-group date interval' id='beginTimePicker'>
+                                                <input type='text' class="form-control" id="beginTime" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <br/><br/>
+                                        <label for="endTime" class="col-sm-3 control-label">TO:</label>
+                                        <div class="col-sm-9">
+                                            <div class='input-group date interval' id='endTimePicker'>
+                                                <input type='text' class="form-control" id="endTime" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <br/><br/>
+                                        <div class="col-sm-9">
+                                            <div class='form-group'>
+                                                <label for="chart_type" class="col-sm-4 control-label">GMT:</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" id="timeZone">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr/>
+                                <label>CHART SETTINGS</label>
+                                <br/>
+                                <br/>
+                                <form class="form-horizontal" role="form" id="chart_settings">
+                                    <div class="form-group">
+                                        <label for="chart_type" class="col-sm-3 control-label">TYPE:</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control" id="chart_type">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr/>
+                            </div>
                             <!-- BOX TOOL CONTAINER -->
                             <div id="box_tool_container">
                                 <div class="form-group">
@@ -218,5 +292,15 @@
             <div id="footer" class="row"><p><i>istSOS Web Widget Creator | 2016</i></p></div>
             <div id="map" class="map"></div>
         </div>
+        <script>
+        $(function () {
+            $('#beginTimePicker').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm:ss'
+            });
+            $('#endTimePicker').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm:ss'
+            });
+        });
+        </script>
     </body>
 </html>

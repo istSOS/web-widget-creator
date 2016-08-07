@@ -71,7 +71,7 @@ istsos.widget.Box.prototype = {
         return this.observedProperties;
     },
     setInterval: function(interval) {
-        this.interval = interval; 
+        this.interval = interval;
     },
     getInterval: function() {
         return this.interval;
@@ -109,7 +109,7 @@ istsos.widget.Box.prototype = {
             document.getElementById('preview').innerHTML = "";
         }
         var widget = this;
-        istsos.widget.SERVER_PROMISE.done(function(data) {
+        istsos.widget.SERVER_PROMISE.then(function(data) {
             var serverConf = data;
             var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
                 serverConf["db"]["port"]);
@@ -123,15 +123,25 @@ istsos.widget.Box.prototype = {
                 var name = widget.getObservedProperties()[opv].split('&&')[0];
                 var urn = widget.getObservedProperties()[opv].split('&&')[1]
                 op_list.push(name);
-                op_objects.push(new istsos.ObservedProperty(service, name, urn, "", null, null));
+                op_objects.push(new istsos.ObservedProperty(service, name, urn, "", "lessThan", 9));
             }
             //var beginTime = document.getElementById("procedure_list_box").getElementsByTagName('span')[0].getAttribute("name").split(',')[0];
             //var endTime = document.getElementById("procedure_list_box").getElementsByTagName('span')[0].getAttribute("name").split(',')[1];
             var beginTime = widget.getInterval()[0];
             var endTime = widget.getInterval()[1];
             service.getObservations(off, [proc], op_objects, beginTime, endTime);
-            istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
-                istsos.widget.OBSERVED_PROPERTIES_NAMES_PROMISE.done(function(evt_names) {
+            if (preview === null) {
+                istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
+                    boxBuilder(evt);
+                });
+            } else {
+                istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
+                    boxBuilder(evt);
+                });
+            }
+
+            function boxBuilder(evt) {
+                istsos.widget.OBSERVED_PROPERTIES_NAMES_PROMISE.then(function(evt_names) {
 
 
                     // DATA TO BE INSERTED
@@ -282,24 +292,18 @@ istsos.widget.Box.prototype = {
                             centerDiv.appendChild(lists[list]);
                         }
                     }
-                    if(document.getElementById(widget.getElementId()) !== null) {
-                         document.getElementById(widget.getElementId()).appendChild(container);   
+                    if (document.getElementById(widget.getElementId()) !== null) {
+                        document.getElementById(widget.getElementId()).appendChild(container);
                     }
-                    
+
                     if (preview !== null) {
                         preview.appendChild(container);
                     }
-                    
 
                 });
-            });
 
-
-
-
+            }
         });
-
-
     },
     getConfig: function() {
         return {

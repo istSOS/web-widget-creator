@@ -1,6 +1,7 @@
 goog.provide("istsos.widget.Map");
 
 goog.require("istsos.widget.Widget");
+goog.require("goog.Promise");
 
 /** istsos.widget.Map class */
 /**
@@ -99,14 +100,14 @@ istsos.widget.Map.prototype = {
         }
         var widget = this;
         var mapWidgetConf = this.getConfig();
-        istsos.widget.SERVER_PROMISE.done(function(data) {
+        istsos.widget.SERVER_PROMISE.then(function(data) {
             var serverConf = data;
             var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
                 serverConf["db"]["port"]);
             var server = new istsos.Server(serverConf["name"], serverConf["url"], db);
             var service = new istsos.Service(mapWidgetConf["service"], server);
             var off = new istsos.Offering(mapWidgetConf["offering"], "", true, "", service);
-            var op = new istsos.ObservedProperty(service, "", mapWidgetConf["observedProperty"]);
+            var op = new istsos.ObservedProperty(service, "", mapWidgetConf["observedProperty"], "lessThan", 9);
             var className = '.' + widget.getCssClass();
             if (mapWidgetConf["width"].toString().charAt(mapWidgetConf["width"].toString().length - 1) === '%') {
                 $(className).css({
@@ -173,7 +174,6 @@ istsos.widget.Map.prototype = {
                         }
                     }
                 }
-
                 var proc_obs = [];
 
                 for (var c = 0; c < procedureConfig.length; c++) {
@@ -183,24 +183,35 @@ istsos.widget.Map.prototype = {
                         proc_obs.push(new istsos.Procedure(service, procedureConfig[c]["procedure"], "", "", "foi", 3857, 5, 5, 5, [], "insitu-fixed-point", ""));
                     }
                 }
+            
                 service.getObservations(off, proc_obs, [op], procedureConfig[procedureConfig.length - 1]["samplingTime"]["begin"], procedureConfig[procedureConfig.length - 1]["samplingTime"]["end"]);
-
-                istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
-                    var observations = evt.getData();
-                    var coords;
-                    var centerX = 0;
-                    var centerY = 0;
-                    var sumX = 0;
-                    var sumY = 0;
-                    var feature_source = new ol.source.Vector({
-                        features: []
+                if (preview === null) {
+                    istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
+                        mapBuilder(evt);
                     });
-
-                    var osm = new ol.layer.Tile({
-                        preload: Infinity,
-                        source: new ol.source.OSM()
+                } else {
+                    istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
+                        mapBuilder(evt);
                     });
-                    /*
+                }
+
+                function mapBuilder(evt) {
+
+                        var observations = evt.getData();
+                        var coords;
+                        var centerX = 0;
+                        var centerY = 0;
+                        var sumX = 0;
+                        var sumY = 0;
+                        var feature_source = new ol.source.Vector({
+                            features: []
+                        });
+
+                        var osm = new ol.layer.Tile({
+                            preload: Infinity,
+                            source: new ol.source.OSM()
+                        });
+                        /*
                     var osm = new ol.layer.Tile({
                         preload: Infinity,
                         source: new ol.source.OSM({
@@ -215,71 +226,94 @@ istsos.widget.Map.prototype = {
                         })
                     });
                     */
-                    widget.addLayer(osm);
-
-
-
-                    istsos.widget.OBSERVED_PROPERTIES_PROMISE.done(function(data) {
-                        var values;
-                        for (var c = 0; c < procedureConfig.length; c++) {
-                            for (var o = 0; o < observations.length; o++) {
-                                values = observations[o]["result"]["DataArray"]["values"];
-                                if (procedureConfig[c]["procedure"] === observations[o]["name"]) {
-                                    procedureConfig[c]["uom"] = observations[0]["result"]["DataArray"]["field"][1]["uom"];
-                                    procedureConfig[c]["lastObs"].push(moment(values[values.length - 1][0]).utc().format());
-                                    procedureConfig[c]["lastObs"].push(values[values.length - 1][1]);
-                                    for (var i = 0; i < data[widget.getObservedProperty()].length; i++) {
-                                        if (procedureConfig[c]["lastObs"][1] >= data[widget.getObservedProperty()][i]["from"] && procedureConfig[c]["lastObs"][1] < data[widget.getObservedProperty()][i]["to"]) {
-                                            procedureConfig[c]["imageSrc"] = data[widget.getObservedProperty()][i]["url"];
+                        widget.addLayer(osm);
+                        istsos.widget.OBSERVED_PROPERTIES_PROMISE.then(function(data) {
+                            var values;
+                            for (var c = 0; c < procedureConfig.length; c++) {
+                                for (var o = 0; o < observations.length; o++) {
+                                    values = observations[o]["result"]["DataArray"]["values"];
+                                    if (procedureConfig[c]["procedure"] === observations[o]["name"]) {
+                                        procedureConfig[c]["uom"] = observations[0]["result"]["DataArray"]["field"][1]["uom"];
+                                        procedureConfig[c]["lastObs"].push(moment(values[values.length - 1][0]).utc().format());
+                                        procedureConfig[c]["lastObs"].push(values[values.length - 1][1]);
+                                        for (var i = 0; i < data[widget.getObservedProperty()].length; i++) {
+                                            if (procedureConfig[c]["lastObs"][1] >= data[widget.getObservedProperty()][i]["from"] && procedureConfig[c]["lastObs"][1] < data[widget.getObservedProperty()][i]["to"]) {
+                                                procedureConfig[c]["imageSrc"] = data[widget.getObservedProperty()][i]["url"];
+                                            }
                                         }
+                                        coords = [procedureConfig[c]["geometry"]["x"], procedureConfig[c]["geometry"]["y"]];
+                                        sumX += procedureConfig[c]["geometry"]["x"];
+                                        sumY += procedureConfig[c]["geometry"]["y"];
+                                        var feature = new ol.Feature({
+                                            geometry: new ol.geom.Point(coords),
+                                            name: procedureConfig[c]["procedure"] + '\n\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
+                                                '\n' + 'TIME: ' + procedureConfig[c]["lastObs"][0].slice(11, 19) + ' (UTC)' + '&&' + procedureConfig[c]["imageSrc"]
+                                        });
+                                        feature_source.addFeature(feature);
                                     }
-                                    coords = [procedureConfig[c]["geometry"]["x"], procedureConfig[c]["geometry"]["y"]];
-                                    sumX += procedureConfig[c]["geometry"]["x"];
-                                    sumY += procedureConfig[c]["geometry"]["y"];
-                                    var feature = new ol.Feature({
-                                        geometry: new ol.geom.Point(coords),
-                                        name: procedureConfig[c]["procedure"] + '\n\n\n\n\n\n' + parseFloat(procedureConfig[c]["lastObs"][1]).toFixed(2).toString() + procedureConfig[c]["uom"] + '\n' + 'DATE: ' + procedureConfig[c]["lastObs"][0].slice(0, 10) +
-                                            '\n' + 'TIME: ' + procedureConfig[c]["lastObs"][0].slice(11, 19) + ' (UTC)' + '&&' + procedureConfig[c]["imageSrc"]
-                                    });
-                                    feature_source.addFeature(feature);
                                 }
                             }
-                        }
-                        centerX = sumX / procedureConfig.length;
-                        centerY = sumY / procedureConfig.length;
-                        var cluster_source = new ol.source.Cluster({
-                            distance: 150,
-                            source: feature_source
-                        });
+                            centerX = sumX / procedureConfig.length;
+                            centerY = sumY / procedureConfig.length;
+                            var cluster_source = new ol.source.Cluster({
+                                distance: 150,
+                                source: feature_source
+                            });
 
-                        var styleCache = {}
-                        var feature_layer = new ol.layer.Vector({
-                            source: cluster_source,
-                            style: function(feature) {
-                                if (feature.get('features').length != 1) {
-                                    var size = feature.get('features').length;
-                                    var style = styleCache[size];
-                                    var text = "";
-                                    var offsetY = 34;
-                                    feature.get('features').forEach(function(f) {
-                                        text += f.getProperties()["name"].split('\n\n\n\n\n')[0] + '\n';
-                                        if (feature.get('features').indexOf(f) > 1) {
-                                            offsetY += 8;
-                                        }
-                                    });
-                                    if (!style) {
-                                        style = new ol.style.Style({
-                                            image: new ol.style.Circle({
-                                                radius: 16,
-                                                stroke: new ol.style.Stroke({
-                                                    color: '#ea5252'
+                            var styleCache = {}
+                            var feature_layer = new ol.layer.Vector({
+                                source: cluster_source,
+                                style: function(feature) {
+                                    if (feature.get('features').length != 1) {
+                                        var size = feature.get('features').length;
+                                        var style = styleCache[size];
+                                        var text = "";
+                                        var offsetY = 34;
+                                        feature.get('features').forEach(function(f) {
+                                            text += f.getProperties()["name"].split('\n\n\n\n\n')[0] + '\n';
+                                            if (feature.get('features').indexOf(f) > 1) {
+                                                offsetY += 8;
+                                            }
+                                        });
+                                        if (!style) {
+                                            style = new ol.style.Style({
+                                                image: new ol.style.Circle({
+                                                    radius: 16,
+                                                    stroke: new ol.style.Stroke({
+                                                        color: '#ea5252'
+                                                    }),
+                                                    fill: new ol.style.Fill({
+                                                        color: '#ea5252'
+                                                    })
                                                 }),
-                                                fill: new ol.style.Fill({
-                                                    color: '#ea5252'
+                                                text: new ol.style.Text({
+                                                    text: size.toString() + '\n\n' + text,
+                                                    fill: new ol.style.Fill({
+                                                        color: 'white'
+                                                    }),
+                                                    stroke: new ol.style.Stroke({
+                                                        width: 3,
+                                                        color: 'black'
+                                                    }),
+                                                    font: '13px sans-serif',
+                                                    offsetY: offsetY
                                                 })
+                                            });
+                                            styleCache[size] = style;
+                                        }
+                                        return style;
+                                    } else {
+                                        var textSplit = feature.get('features')[0].getProperties()["name"].split('&&');
+                                        var style = new ol.style.Style({
+                                            image: new ol.style.Icon({
+                                                anchor: [0.5, 0.5],
+                                                offset: [0, 0],
+                                                opacity: 1,
+                                                scale: 0.25,
+                                                src: textSplit[1]
                                             }),
                                             text: new ol.style.Text({
-                                                text: size.toString() + '\n\n' + text,
+                                                text: textSplit[0],
                                                 fill: new ol.style.Fill({
                                                     color: 'white'
                                                 }),
@@ -288,69 +322,51 @@ istsos.widget.Map.prototype = {
                                                     color: 'black'
                                                 }),
                                                 font: '13px sans-serif',
-                                                offsetY: offsetY
+                                                offsetY: 20,
+                                                offsetX: -30,
+                                                textAlign: 'left'
                                             })
                                         });
-                                        styleCache[size] = style;
+                                        return style;
                                     }
-                                    return style;
-                                } else {
-                                    var textSplit = feature.get('features')[0].getProperties()["name"].split('&&');
-                                    var style = new ol.style.Style({
-                                        image: new ol.style.Icon({
-                                            anchor: [0.5, 0.5],
-                                            offset: [0, 0],
-                                            opacity: 1,
-                                            scale: 0.25,
-                                            src: textSplit[1]
-                                        }),
-                                        text: new ol.style.Text({
-                                            text: textSplit[0],
-                                            fill: new ol.style.Fill({
-                                                color: 'white'
-                                            }),
-                                            stroke: new ol.style.Stroke({
-                                                width: 3,
-                                                color: 'black'
-                                            }),
-                                            font: '13px sans-serif',
-                                            offsetY: 20,
-                                            offsetX: -30,
-                                            textAlign: 'left'
-                                        })
-                                    });
-                                    return style;
                                 }
+                            });
+/*
+                            var el = document.getElementById(mapWidgetConf["elementId"]);
+                            console.log(el);
+                            if (el !== null) {
+                                while(el.firstChild) {
+                                    el.removeChild(el.firstChild);
+                                }
+                            }*/
+                            widget.addLayer(feature_layer);
+                            widget.map = new ol.Map({
+                                target: mapWidgetConf["elementId"],
+                                layers: [],
+                                view: new ol.View({
+                                    center: [centerX, centerY]
+                                })
+                            });
+
+                            widget.map.addLayer(osm);
+                            widget.map.addLayer(feature_layer);
+                            if (procedureConfig.length > 1) {
+                                widget.map.getView().fit(feature_source.getExtent(), widget.map.getSize());
+                                var z = widget.map.getView().getZoom();
+                                widget.map.getView().setZoom(z - 0.5);
+                            } else {
+                                widget.map.getView().setZoom(15);
                             }
+                            if (preview != null) {
+                                preview.setAttribute("data-map", widget.map);
+                            }
+                            
+
+
+                            
                         });
-
-
-                        widget.addLayer(feature_layer);
-
-                        widget.map = new ol.Map({
-                            target: mapWidgetConf["elementId"],
-                            layers: [],
-                            view: new ol.View({
-                                center: [centerX, centerY]
-                            })
-                        });
-                        widget.map.addLayer(osm);
-                        widget.map.addLayer(feature_layer);
-                        if (procedureConfig.length > 1) {
-                            widget.map.getView().fit(feature_source.getExtent(), widget.map.getSize());
-                            var z = widget.map.getView().getZoom();
-                            widget.map.getView().setZoom(z - 0.5);
-                        } else {
-                            widget.map.getView().setZoom(15);
-                        }
-
-                        if(preview != null) {
-                            preview.setAttribute("data-map", widget.map);
-                        }
-
-
-                    });
-                });
+                    
+                }
             });
         });
 
