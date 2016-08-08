@@ -149,6 +149,12 @@ istsos.widget.build = function(conf){
             break;
         case istsos.widget.TYPE_CHART:
             widget = new istsos.widget.Chart();
+            widget.setElementId(conf["elementId"]);
+            widget.setOffering(conf["offering"]);
+            widget.setProcedures(conf["procedures"]);
+            widget.setObservedProperties(conf["observedProperties"]);
+            widget.setInterval(conf["interval"]);
+            widget.setChartTypeConf(conf["chartTypeConf"]);
             break;
         default:
             // Draw the istSOS logo

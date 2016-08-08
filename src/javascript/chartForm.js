@@ -7,7 +7,7 @@ $(document).ready(function() {
         defaultOption.setAttribute('disabled', '');
         defaultOption.setAttribute('selected', '');
         defaultOption.setAttribute('value', '');
-        defaultOption.innerHTML = '-- select chart type --';
+        defaultOption.innerHTML = '-- select chart type --'; 
         document.getElementById('chart_type').appendChild(defaultOption);
         for (var key in chartTypesObj["chart-types-attr"]) {
             var option = document.createElement('option');
@@ -111,6 +111,7 @@ $(document).ready(function() {
                 checkedList.splice($('#procedure_list_chart label').children().index(this), 1);
             }
         });
+        $('#procedure_list_chart').attr("value", checkedList);
         var service = new istsos.Service(serviceName, server);
         service.getProcedures();
         istsos.once(istsos.events.EventType.PROCEDURES, function(evt) {
@@ -202,7 +203,7 @@ $(document).ready(function() {
             var val = this.parentNode.innerText.trim(); 
             if (this.checked) {
             	console.log(val)
-                obList.push(val);
+                obList.push(val.split('-')[val.split('-').length-1]);
             } else {
                 $.grep(obList, function(value) {
                     return value != val;
@@ -214,7 +215,9 @@ $(document).ready(function() {
         console.log($('#op_list_chart').attr('value'))
 	});
 
+	var selectedChartType = null;
     $('#chart_type').change(function(evt) {
+    	selectedChartType = evt.target.value;
     	var chart_settings = document.getElementById('chart_settings');
     	while (chart_settings.childNodes.length > 2) {
             chart_settings.removeChild(chart_settings.lastChild);
@@ -234,7 +237,7 @@ $(document).ready(function() {
 
         	var input = document.createElement('input');
         	input.setAttribute('type', 'text');
-        	input.setAttribute('id', attributes[a]);
+        	input.setAttribute('id', evt.target.value + "-" + attributes[a]);
         	input.className = "form-control";
 
         	inputDiv.appendChild(input);
@@ -247,7 +250,10 @@ $(document).ready(function() {
     });
 
     $('#generate_chart').click(function() {
+    	var head = document.getElementsByTagName('head')[0];
+    	head.removeChild(head.lastChild)
         var preview = document.getElementById('preview');
+        preview.innerHTML = "";
         var newChart = new istsos.widget.Chart();
         newChart.setService($('#service_list_chart').attr("value"));
         newChart.setOffering($('#offering_list_chart').attr("value"));
@@ -256,7 +262,14 @@ $(document).ready(function() {
         var begin = moment(new Date($('#beginTime').val())).format().slice(0,19);
         var end = moment(new Date($('#endTime').val())).format().slice(0,19);
         newChart.setInterval([begin + $('#timeZone').val(), end + $('#timeZone').val()]);
-        console.log(newChart.getInterval());
+        var chartConf = {};
+        var chartAttributes = chartTypesObj["chart-types-attr"][selectedChartType];
+        chartConf["type"] = selectedChartType;
+        for (var d = 0; d < $('#chart_settings input').length; d++) {
+        	chartConf[chartAttributes[d]] = $('#' + selectedChartType + "-" + chartAttributes[d]).val();
+        }
+        newChart.setChartTypeConf(chartConf);
+      
         if (preview !== null) {
             document.getElementById('preview').innerHTML = "";
             newChart.setElementId('preview');

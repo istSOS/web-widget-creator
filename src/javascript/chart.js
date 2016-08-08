@@ -82,8 +82,49 @@ istsos.widget.Chart.prototype = {
     getInterval: function() {
         return this.interval;
     },
+    setChartTypeConf: function(chartTypeConf) {
+        this.chartTypeConf = chartTypeConf;
+    },
+    getChartTypeConf: function() {
+        return this.chartTypeConf;
+    },
     build: function() {
-    	//build chart widget
+    	var widget = this;
+    	var preview = document.getElementById('preview');
+
+    	istsos.widget.SERVER_PROMISE.then(function(data) {
+    		var config = widget.getConfig();
+    		var chart = document.createElement('istsos-chart');
+    		chart.setAttribute("type", config["type"]);
+    		chart.setAttribute("server", data["url"]);
+    		chart.setAttribute("service", config["service"]);
+    		chart.setAttribute("offering", config["offering"]);
+    		chart.setAttribute("procedures", config["procedures"]);
+    		chart.setAttribute("property", config["observedProperties"]);
+    		chart.setAttribute("from", config["interval"][0]);
+    		chart.setAttribute("until", config["interval"][1]);
+    		for(var key in config["chartTypeConf"]) {
+    			if(config["chartTypeConf"][key] !== null || config["chartTypeConf"][key] !== "") {
+    				chart.setAttribute(key, config["chartTypeConf"][key]);
+    			} else {
+    				console.log("IMA NEKA TAJNA VEZA");
+    			}
+    		}
+    		chart.setAttribute("divId", config["elementId"]);
+
+    		console.log(chart);
+    		var preview = document.getElementById('preview');
+    		if(preview !== null) {
+    			var link = document.createElement('link');
+    			link.setAttribute("rel","import");
+    			link.setAttribute("href", "vistsos/src/default-widget.html");
+    			link.setAttribute("async",true);
+    			document.getElementsByTagName("head")[0].appendChild(link)
+    		}
+
+    	});
+    	
+
     },
     getConfig: function() {
     	return {
