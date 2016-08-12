@@ -2,15 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="bower_components/OpenLayers/css/ol.css"/>
+        <link rel="stylesheet" href="http://openlayers.org/en/v3.17.1/css/ol.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="src/style/main.css"/>
         <link rel="stylesheet" type="text/css" href="bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-
         <script src="lib/istsos-core/compiled/istsos-core-2.0.js"></script>
         <script type="text/javascript" src="vistsos/bower_components/webcomponentsjs/webcomponents.min.js"></script>
-        <script src="bower_components/google-closure-library/closure/goog/base.js"></script>
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/closurelibrary/closure/goog/base.js"></script>
+        <script src="bower_components/jQuery/dist/jquery.min.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="bower_components/moment/min/moment.min.js"></script>
         <script src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
@@ -23,7 +22,7 @@
         <script type="text/javascript" src="src/javascript/boxForm.js"></script>
         <script type="text/javascript" src="src/javascript/chartForm.js"></script>
         <script src="src/javascript/contentManagement.js"></script>
-         <!--<script src="test.js"></script> -->
+        <!--<script src="test.js"></script> -->
         <title>istSOS Widget Creator</title>
         <script></script>
     </head>
@@ -236,13 +235,43 @@
                                         <label>WIDGET LAYOUT</label>
                                         <br/>
                                         <form role="form">
-                                            <label id="horizontal" class="radio-inline"><input id=radHor type="radio" name="layout" checked> HORIZONTAL</label>
+                                            <label id="horizontal" class="radio-inline"><input id="radHor" type="radio" name="layout" checked> HORIZONTAL</label>
                                             <label id="vertical" class="radio-inline"><input id="radVert" type="radio" name="layout"> VERTICAL</label>
                                         </form>
                                     </div>
-                                    <input type="text" id="time-info" class="hidden">
                                     <br/>
+                                    <form role="form">
+                                        <label id="auto-update-label" class="checkbox-inline"><input id="auto-update" type="checkbox"> AUTO-UPDATE</label>
+                                    </form>
+                                    <div class="form-group" id="auto-update-interval" hidden>
+                                        <br/>
+                                        <label class="control-label col-sm-6" for="timeUnit">TIME UNIT:</label>
+                                        <div class="col-sm-6">
+                                            <select class="form-control" id="timeUnit">
+                                                <option selected>sec</option>
+                                                <option>min</option>
+                                                <option>hr</option>
+                                            </select>
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                        <label class="control-label col-sm-6" for="delay">START DELAY:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" class="form-control" id="delay">
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                        <label class="control-label col-sm-6" for="update-interval">INTERVAL:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" class="form-control" id="update-interval">
+                                        </div>
+                                    
+                                    <br/>
+                                    <br/>
+                                    <hr/>
+                                    </div>
                                 </form>
+                                <br/>
                             </div>
                             <div id="map_button" class="form-group buttons">
                                 <div class="col-sm-offset-3">
@@ -296,12 +325,12 @@
         </div>
         <script>
         $(function () {
-            $('#beginTimePicker').datetimepicker({
-                format: 'YYYY/MM/DD HH:mm:ss'
-            });
-            $('#endTimePicker').datetimepicker({
-                format: 'YYYY/MM/DD HH:mm:ss'
-            });
+        $('#beginTimePicker').datetimepicker({
+        format: 'YYYY/MM/DD HH:mm:ss'
+        });
+        $('#endTimePicker').datetimepicker({
+        format: 'YYYY/MM/DD HH:mm:ss'
+        });
         }());
         </script>
     </body>
