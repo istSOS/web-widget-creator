@@ -1,4 +1,10 @@
 $(document).ready(function() {
+    var dataConfig = {
+        "server": "",
+        "db": {},
+        "property": {},
+        "data": []
+    };
     var server;
     istsos.widget.SERVER_PROMISE.then(function(data) {
         document.getElementById('preview').innerHTML = "";
@@ -6,6 +12,12 @@ $(document).ready(function() {
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
             serverConf["db"]["port"]);
         server = new istsos.Server(serverConf["name"], serverConf["url"], db);
+        dataConfig["server"] = serverConf["url"];
+        dataConfig["db"]["dbname"] = serverConf["db"]["dbname"];
+        dataConfig["db"]["host"] = serverConf["db"]["host"];
+        dataConfig["db"]["user"] = serverConf["db"]["user"];
+        dataConfig["db"]["password"] = serverConf["db"]["password"];
+        dataConfig["db"]["port"] = serverConf["db"]["port"];
         document.getElementById('service_list_map').innerHTML = "";
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
@@ -61,7 +73,6 @@ $(document).ready(function() {
         istsos.once(istsos.events.EventType.MEMBERLIST, function(evt) {
             document.getElementById('procedure_list_map').innerHTML = "";
             var member_obj = evt.getData();
-            console.log(member_obj);
             for (var i = 0; i < member_obj.length; i++) {
                 var label = document.createElement('label');
                 var br = document.createElement('br');
@@ -74,7 +85,9 @@ $(document).ready(function() {
             }
         });
     });
+
     $('#procedure_list_map').change(function(evt) {
+        dataConfig["data"] = [];
         var op_list = document.getElementById('op_list_map');
         op_list.innerHTML = "";
         var defaultOption = document.createElement('option');
@@ -95,15 +108,32 @@ $(document).ready(function() {
                 checkedList.splice($('#procedure_list_map label').children().index(this), 1);
             }
         });
+
         document.getElementById('procedure_list_map').setAttribute("value", checkedList);
         var service = new istsos.Service(serviceName, server);
         service.getProcedures();
         istsos.once(istsos.events.EventType.PROCEDURES, function(evt) {
             var procedure_obj = null;
             procedure_obj = evt.getData();
+            var urns = {};
             for (var j = 0; j < procedure_obj.length; j++) {
                 if (checkedList.indexOf(procedure_obj[j]["name"]) !== -1) {
                     observedPropertiesList.push(procedure_obj[j]["observedproperties"]);
+                    var procDataObj = {
+                        "name": procedure_obj[j]["name"],
+                        "type": procedure_obj[j]["sensortype"],
+                        "samplingTime": [moment(procedure_obj[j]["samplingTime"]["beginposition"]).utc().format(), moment(procedure_obj[j]["samplingTime"]["endposition"]).utc().format()]
+                    }
+                    var uniqueProc = true;
+                    dataConfig["data"].forEach(function(dc) {
+                        if (dc["name"] === procDataObj["name"]) {
+                            uniqueProc = false;
+                        }
+                    })
+                    if (uniqueProc === true) {
+                        dataConfig["data"].push(procDataObj);
+                    }
+
                 }
             }
             var result = [];
@@ -141,45 +171,146 @@ $(document).ready(function() {
             }
 
             for (var fopl = 0; fopl < final.length; fopl++) {
-                console.log(final[fopl]);
                 var options = document.createElement('option');
                 options.innerHTML = final[fopl];
                 document.getElementById('op_list_map').appendChild(options);
                 op_list.appendChild(options);
             }
             $('#op_list_map').change(function(evt) {
-                istsos.widget.OBSERVED_PROPERTIES_URN_PROMISE.done(function(data) {
-                    $('#op_list_map').attr('value', data[evt.target.value]);
+                var opName = evt.target.value;
+                service.getObservedProperties();
+                istsos.once(istsos.events.EventType.OBSERVED_PROPERTIES, function(e) {
+                    var propertiesObj = e.getData();
+                    for(var prop = 0; prop < propertiesObj.length; prop++) {
+                        if(propertiesObj[prop]["name"] === opName) {
+                            $('#op_list_map').attr('value', opName + "&&" + propertiesObj[prop]["definition"]);
+                        }
+                    }
+                    
                 })
+            });
+        });
+    });
+
+
+    $('#generate_map').click(function() {
+        //CREATING ISTSOS OBJECTS NEEDED FOR GET OBSERVATIONS REQUEST
+
+        //SERVICE INSTANCE
+        var service = new istsos.Service(serviceName, server);
+
+        //OFFERING INSTANCE
+        var off = new istsos.Offering($('#offering_list_map').attr("value"), "", true, "", service);
+
+        //OBSERVED PROPERTY INSTANCE
+        var op = [new istsos.ObservedProperty(service, $('#op_list_map').attr('value').split('&&')[0], $('#op_list_map').attr('value').split('&&')[1], "", "lessThan", 9)];
+
+        //BEGIN SAMPLING TIME
+        var begin = moment(dataConfig["data"][0]["samplingTime"][0]).utc().format();
+
+        //END SAMPLING TIME
+        var end = moment(dataConfig["data"][0]["samplingTime"][1]).utc().format();
+        for (var t = 1; t < dataConfig["data"].length; t++) {
+            begin = istsos.widget.olderDate(begin, dataConfig["data"][t]["samplingTime"][0]);
+            end = istsos.widget.newerDate(end, dataConfig["data"][t]["samplingTime"][1]);
+        }
+
+        //PROCEDURE || VIRTUAL PROCEDURE INSTANCES
+        var procs = [];
+        dataConfig["data"].forEach(function(p) {
+            if (p["type"] === "virtual") {
+                procs.push(new istsos.VirtualProcedure(service, p["name"], "", "", "foi", 3857, 5, 5, 5, [], "virtual", "", "", {}));
+            } else {
+                procs.push(new istsos.Procedure(service, p["name"], "", "", "foi", 3857, 5, 5, 5, [], "insitu-fixed-point", ""));
+            }
+        });
+
+
+        //GETTING PROPERTY NAME AND URN
+        dataConfig["property"]["name"] = $('#op_list_map').attr('value').split('&&')[0];
+        dataConfig["property"]["urn"] = $('#op_list_map').attr('value').split('&&')[1];
+
+        istsos.widget.OBSERVED_PROPERTIES_PROMISE.then(function(spec) {
+
+            //GET OBSERVATIONS REQUEST FROM ISTSOS-CORE LIBRARY
+            service.getObservations(off, procs, op, begin, end);
+            istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
+                var obs = evt.getData();
+                for (var o = 0; o < obs.length; o++) {
+                    for (var p = 0; p < dataConfig["data"].length; p++) {
+                        if (obs[o]["name"] === dataConfig["data"][p]["name"]) {
+
+                            //GETTING LAST OBSERVATION AND LAST DATE
+                            var observations = obs[o]["result"]["DataArray"]["values"];
+                            dataConfig["data"][p]["lastObs"] = observations[observations.length - 1][1];
+                            dataConfig["data"][p]["lastDate"] = observations[observations.length - 1][0];
+
+                            //GETTING IMAGE URL BASED ON LAST OBSERVATION VALUE
+                            spec[dataConfig["property"]["urn"]].forEach(function(s) {
+                                if (dataConfig["data"][p]["lastObs"] >= s["from"] && dataConfig["data"][p]["lastObs"] < s["to"]) {
+                                    dataConfig["data"][p]["imageSrc"] = s["url"];
+                                }
+                            });
+
+                            //GETTING UNIT OF MEASURE
+                            var uoms = obs[o]["result"]["DataArray"]["field"];
+                            uoms.forEach(function(u) {
+                                if (dataConfig["property"]["name"] === u["name"]) {
+                                    dataConfig["property"]["uom"] = u["uom"];
+                                }
+                            });
+
+                            //GETTING SENSOR COORDINATES FROM GML PARSING
+                            var gml = obs[o]["featureOfInterest"]["geom"];
+                            var xmlDoc;
+                            if (window.DOMParser) {
+                                var parser = new DOMParser();
+                                xmlDoc = parser.parseFromString(gml, "text/xml");
+                            } else {
+                                xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                                xmlDoc.async = false;
+                                xmlDoc.loadXML(gml);
+                            }
+                            dataConfig["data"][p]["coords"] = [parseFloat(xmlDoc.childNodes[0].childNodes[1].innerHTML.split(',')[0]), parseFloat(xmlDoc.childNodes[0].childNodes[1].innerHTML.split(',')[1])];
+                            break;
+                        }
+                    }
+                }
+
+                //PREPARING WIDGET INSTANCE FOR BUILDING AND FOR GENERATING THE EMBEDDED CODE
+                var preview = $('#preview');
+
+                var newMap = new istsos.widget.Map();
+                newMap.setService($('#service_list_map').attr("value"));
+                newMap.setOffering($('#offering_list_map').attr("value"));
+                newMap.setProcedures($('#procedure_list_map').attr("value"));
+                newMap.setObservedProperty($('#op_list_map').attr("value").split("&&")[0]);
+                newMap.setDataConfig(dataConfig);
+                newMap.setElementId($('#elementId').val());
+                newMap.setCssClass($('#css_class').val());
+                newMap.setHeight(parseInt($('#height').val()));
+                newMap.setWidth(parseInt($('#width').val()));
+                if(document.getElementById('auto-update').checked) {
+                    newMap.setAutoUpdate({"checked": true, "unit": $('#timeUnit').val(), "delay": $('#delay').val(), "interval": $('#update-interval').val()});
+                }
+                else {
+                    newMap.setAutoUpdate({"checked": false});
+                }
+
+                var code = istsos.widget.getCode(newMap.getConfig());
+                $('#code_output').val(code) ;
+
+                //IF THE WIDGET IS USED INSIDE THE APP, THEN $('#preview') ELEMENT MUST EXIST
+                if (preview !== null) {
+                    preview.html("");
+                    newMap.setElementId('preview');
+                    newMap.setCssClass('preview');
+                    newMap.setHeight('100%');
+                    newMap.setWidth(parseInt('100%'));
+                    newMap.build();
+                }
             });
         });
 
     });
-
-
-
-
-    $('#generate_map').click(function() {
-        var preview = document.getElementById('preview');
-        var newMap = new istsos.widget.Map();
-        newMap.setService($('#service_list_map').attr("value"));
-        newMap.setOffering($('#offering_list_map').attr("value"));
-        newMap.setProcedures($('#procedure_list_map').attr("value"));
-        newMap.setObservedProperty($('#op_list_map').attr("value"));
-        if (preview !== null) {
-            document.getElementById('preview').innerHTML = "";
-            newMap.setElementId('preview');
-            newMap.setCssClass('preview');
-            newMap.setHeight('100%');
-            newMap.setWidth(parseInt('100%'));
-            newMap.build();
-        }
-        newMap.setElementId($('#elementId').val());
-        newMap.setCssClass($('#css_class').val());
-        newMap.setHeight(parseInt($('#height').val()));
-        newMap.setWidth(parseInt($('#width').val()));
-        var code = istsos.widget.getCode(newMap.getConfig());
-        $('#code_output').val(code);
-    });
-
 });

@@ -11,6 +11,14 @@ $(document).ready(function() {
         'height': (content.height() - 222).toString() + 'px'
     });
 
+    $('#auto-update').change(function(evt) {
+        if(this.checked) {
+            $('#auto-update-interval').show();
+        } else {
+            $('#auto-update-interval').hide();
+        }
+    });
+
 
     $('#map_tool').click(function() {
         $('.common-item').val("");
