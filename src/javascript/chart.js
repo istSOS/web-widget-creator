@@ -44,7 +44,7 @@ istsos.widget.Chart.prototype = {
     },
     getCode: function (conf) {
     	var chartCode = "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.22/webcomponents.min.js\"></script>\n" +
-        " <link rel=\"import\" href=\"http://localhost/html/web-widget-creator/vistsos/src/default-widget.html\" async>\n";
+        "<link rel=\"import\" href=\"http://localhost/html/web-widget-creator/vistsos/src/default-widget.html\" async>\n";
         var code = istsos.widget.getCode(conf);
         return chartCode + code;
     },
@@ -94,6 +94,14 @@ istsos.widget.Chart.prototype = {
 
     	istsos.widget.SERVER_PROMISE.then(function(data) {
     		var config = widget.getConfig();
+    		var preview = document.getElementById('preview');
+    		if(preview !== null) {
+    			var link = document.createElement('link');
+    			link.setAttribute("rel","import");
+    			link.setAttribute("href", "vistsos/src/default-widget.html");
+    			link.setAttribute("async",true);
+    			document.getElementsByTagName("head")[0].appendChild(link)
+    		}
     		var chart = document.createElement('istsos-chart');
     		chart.setAttribute("type", config["type"]);
     		chart.setAttribute("server", data["url"]);
@@ -104,24 +112,13 @@ istsos.widget.Chart.prototype = {
     		chart.setAttribute("from", config["interval"][0]);
     		chart.setAttribute("until", config["interval"][1]);
     		for(var key in config["chartTypeConf"]) {
-    			if(config["chartTypeConf"][key] !== null || config["chartTypeConf"][key] !== "") {
+    			if(config["chartTypeConf"][key] !== "") {
     				chart.setAttribute(key, config["chartTypeConf"][key]);
-    			} else {
-    				console.log("IMA NEKA TAJNA VEZA");
     			}
     		}
     		chart.setAttribute("divId", config["elementId"]);
-
     		console.log(chart);
-    		var preview = document.getElementById('preview');
-    		if(preview !== null) {
-    			var link = document.createElement('link');
-    			link.setAttribute("rel","import");
-    			link.setAttribute("href", "vistsos/src/default-widget.html");
-    			link.setAttribute("async",true);
-    			document.getElementsByTagName("head")[0].appendChild(link)
-    		}
-
+    		document.getElementsByTagName("head")[0].removeChild(document.getElementsByTagName("head")[0].lastChild);
     	});
     	
 

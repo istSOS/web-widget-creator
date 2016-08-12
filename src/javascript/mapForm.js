@@ -6,13 +6,6 @@ $(document).ready(function() {
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
             serverConf["db"]["port"]);
         server = new istsos.Server(serverConf["name"], serverConf["url"], db);
-        var defaultOption = document.createElement('option');
-        defaultOption.setAttribute('disabled', '');
-        defaultOption.setAttribute('selected', '');
-        defaultOption.setAttribute('value', '');
-        defaultOption.innerHTML = '-- select service --';
-        document.getElementById('service_list_map').appendChild(defaultOption);
-
         document.getElementById('service_list_map').innerHTML = "";
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');

@@ -82,6 +82,12 @@ istsos.widget.Box.prototype = {
     getLayout: function() {
         return this.vertical;
     },
+    getCode: function(conf) {
+        var boxCode = "<link rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n" 
+        var code = istsos.widget.getCode(conf);
+        return boxCode + code;
+
+    },
     build: function() {
         //build box
         //...
@@ -197,7 +203,6 @@ istsos.widget.Box.prototype = {
 
                     container.style.background = "#DDDDDD";
                     container.style.margin = "auto auto";
-                    container.style.border = "2px solid #DDDDDD"
                     container.style.borderRadius = "5px";
 
                     var header = document.createElement('div');

@@ -162,7 +162,7 @@ $(document).ready(function() {
         newBox.setCssClass($('#css_class').val());
         newBox.setHeight(parseInt($('#height').val()));
         newBox.setWidth(parseInt($('#width').val()));
-        var code = istsos.widget.getCode(newBox.getConfig());
+        var code = newBox.getCode(newBox.getConfig());
         $('#code_output').val(code);
     });
 

@@ -4,11 +4,11 @@ $(document).ready(function() {
     var footerHeight = $('#footer').height();
 
     content.css({
-        'min-height': ($(window).height() - headerHeight - footerHeight).toString() + 'px'
+        'min-height': ($(window).height() - headerHeight - footerHeight - 20).toString() + 'px'
     });
 
     $('#preview').css({
-        'height': (content.height() - 232).toString() + 'px'
+        'height': (content.height() - 222).toString() + 'px'
     });
 
 
@@ -18,6 +18,7 @@ $(document).ready(function() {
         $('#tools>div').hide();
         $('.widget-layout').hide();
         $('#server_data>div').hide();
+        $('#code_output').val("");
         $('#map_tool_container').show();
         $('#common_settings').show();
         $('#map_tool_info').show();
@@ -28,6 +29,7 @@ $(document).ready(function() {
         $('#preview').html("");
         $('#tools>div').hide();
         $('#server_data>div').hide();
+        $('#code_output').val("");
         $('.widget-layout').hide();
         $('#chart_tool_container').show();
         $('#common_settings').show();
@@ -40,6 +42,7 @@ $(document).ready(function() {
         $('#tools>div').hide();
         $('.widget-layout').show();
         $('#server_data>div').hide();
+        $('#code_output').val("");
         $('#box_tool_container').show();
         $('#common_settings').show();
         $('#box_tool_info').show();

@@ -23,7 +23,6 @@
         <script type="text/javascript" src="src/javascript/boxForm.js"></script>
         <script type="text/javascript" src="src/javascript/chartForm.js"></script>
         <script src="src/javascript/contentManagement.js"></script>
-
          <!--<script src="test.js"></script> -->
         <title>istSOS Widget Creator</title>
         <script></script>
@@ -147,10 +146,10 @@
                                             </div>
                                         </div>
                                         <br/><br/>
-                                        <div class="col-sm-9">
+                                        <div class="col-sm-12">
                                             <div class='form-group'>
-                                                <label for="chart_type" class="col-sm-4 control-label">GMT:</label>
-                                                <div class="col-sm-8">
+                                                <label for="chart_type" class="col-sm-3 control-label">GMT:</label>
+                                                <div class="col-sm-9">
                                                     <select class="form-control" id="timeZone">
                                                     </select>
                                                 </div>
@@ -294,7 +293,6 @@
                 </table>
             </div>
             <div id="footer" class="row"><p><i>istSOS Web Widget Creator | 2016</i></p></div>
-            <div id="map" class="map"></div>
         </div>
         <script>
         $(function () {
@@ -304,7 +302,7 @@
             $('#endTimePicker').datetimepicker({
                 format: 'YYYY/MM/DD HH:mm:ss'
             });
-        });
+        }());
         </script>
     </body>
 </html>

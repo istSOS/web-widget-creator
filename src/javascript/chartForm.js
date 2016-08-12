@@ -250,8 +250,6 @@ $(document).ready(function() {
     });
 
     $('#generate_chart').click(function() {
-    	var head = document.getElementsByTagName('head')[0];
-    	head.removeChild(head.lastChild)
         var preview = document.getElementById('preview');
         preview.innerHTML = "";
         var newChart = new istsos.widget.Chart();
