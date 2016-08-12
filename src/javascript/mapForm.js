@@ -278,7 +278,8 @@ $(document).ready(function() {
                 }
 
                 //PREPARING WIDGET INSTANCE FOR BUILDING AND FOR GENERATING THE EMBEDDED CODE
-                var preview = $('#preview');
+                var preview = document.getElementById('preview');
+                $('table').height($('#content').height());
 
                 var newMap = new istsos.widget.Map();
                 newMap.setService($('#service_list_map').attr("value"));
@@ -302,11 +303,10 @@ $(document).ready(function() {
 
                 //IF THE WIDGET IS USED INSIDE THE APP, THEN $('#preview') ELEMENT MUST EXIST
                 if (preview !== null) {
-                    preview.html("");
                     newMap.setElementId('preview');
                     newMap.setCssClass('preview');
                     newMap.setHeight('100%');
-                    newMap.setWidth(parseInt('100%'));
+                    newMap.setWidth('100%');
                     newMap.build();
                 }
             });

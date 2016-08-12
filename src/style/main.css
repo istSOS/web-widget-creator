@@ -85,21 +85,6 @@ html, body {
 #map_tool_info, #box_tool_info, #chart_tool_info {
     display: none;
 }
-/* BOX WIDGET 
-#preview td {
-    margin: 5px !important;
-    border: 0 !important;
-}
-
-#preview table {
-    width: auto !important;
-    border: 0 !important;
-    margin: 5px 5px;
-}
-
-#preview tr {
-    border: 0 !important;
-}*/
 
 #icon>img{
     margin: 5px !important;
