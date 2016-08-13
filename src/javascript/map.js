@@ -341,6 +341,7 @@ istsos.widget.Map.prototype = {
             var widget = this;
             var updt = widget.getAutoUpdate();
             
+            //DEFINING A MULTIPLIER, BASED ON SELECTED TIME UNIT
             if(updt["checked"]) {
                 var multiplier;
                 switch(updt["unit"]) {
@@ -358,6 +359,8 @@ istsos.widget.Map.prototype = {
                         console.log("Multiplier set to 1000");
                         break;
                 }
+
+                //CALLING THE UPDATE FUNCTION
                 setTimeout(function(){ 
                     istsos.widget.updateData(widget);
                     setInterval(function() {

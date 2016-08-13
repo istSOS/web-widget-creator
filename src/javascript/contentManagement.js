@@ -41,6 +41,7 @@ $(document).ready(function() {
         $('.widget-layout').hide();
         $('#chart_tool_container').show();
         $('#common_settings').show();
+        $('#update-container').hide();
         $('#chart_tool_info').show();
         $('#chart_button').show();
     });

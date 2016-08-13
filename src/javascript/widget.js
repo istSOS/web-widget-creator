@@ -171,6 +171,7 @@ istsos.widget.getCode = function(config) {
  */
 istsos.widget.updateData = function(widget) {
     if (widget.getType() === istsos.widget.TYPE_MAP) {
+
         var data = widget.getDataConfig();
         var serverUrl = data["server"];
         var serviceName = widget.getService();
@@ -178,6 +179,19 @@ istsos.widget.updateData = function(widget) {
         var proceduresList = widget.getProcedures();
         var propertyName = widget.getObservedProperty();
 
+        /*FOR TESTING PURPOSES
+        var p;
+        if(document.getElementById(widget.getElementId()) !== null) {
+            p = document.createElement('p');
+            p.innerHTML = "UPDATE PROCESS...";
+            document.getElementById(widget.getElementId()).appendChild(p);
+            
+        }
+        */
+        console.log("=========== MAP WIDGET - UPDATE ==========");
+        data["data"].forEach(function (p) {
+            console.log("PROCEDURE: " + p["name"]);
+        });
         //DATABASE INSTANCE
         var db = new istsos.Database(data["db"]["dbname"], data["db"]["host"], data["db"]["user"], data["db"]["password"], data["db"]["port"]);
 
@@ -236,10 +250,15 @@ istsos.widget.updateData = function(widget) {
                     observations.forEach(function(obs) {
                         data["data"].forEach(function(dt) {
                             if (obs["name"] === dt["name"]) {
-                                /* FOR TESTING
-                                    dt["lastObs"] = "-5"
-                                    dt["lastDate"] = "2011-11-11T11:11:11+000Z"
-                                */
+                                /* FOR TESTING PURPOSES
+                                var obsRandom = (Math.random() * 100).toFixed(2);
+                                var year = "20" + (Math.random() * 100).toFixed(0).toString();
+                                var month = (Math.random() * 100).toFixed(0).toString();
+                                var day = (Math.random() * 100).toFixed(0).toString();
+                                var dateRandom = year + "-" + month + "-" + day + "T" + day + ":" + day + ":" + day + "+" + "000Z";
+                                    dt["lastObs"] = obsRandom;                                 
+                                    dt["lastDate"] = dateRandom;   
+                                    */                                
                                 dt["lastObs"] = obs["result"]["DataArray"]["values"][obs["result"]["DataArray"]["values"].length - 1][1];
                                 dt["lastDate"] = obs["result"]["DataArray"]["values"][obs["result"]["DataArray"]["values"].length - 1][0];
 
@@ -265,6 +284,14 @@ istsos.widget.updateData = function(widget) {
                         });
                         source.addFeature(feature);
                     });
+
+                    /* FOR TESTING PURPOSES
+                    if(document.getElementById(widget.getElementId()) !== null) {
+                        setTimeout(function() {
+                            $('#' + widget.getElementId() + ">p").remove();
+                        }, 1000);
+                    }
+                    */
                 });
             });
         });
@@ -276,6 +303,19 @@ istsos.widget.updateData = function(widget) {
         var procedure = widget.getProcedure();
         var properties = widget.getObservedProperties();
         var box = widget.getBox();
+        
+        /* FOR TESTING PURPOSES 
+        var p;
+        if(document.getElementById(widget.getElementId()) !== null) {
+            p = document.createElement('p');
+            p.innerHTML = "UPDATE PROCESS...";
+            document.getElementById(widget.getElementId()).appendChild(p);   
+        }
+        */
+        console.log("=========== BOX WIDGET - UPDATE ==========");
+        data["data"].forEach(function (op) {
+            console.log("PROPERTY: " + op["name"]);
+        });
 
         //DATABASE INSTANCE
         var db = new istsos.Database(data["db"]["dbname"], data["db"]["host"], data["db"]["user"], data["db"]["password"], data["db"]["port"]);
@@ -332,20 +372,27 @@ istsos.widget.updateData = function(widget) {
                         var lastObs = lastObservations[i];
                         data["data"].forEach(function(op) {
                             if (op["urn"] === order[i]) {
-                                /* FOR TESTING 
-                                    op["lastObs"] = "10";
+                                /* FOR TESTING PURPOSES
+                                    var obsRandom = (Math.random() * 100).toFixed(2);
+                                    op["lastObs"] = obsRandom;                                  
                                 */
+    
                                 op["lastObs"] = lastObs;
+
                             }
                         });
                     }
 
                     //UPDATING LAST DATE
                     var lastDate = lastObservations[0];
-                    /* FOR TESTING
-                        data["lastDate"] = "2012-12-12T12:12:12+000Z"
-                    */
-                    data["lastDate"] = lastDate
+                    /* FOR TESTING PURPOSES
+                        var year = "20" + (Math.random() * 100).toFixed(0).toString();
+                        var month = (Math.random() * 100).toFixed(0).toString();
+                        var day = (Math.random() * 100).toFixed(0).toString();
+                        var dateRandom = year + "-" + month + "-" + day + "T" + day + ":" + day + ":" + day  + "+" + "000Z";                                 
+                        data["lastDate"] = dateRandom;
+                    */        
+                    data["lastDate"] = lastDate;
 
                     //UPDATING ICON URL BASED ON VALUES
                     if (data["data"].length === 1) {
@@ -357,11 +404,10 @@ istsos.widget.updateData = function(widget) {
                         });
                     } else {
                         /* FOR TESTING
-                            data["imageSrc"] = "https://media.licdn.com/mpr/mpr/shrink_100_100/AAEAAQAAAAAAAAeNAAAAJDdiNTVlZDA4LTMxMjctNGI1Mi1iZjVjLWJmODBkNmFiYjYyZA.jpg"
+                            data["imageSrc"] = "https://media.licdn.com/mpr/mpr/shrink_100_100/AAEAAQAAAAAAAAeNAAAAJDdiNTVlZDA4LTMxMjctNGI1Mi1iZjVjLWJmODBkNmFiYjYyZA.jpg";
                         */
-
                         //DEFAULT ICON - ISTSOS LOGO
-                        data["imageSrc"] = "https://live.osgeo.org/_images/logo-istsos6.png"
+                        data["imageSrc"] = "https://live.osgeo.org/_images/logo-istsos6.png";
                     }
 
                     //SETTING THE UPDATED DATE AND TIME INTO THE BOX WIDGET
@@ -374,17 +420,21 @@ istsos.widget.updateData = function(widget) {
                     
                     //SETTING THE UPDATED OBSERVATIONS INTO THE BOX WIDGET
                     var ulList = box.childNodes[1].childNodes[1].childNodes;
-                    ulList.forEach(function(ul) {
-                        ul.childNodes.forEach(function(li) {
+                    console.log(ulList);
+                    for(var u = 0; u < ulList.length; u++) {
+                        for (var l = 0; l < ulList[u].childNodes.length; l++) {
                             data["data"].forEach(function(op) {
-                                if (li.getAttribute("name") === op["name"]) {
-                                    li.innerHTML = op["showName"] + ": <i>" + op["lastObs"] + " " + op["uom"] + "</i>";
+                                if (ulList[u].childNodes[l].getAttribute("name") === op["name"]) {
+                                    ulList[u].childNodes[l].innerHTML = op["showName"] + ": <i>" + parseFloat(op["lastObs"]).toFixed(2).toString() + " " + op["uom"] + "</i>";
                                 }
                             })
-                        });
-                    });
-
-
+                        }
+                    }
+                    if(document.getElementById(widget.getElementId()) !== null) {
+                        setTimeout(function() {
+                            $('#' + widget.getElementId() + ">p").remove();
+                        }, 1000);
+                    }
 
                 });
             });

@@ -260,18 +260,13 @@ $(document).ready(function() {
                                 }
                             });
 
-                            //GETTING SENSOR COORDINATES FROM GML PARSING
+                            //GETTING SENSOR COORDINATES FROM GML STRING
+                           
                             var gml = obs[o]["featureOfInterest"]["geom"];
-                            var xmlDoc;
-                            if (window.DOMParser) {
-                                var parser = new DOMParser();
-                                xmlDoc = parser.parseFromString(gml, "text/xml");
-                            } else {
-                                xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-                                xmlDoc.async = false;
-                                xmlDoc.loadXML(gml);
-                            }
-                            dataConfig["data"][p]["coords"] = [parseFloat(xmlDoc.childNodes[0].childNodes[1].innerHTML.split(',')[0]), parseFloat(xmlDoc.childNodes[0].childNodes[1].innerHTML.split(',')[1])];
+                            var coordsStr = gml.slice(gml.search("<gml:coordinates>") + 17, gml.search("</gml:coordinates>"));
+                            var coords = [parseFloat(coordsStr.split(',')[0]), parseFloat(coordsStr.split(',')[1])];
+                            
+                            dataConfig["data"][p]["coords"] = [coords[0], coords[1]];
                             break;
                         }
                     }
@@ -303,6 +298,7 @@ $(document).ready(function() {
 
                 //IF THE WIDGET IS USED INSIDE THE APP, THEN $('#preview') ELEMENT MUST EXIST
                 if (preview !== null) {
+                    preview.innerHTML = "";
                     newMap.setElementId('preview');
                     newMap.setCssClass('preview');
                     newMap.setHeight('100%');
