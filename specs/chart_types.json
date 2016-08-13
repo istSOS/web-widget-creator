@@ -1,9 +1,8 @@
 {
     "chart-types-attr": {
-        "line": ["timeUnit", "timeFormat", "color", "strokeWidth"],
-        "bar": ["timeUnit", "timeFormat","color"],
-        "overview-detail": ["timeUnit", "timeFormat","color", "color2"],
-        "multivariable": ["timeUnit", "timeFormat","strokeWidth"],
-        "trellis": ["timeUnit", "timeFormat", "color", "rowTimeUnit", "xTimeUnit", "yTimeUnit"]
+        "line": [],
+        "overview-detail": [],
+        "multivariable": [],
+        "histogram": ["aggregateInterval", "aggregateFunction","color", "color2"]
     }
 }
