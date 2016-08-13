@@ -17,12 +17,14 @@ $(document).ready(function() {
     });
 
     var server;
+    var serverUrl;
     istsos.widget.SERVER_PROMISE.then(function(data) {
         document.getElementById('preview').innerHTML = "";
         var serverConf = data;
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
             serverConf["db"]["port"]);
         server = new istsos.Server(serverConf["name"], serverConf["url"], db);
+        serverUrl = serverConf["url"];
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
         defaultOption.setAttribute('selected', '');
@@ -203,7 +205,7 @@ $(document).ready(function() {
             var val = this.parentNode.innerText.trim(); 
             if (this.checked) {
             	console.log(val)
-                obList.push(val.split('-')[val.split('-').length-1]);
+                obList.push(val);
             } else {
                 $.grep(obList, function(value) {
                     return value != val;
@@ -229,11 +231,11 @@ $(document).ready(function() {
 
         	var label = document.createElement('label');
         	label.setAttribute("for", attributes[a]);
-        	label.className = "col-sm-4 control-label";
+        	label.className = "col-sm-6 control-label";
         	label.innerText = attributes[a] + ":";
 
         	var inputDiv = document.createElement('div');
-        	inputDiv.className = "col-sm-8";
+        	inputDiv.className = "col-sm-6";
 
         	var input = document.createElement('input');
         	input.setAttribute('type', 'text');
@@ -261,6 +263,7 @@ $(document).ready(function() {
         var end = moment(new Date($('#endTime').val())).format().slice(0,19);
         newChart.setInterval([begin + $('#timeZone').val(), end + $('#timeZone').val()]);
         var chartConf = {};
+        chartConf["server"] = serverUrl;
         var chartAttributes = chartTypesObj["chart-types-attr"][selectedChartType];
         chartConf["type"] = selectedChartType;
         for (var d = 0; d < $('#chart_settings input').length; d++) {
