@@ -1,7 +1,6 @@
 goog.provide("istsos.widget.Map");
 
 goog.require("istsos.widget.Widget");
-goog.require("goog.Promise");
 
 /** istsos.widget.Map class */
 /**

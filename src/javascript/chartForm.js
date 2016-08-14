@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    // MANDATORY: SERVER, SERVICE, OFFERING, PROCEDURES, PROPERTIES, FROM, TO
+
+    //SETTING THE CHART TYPE LIST WITH CORESPONDING ATTRIBUTES BASED ON JSON SPECIFICATION
     var chartTypesObj = null;
     istsos.widget.CHART_TYPES.then(function(data) {
         chartTypesObj = data;
@@ -16,6 +17,7 @@ $(document).ready(function() {
         }
     });
 
+    //GENERATING LIST OF SERVICES RELATED TO THE SERVER SPECIFIED IN server_config.json
     var server;
     var serverUrl;
     istsos.widget.SERVER_PROMISE.then(function(data) {
@@ -25,6 +27,8 @@ $(document).ready(function() {
             serverConf["db"]["port"]);
         server = new istsos.Server(serverConf["name"], serverConf["url"], db);
         serverUrl = serverConf["url"];
+        
+        //SETTING DEFAULT OPTION FOR THE LIST OF SERVICES
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
         defaultOption.setAttribute('selected', '');
@@ -32,13 +36,7 @@ $(document).ready(function() {
         defaultOption.innerHTML = '-- select service --';
         document.getElementById('service_list_chart').appendChild(defaultOption);
 
-        document.getElementById('service_list_chart').innerHTML = "";
-        var defaultOption = document.createElement('option');
-        defaultOption.setAttribute('disabled', '');
-        defaultOption.setAttribute('selected', '');
-        defaultOption.setAttribute('value', '');
-        defaultOption.innerHTML = '-- select service --';
-        document.getElementById('service_list_chart').appendChild(defaultOption);
+        //GETTING SERVICES USING THE METHOD FROM ISTSOS-CORE LIBRARY
         server.getServices();
         istsos.once(istsos.events.EventType.SERVICES, function(evt) {
             var services_obj = evt.getData();
@@ -50,6 +48,7 @@ $(document).ready(function() {
         });
     });
 
+    //GETTING THE LIST OF OFFERINGS BASED ON SELECTED SERVICE
     var serviceName;
     $('#service_list_chart').change(function(evt) {
         document.getElementById('service_list_chart').setAttribute('value', evt.target.value);
@@ -58,16 +57,22 @@ $(document).ready(function() {
         serviceName = evt.target.value;
         if (serviceName && serviceName !== "") {
             service = new istsos.Service(serviceName, server);
+
+            //GETTING OFFERINGS USING THE METHOD FROM THE ISTSOS-CORE LIBRARY
             service.getOfferingNames();
             istsos.once(istsos.events.EventType.OFFERING_NAMES, function(evt) {
                 document.getElementById('offering_list_chart').innerHTML = "";
                 var offering_obj = evt.getData();
+
+                //SETTING DEFAULT OPTION FOR THE LIST OF OFFERINGS
                 var defaultOption = document.createElement('option');
                 defaultOption.setAttribute('disabled', '');
                 defaultOption.setAttribute('selected', '');
                 defaultOption.setAttribute('value', '');
                 defaultOption.innerHTML = '-- select offering --';
                 document.getElementById('offering_list_chart').appendChild(defaultOption);
+
+                //ADDING THE LIST OF OFFERINGS
                 for (var i = 0; i < offering_obj.length; i++) {
                     var option = document.createElement('option');
                     option.innerHTML = offering_obj[i]["name"];
@@ -77,17 +82,22 @@ $(document).ready(function() {
         }
     });
 
+    //GETTING THE LIST OF MEMBER PROCEDURES BASED ON SELECTED OFFERING
     $('#offering_list_chart').change(function(evt) {
         var offering = null;
         var service = new istsos.Service(serviceName, server);
         document.getElementById('op_list_map').innerHTML = '<option>-</option>';
         document.getElementById('offering_list_chart').setAttribute("value", evt.target.value);
         offering = new istsos.Offering(evt.target.value, "", true, "", service);
+
+        //GETTING MEMBER PROCEDURES USING THE METHOD FROM THE ISTSOS-CORE LIBRARY
         offering.getMemberProcedures();
         istsos.once(istsos.events.EventType.MEMBERLIST, function(evt) {
             document.getElementById('procedure_list_chart').innerHTML = "";
             var member_obj = evt.getData();
             console.log(member_obj);
+
+            //ADDING THE LIST OF PROCEDURE CHECKBOXES
             for (var i = 0; i < member_obj.length; i++) {
                 var label = document.createElement('label');
                 var br = document.createElement('br');
@@ -100,6 +110,8 @@ $(document).ready(function() {
             }
         });
     });
+
+    //GETTING THE LIST OF OBSERVED PROPERTIES BASED ON SELECTED PROCEDURE
     var interval = [];
     $('#procedure_list_chart').change(function(evt) {
         var op_list_chart = document.getElementById('op_list_chart');
@@ -115,6 +127,8 @@ $(document).ready(function() {
         });
         $('#procedure_list_chart').attr("value", checkedList);
         var service = new istsos.Service(serviceName, server);
+
+        //GETTING PROCEDURES USING THE METHOD FROM THE ISTSOS-CORE LIBRARY - EXTRACTING SAMPLING TIME FOR SELECTED PROCEDURES
         service.getProcedures();
         istsos.once(istsos.events.EventType.PROCEDURES, function(evt) {
             var procedure_obj = evt.getData();
@@ -142,12 +156,15 @@ $(document).ready(function() {
             }
             interval = [from,to];
 
+            //ADDING MIN/MAX CONSTRAINT TO THE DATEPICKER FIELDS
             $('#beginTimePicker').data("DateTimePicker").minDate(interval[0]);
             $('#beginTimePicker').data("DateTimePicker").maxDate(interval[1]);
             $('#beginTimePicker').data("DateTimePicker").date(interval[0]);
             $('#endTimePicker').data("DateTimePicker").minDate(interval[0]);
             $('#endTimePicker').data("DateTimePicker").maxDate(interval[1]);
             $('#endTimePicker').data("DateTimePicker").date(interval[1]);
+            
+            //DISPLAY ONLY OBSERVED PROPERTIES CHECKBOXES THAT ARE IN COMMON TO SELECTED PROCEDURES
             var result = [];
             var names = [];
             var final = [];
@@ -198,13 +215,12 @@ $(document).ready(function() {
         });
     });
 	
+    // ADDING/REMOVING OBSERVED PROPERTIES NAMES BASED ON SELECTED CHECKED INPUTS AND ADDING THEM TO THE VALUE ATTRIBUTE - FOR LATER USE
 	$('#op_list_chart').change(function(evt){
 		obList = [];
         $('#op_list_chart label').children().each(function() {
-
             var val = this.parentNode.innerText.trim(); 
             if (this.checked) {
-            	console.log(val)
                 obList.push(val);
             } else {
                 $.grep(obList, function(value) {
@@ -217,6 +233,7 @@ $(document).ready(function() {
         console.log($('#op_list_chart').attr('value'))
 	});
 
+    //DYNAMIC CREATION OF CHART ATTRIBUTE FIELDS BASED ON JSON SPECIFICATION
 	var selectedChartType = null;
     $('#chart_type').change(function(evt) {
     	selectedChartType = evt.target.value;
@@ -231,11 +248,11 @@ $(document).ready(function() {
 
         	var label = document.createElement('label');
         	label.setAttribute("for", attributes[a]);
-        	label.className = "col-sm-6 control-label";
+        	label.className = "col-sm-8 control-label";
         	label.innerText = attributes[a] + ":";
 
         	var inputDiv = document.createElement('div');
-        	inputDiv.className = "col-sm-6";
+        	inputDiv.className = "col-sm-4";
 
         	var input = document.createElement('input');
         	input.setAttribute('type', 'text');

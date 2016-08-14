@@ -93,46 +93,99 @@ istsos.widget.Chart.prototype = {
     getElementId: function() {
         return istsos.widget.Widget.prototype.getElementId.call(this);
     },
+    /**
+     * @returns {String}
+     */
     getCode: function(conf) {
         var chartCode = "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.22/webcomponents.min.js\"></script>\n" +
-            "<link rel=\"import\" href=\"http://localhost/html/web-widget-creator/vistsos/src/default-widget.html\" async>\n";
+            "<link rel=\"import\" href=\"http://localhost/html/VistSOS-1/src/default-widget.html\" async>\n";
         var code = istsos.widget.getCode(conf);
         return chartCode + code;
     },
     /** -------------------------------------------------------------- */
+    /**
+     * @param {istsos.widget.Chart} chart
+     */
+    setChart: function(chart) {
+        this.offering = offering;
+    },
+    /**
+     * @returns {istsos.widget.Chart}
+     */
+    getChart: function() {
+        return this.offering;
+    },
+    /**
+     * @param {String} offering
+     */
     setOffering: function(offering) {
         this.offering = offering;
     },
+    /**
+     * @returns {string}
+     */
     getOffering: function() {
         return this.offering;
     },
+    /**
+     * @param {Array<string>} proceduresList
+     */
     setProcedures: function(proceduresList) {
         this.procedures = proceduresList;
     },
+    /**
+     * @returns {Array<String>}
+     */
     getProcedures: function() {
         return this.procedures;
     },
+    /**
+     * @param {String} observedProperty
+     */
     addObservedProperty: function(observedProperty) {
         this.observedProperties.push(observedProperty);
     },
+    /**
+     * @param {Array<String>} observedPropertiesArray
+     */
     setObservedProperties: function(observedPropertiesArray) {
         this.observedProperties = observedPropertiesArray;
     },
+    /**
+     * @returns {Array<String>}
+     */
     getObservedProperties: function() {
         return this.observedProperties;
     },
+    /**
+     * @param {Array<String>} interval
+     */
     setInterval: function(interval) {
         this.interval = interval;
     },
+    /**
+     * @returns {Array<String>}
+     */
     getInterval: function() {
         return this.interval;
     },
+    /**
+     * @param {JSON} chartTypeConf
+     */
     setChartTypeConf: function(chartTypeConf) {
         this.chartTypeConf = chartTypeConf;
     },
+    /**
+     * @returns {JSON}
+     */
     getChartTypeConf: function() {
         return this.chartTypeConf;
     },
+
+    //METHOD FOR BUILDING THE CHART WIDGET
+    /**
+     * @returns {istsos.widget.Map}
+     */ 
     build: function() {
         var preview = document.getElementById('preview');
 
@@ -163,14 +216,13 @@ istsos.widget.Chart.prototype = {
         chart.setAttribute('height', this.getHeight());
         chart.setAttribute("divId", config["elementId"]);
         console.log(chart);
-
-
-
         document.getElementsByTagName("head")[0].removeChild(document.getElementsByTagName("head")[0].lastChild);
 
-
-
+        return this;
     },
+    /**
+     * @returns {JSON}
+     */
     getConfig: function() {
         return {
             "service": this.service,

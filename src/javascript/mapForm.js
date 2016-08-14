@@ -1,10 +1,13 @@
 $(document).ready(function() {
+    //WIDGET DATA CONFIGURATION OBJECT
     var dataConfig = {
         "server": "",
         "db": {},
         "property": {},
         "data": []
     };
+
+    //GENERATING LIST OF SERVICES RELATED TO THE SERVER SPECIFIED IN server_config.json
     var server;
     istsos.widget.SERVER_PROMISE.then(function(data) {
         document.getElementById('preview').innerHTML = "";
@@ -12,12 +15,16 @@ $(document).ready(function() {
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
             serverConf["db"]["port"]);
         server = new istsos.Server(serverConf["name"], serverConf["url"], db);
+
+        //ADDING SERVER DATA TO WIDGET DATA CONFIGURATION OBJECT
         dataConfig["server"] = serverConf["url"];
         dataConfig["db"]["dbname"] = serverConf["db"]["dbname"];
         dataConfig["db"]["host"] = serverConf["db"]["host"];
         dataConfig["db"]["user"] = serverConf["db"]["user"];
         dataConfig["db"]["password"] = serverConf["db"]["password"];
         dataConfig["db"]["port"] = serverConf["db"]["port"];
+
+        //SETTING DEFAULT OPTION FOR THE LIST OF SERVICES
         document.getElementById('service_list_map').innerHTML = "";
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
@@ -25,6 +32,8 @@ $(document).ready(function() {
         defaultOption.setAttribute('value', '');
         defaultOption.innerHTML = '-- select service --';
         document.getElementById('service_list_map').appendChild(defaultOption);
+
+        //GETTING SERVICES USING THE METHOD FROM ISTSOS-CORE LIBRARY
         server.getServices();
         istsos.once(istsos.events.EventType.SERVICES, function(evt) {
             var services_obj = evt.getData();
@@ -36,6 +45,7 @@ $(document).ready(function() {
         });
     });
 
+    //GETTING THE LIST OF OFFERINGS BASED ON SELECTED SERVICE
     var serviceName;
     $('#service_list_map').change(function(evt) {
         document.getElementById('service_list_map').setAttribute('value', evt.target.value);
@@ -44,15 +54,21 @@ $(document).ready(function() {
         serviceName = evt.target.value;
         if (serviceName && serviceName !== "") {
             service = new istsos.Service(serviceName, server);
+
+            //GETTING OFFERINGS USING THE METHOD FROM THE ISTSOS-CORE LIBRARY
             service.getOfferingNames();
             istsos.once(istsos.events.EventType.OFFERING_NAMES, function(evt) {
                 document.getElementById('offering_list_map').innerHTML = "";
                 var offering_obj = evt.getData();
+
+                //SETTING DEFAULT OPTION FOR THE LIST OF OFFERINGS
                 var defaultOption = document.createElement('option');
                 defaultOption.setAttribute('disabled', '');
                 defaultOption.setAttribute('selected', '');
                 defaultOption.setAttribute('value', '');
                 defaultOption.innerHTML = '-- select offering --';
+
+                //ADDING THE LIST OF OFFERINGS
                 document.getElementById('offering_list_map').appendChild(defaultOption);
                 for (var i = 0; i < offering_obj.length; i++) {
                     var option = document.createElement('option');
@@ -63,16 +79,20 @@ $(document).ready(function() {
         }
     });
 
+    //GETTING THE LIST OF MEMBER PROCEDURES BASED ON SELECTED OFFERING
     $('#offering_list_map').change(function(evt) {
-        var offering = null;
         var service = new istsos.Service(serviceName, server);
         document.getElementById('op_list_map').innerHTML = '<option>-</option>';
         document.getElementById('offering_list_map').setAttribute("value", evt.target.value);
-        offering = new istsos.Offering(evt.target.value, "", true, "", service);
+        var offering = new istsos.Offering(evt.target.value, "", true, "", service);
+
+        //GETTING MEMBER PROCEDURES USING THE METHOD FROM THE ISTSOS-CORE LIBRARY
         offering.getMemberProcedures();
         istsos.once(istsos.events.EventType.MEMBERLIST, function(evt) {
             document.getElementById('procedure_list_map').innerHTML = "";
             var member_obj = evt.getData();
+
+            //ADDING THE LIST OF MEMBER PROPERTIES CHECKBOXES
             for (var i = 0; i < member_obj.length; i++) {
                 var label = document.createElement('label');
                 var br = document.createElement('br');
@@ -86,19 +106,25 @@ $(document).ready(function() {
         });
     });
 
+    //GETTING THE LIST OF OBSERVED PROPERTIES BASED ON SELECTED PROCEDURE
     $('#procedure_list_map').change(function(evt) {
         dataConfig["data"] = [];
         var op_list = document.getElementById('op_list_map');
         op_list.innerHTML = "";
+
+        //SETTING DEFAULT OPTION FOR THE LIST OF OBSERVED PROPERTIES
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
         defaultOption.setAttribute('selected', '');
         defaultOption.setAttribute('value', '');
         defaultOption.innerHTML = '-- select observed property --';
         op_list.appendChild(defaultOption);
+
+        //OBSERVED PROPERTIES LIST CLEANUP UPON PROCEDURE CHANGE
         while (op_list.childNodes.length > 1) {
             op_list.removeChild(op_list.lastChild);
         }
+
         var checkedList = [];
         var observedPropertiesList = [];
         $('#procedure_list_map label').children().each(function() {
@@ -111,6 +137,8 @@ $(document).ready(function() {
 
         document.getElementById('procedure_list_map').setAttribute("value", checkedList);
         var service = new istsos.Service(serviceName, server);
+
+        //GETTING PROCEDURES USING THE METHOD FROM THE ISTSOS-CORE LIBRARY - USED FOR EXTRACTING NAME, SENSOR TYPE AND SAMPLING TIME OF SELECTED PROCEDURES
         service.getProcedures();
         istsos.once(istsos.events.EventType.PROCEDURES, function(evt) {
             var procedure_obj = null;
@@ -136,6 +164,8 @@ $(document).ready(function() {
 
                 }
             }
+
+            //DISPLAY ONLY OBSERVED PROPERTIES THAT ARE IN COMMON TO SELECTED PROCEDURES
             var result = [];
             var names = [];
             var final = [];
@@ -176,6 +206,8 @@ $(document).ready(function() {
                 document.getElementById('op_list_map').appendChild(options);
                 op_list.appendChild(options);
             }
+
+            //ADDING OBSERVED PROPERTY NAME AND URN TO THE VALUE ATTRIBUTE OF THE OBSERVED PROPERTIES SELECT HTML TAG - FOR LATER USE
             $('#op_list_map').change(function(evt) {
                 var opName = evt.target.value;
                 service.getObservedProperties();

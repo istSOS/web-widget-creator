@@ -12,10 +12,10 @@ $(document).ready(function() {
     });
 
     $('#auto-update').change(function(evt) {
-        if(this.checked) {
-            $('#auto-update-interval').show();
+        if (this.checked) {
+            $('.auto-update-interval').show();
         } else {
-            $('#auto-update-interval').hide();
+            $('.auto-update-interval').hide();
         }
     });
 
@@ -57,13 +57,13 @@ $(document).ready(function() {
         $('#box_tool_info').show();
         $('#box_button').show();
     });
-    
+
     var tz = ["−12:00", "−11:00", "−10:00", "−09:30", "−09:00", "−08:00", "−07:00", "−06:00", "−05:00", "−04:00", "−03:30", "−03:00", "−02:00", "−01:00", "Z", "+01:00", "+02:00", "+03:00", "+03:30", "+04:00", "+04:30", "+05:00", "+05:30", "+05:45", "+06:00", "+06:30", "+07:00", "+08:00", "+08:30", "+08:45", "+09:00", "+09:30", "+10:00", "+10:30", "+11:00", "+12:00", "+12:45", "+13:00", "+14:00"]
     tz.forEach(function(t) {
         var option = document.createElement('option');
         option.innerHTML = t;
-        if(t === "Z") {
-            option.setAttribute('selected','');
+        if (t === "Z") {
+            option.setAttribute('selected', '');
         }
         document.getElementById('timeZone').appendChild(option);
     });
