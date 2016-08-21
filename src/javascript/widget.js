@@ -152,7 +152,7 @@ istsos.widget.Widget.prototype = {
  * @returns {String}
  */
 istsos.widget.getCode = function(config) {
-    return "<script src=\"http://localhost/html/web-widget-creator/src/javascript/widget.js\"></script>\n" +
+    return "<script src=\"http://localhost/web-widget-creator/src/compiled/istsos-widget.js\"></script>\n" +
         "<script>\n" +
         "istsos.widget.build(" + JSON.stringify(config) + ");\n" +
         "</script>";
