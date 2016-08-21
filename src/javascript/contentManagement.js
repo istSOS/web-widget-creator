@@ -29,6 +29,7 @@ $(document).ready(function() {
         $('#code_output').val("");
         $('#map_tool_container').show();
         $('#common_settings').show();
+        $('#update-container').show();
         $('#map_tool_info').show();
         $('#map_button').show();
     });
@@ -53,6 +54,7 @@ $(document).ready(function() {
         $('#server_data>div').hide();
         $('#code_output').val("");
         $('#box_tool_container').show();
+        $('#update-container').show();
         $('#common_settings').show();
         $('#box_tool_info').show();
         $('#box_button').show();

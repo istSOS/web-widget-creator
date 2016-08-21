@@ -2,7 +2,8 @@ $(document).ready(function() {
 
     //SETTING THE CHART TYPE LIST WITH CORESPONDING ATTRIBUTES BASED ON JSON SPECIFICATION
     var chartTypesObj = null;
-    istsos.widget.CHART_TYPES.then(function(data) {
+    var getChartTypes = $.getJSON('specs/chart_types.json', function(data) {});
+    getChartTypes.then(function(data) {
         chartTypesObj = data;
         var defaultOption = document.createElement('option');
         defaultOption.setAttribute('disabled', '');
@@ -20,7 +21,8 @@ $(document).ready(function() {
     //GENERATING LIST OF SERVICES RELATED TO THE SERVER SPECIFIED IN server_config.json
     var server;
     var serverUrl;
-    istsos.widget.SERVER_PROMISE.then(function(data) {
+    var getServerJSON = $.getJSON('specs/server_config.json', function(data) {});
+    getServerJSON.then(function(data) {
         document.getElementById('preview').innerHTML = "";
         var serverConf = data;
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
@@ -155,7 +157,7 @@ $(document).ready(function() {
                     }
             }
             interval = [from,to];
-
+/*
             //ADDING MIN/MAX CONSTRAINT TO THE DATEPICKER FIELDS
             $('#beginTimePicker').data("DateTimePicker").minDate(interval[0]);
             $('#beginTimePicker').data("DateTimePicker").maxDate(interval[1]);
@@ -163,7 +165,7 @@ $(document).ready(function() {
             $('#endTimePicker').data("DateTimePicker").minDate(interval[0]);
             $('#endTimePicker').data("DateTimePicker").maxDate(interval[1]);
             $('#endTimePicker').data("DateTimePicker").date(interval[1]);
-            
+            */
             //DISPLAY ONLY OBSERVED PROPERTIES CHECKBOXES THAT ARE IN COMMON TO SELECTED PROCEDURES
             var result = [];
             var names = [];

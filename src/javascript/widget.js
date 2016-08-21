@@ -1,4 +1,5 @@
 goog.provide("istsos.widget");
+goog.provide("istsos.widget.Widget");
 
 istsos.widget.TYPE_MAP = 'Map';
 istsos.widget.TYPE_CHART = 'Chart';
@@ -27,12 +28,13 @@ istsos.widget.TYPES[istsos.widget.TYPE_BOX] = {
  * @returns {String}
  */
 istsos.widget.newerDate = function(dt1, dt2) {
-    var dateTime1 = moment(dt1).utc();
-    var dateTime2 = moment(dt2).utc();
-    if (dateTime1.diff(dateTime2) >= 0) {
-        return dateTime1.format();
+    var dateTime1 = new Date(dt1);
+    var dateTime2 = new Date(dt2);
+    
+    if ((dateTime1.getTime() - dateTime2.getTime()) >= 0) {
+        return dateTime1.toISOString();
     } else {
-        return dateTime2.format();
+        return dateTime2.toISOString();
     }
 };
 
@@ -42,24 +44,14 @@ istsos.widget.newerDate = function(dt1, dt2) {
  * @returns {String}
  */
 istsos.widget.olderDate = function(dt1, dt2) {
-    var dateTime1 = moment(dt1).utc();
-    var dateTime2 = moment(dt2).utc();
-    if (dateTime1.diff(dateTime2) <= 0) {
-        return dateTime1.format();
+    var dateTime1 = new Date(dt1);
+    var dateTime2 = new Date(dt2);
+    if ((dateTime1.getTime() - dateTime2.getTime()) <= 0) {
+        return dateTime1.toISOString();
     } else {
-        return dateTime2.format();
+        return dateTime2.toISOString();
     }
-
 };
-
-//HOLDS SERVER CONFIGURATION DATA
-istsos.widget.SERVER_PROMISE = $.getJSON('specs/server_config.json', function(data) {});
-
-istsos.widget.OBSERVED_PROPERTIES_PROMISE = $.getJSON('specs/observed_property_spec.json', function(data) {});
-
-istsos.widget.OBSERVED_PROPERTIES_NAMES_PROMISE = $.getJSON('specs/observed_property_names.json', function(data) {});
-
-istsos.widget.CHART_TYPES = $.getJSON('specs/chart_types.json', function(data) {});
 
 /** istsos.widget.Map class */
 /**
@@ -244,7 +236,8 @@ istsos.widget.updateData = function(widget) {
             //GET OBSERVATIONS REQUEST FROM ISTSOS-CORE LIBRARY
             service.getObservations(off, procs, op, begin, end);
             istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
-                istsos.widget.OBSERVED_PROPERTIES_PROMISE.then(function(spec) {
+                var getPropertiesSpec = $.getJSON('specs/observed_property_spec.json', function(data) {});
+                getPropertiesSpec.then(function(spec) {
 
                     var observations = evt.getData();
                     observations.forEach(function(obs) {
@@ -362,7 +355,8 @@ istsos.widget.updateData = function(widget) {
             //GET OBSERVATIONS REQUEST FROM ISTSOS-CORE LIBRARY
             service.getObservations(off, [proc], props, begin, end);
             istsos.once(istsos.events.EventType.GETOBSERVATIONS, function(evt) {
-                istsos.widget.OBSERVED_PROPERTIES_PROMISE.then(function(spec) {
+                var getPropertiesSpec = $.getJSON('specs/observed_property_spec.json', function(data) {});
+                getPropertiesSpec.then(function(spec) {
                     var observations = evt.getData()[0]["result"]["DataArray"]["values"];
                     var lastObservations = observations[observations.length - 1];
                     var order = evt.getData()[0]["observedProperty"]["component"];

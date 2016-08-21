@@ -2,6 +2,7 @@ goog.provide("istsos.widget.Chart");
 
 goog.require("istsos.widget.Widget");
 
+
 /** istsos.widget.Map class */
 /**
  * @constructor
@@ -187,36 +188,28 @@ istsos.widget.Chart.prototype = {
      * @returns {istsos.widget.Map}
      */ 
     build: function() {
-        var preview = document.getElementById('preview');
-
         var config = this.getConfig();
-        var preview = document.getElementById('preview');
-        if (preview !== null) {
-            var link = document.createElement('link');
-            link.setAttribute("rel", "import");
-            link.setAttribute("href", "../VistSOS-1/src/default-widget.html");
-            link.setAttribute("async", true);
-            document.getElementsByTagName("head")[0].appendChild(link);
-        }
+
         var chart = document.createElement('istsos-chart');
         chart.setAttribute("type", config["type"]);
-        chart.setAttribute("server", config["chartTypeConf"]["url"]);
-        chart.setAttribute("service", config["service"]);
-        chart.setAttribute("offering", config["offering"]);
-        chart.setAttribute("procedures", config["procedures"]);
-        chart.setAttribute("property", config["observedProperties"]);
-        chart.setAttribute("from", config["interval"][0]);
-        chart.setAttribute("until", config["interval"][1]);
+        chart.setAttribute("server" , config["chartTypeConf"]["server"]);
+        chart.setAttribute("service" , config["service"]);
+        chart.setAttribute("offering" , config["offering"]);
+        chart.setAttribute("procedures" , config["procedures"]);
+        chart.setAttribute("property" , config["observedProperties"]);
+        chart.setAttribute("from" , config["interval"][0]);
+        chart.setAttribute("until" , config["interval"][1]);
         for (var key in config["chartTypeConf"]) {
             if (config["chartTypeConf"][key] !== "") {
-                chart.setAttribute(key, config["chartTypeConf"][key]);
+                chart.setAttribute(key , config["chartTypeConf"][key]);
             }
         }
-        chart.setAttribute('width', this.getWidth());
-        chart.setAttribute('height', this.getHeight());
-        chart.setAttribute("divId", config["elementId"]);
+        chart.setAttribute("width" , this.getWidth());
+        chart.setAttribute("height" , this.getHeight());
+        chart.setAttribute("divId" , config["elementId"]);
         console.log(chart);
-        document.getElementsByTagName("head")[0].removeChild(document.getElementsByTagName("head")[0].lastChild);
+        
+        document.getElementById(config["elementId"]).appendChild(chart);
 
         return this;
     },

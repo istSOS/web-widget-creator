@@ -375,7 +375,6 @@ istsos.widget.Box.prototype = {
                 }, updt["delay"] * multiplier);
             }           
         }
-        console.log(container)
         return this;
     },
     /**

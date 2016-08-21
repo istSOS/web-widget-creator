@@ -10,7 +10,8 @@ $(document).ready(function() {
 
     //GENERATING LIST OF SERVICES RELATED TO THE SERVER SPECIFIED IN server_config.json
     var server;
-    istsos.widget.SERVER_PROMISE.then(function(data) {
+    var getServerJSON = $.getJSON('specs/server_config.json', function(data) {});
+    getServerJSON.then(function(data) {
         document.getElementById('preview').innerHTML = "";
         var serverConf = data;
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
@@ -267,7 +268,8 @@ $(document).ready(function() {
             newBox.setHeight(parseInt($('#height').val()));
             newBox.setWidth(parseInt($('#width').val()));
 
-            istsos.widget.OBSERVED_PROPERTIES_NAMES_PROMISE.then(function(specData) {
+            var getPropertiesNamesSpec = $.getJSON('specs/observed_property_names.json', function(data) {});
+            getPropertiesNamesSpec.then(function(specData) {
 
                 //SETTING BEAUTIFIED OBSERVED PROPERTY NAMES TO BE SHOWN IN THE WIDGET
                 dataConfig["data"].forEach(function(op) {
@@ -275,7 +277,8 @@ $(document).ready(function() {
                 });
 
                 //SETTING WIDGET ICON URL
-                istsos.widget.OBSERVED_PROPERTIES_PROMISE.then(function(specData) {
+                var getPropertiesSpec = $.getJSON('specs/observed_property_spec.json', function(data) {});
+                getPropertiesSpec.then(function(specData) {
                     if(dataConfig["data"].length === 1) {
                         specData[dataConfig["data"][0]["urn"]].forEach(function(interval) {
                             var obs = parseFloat(dataConfig["data"][0]["lastObs"]);

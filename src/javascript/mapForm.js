@@ -9,7 +9,8 @@ $(document).ready(function() {
 
     //GENERATING LIST OF SERVICES RELATED TO THE SERVER SPECIFIED IN server_config.json
     var server;
-    istsos.widget.SERVER_PROMISE.then(function(data) {
+    var getServerJSON = $.getJSON('specs/server_config.json', function(data) {});
+    getServerJSON.then(function(data) {
         document.getElementById('preview').innerHTML = "";
         var serverConf = data;
         var db = new istsos.Database(serverConf["db"]["dbname"], serverConf["db"]["host"], serverConf["db"]["user"], serverConf["db"]["password"],
@@ -262,7 +263,8 @@ $(document).ready(function() {
         dataConfig["property"]["name"] = $('#op_list_map').attr('value').split('&&')[0];
         dataConfig["property"]["urn"] = $('#op_list_map').attr('value').split('&&')[1];
 
-        istsos.widget.OBSERVED_PROPERTIES_PROMISE.then(function(spec) {
+        var getPropertiesSpec = $.getJSON('specs/observed_property_spec.json', function(data) {});
+        getPropertiesSpec.then(function(spec) {
 
             //GET OBSERVATIONS REQUEST FROM ISTSOS-CORE LIBRARY
             service.getObservations(off, procs, op, begin, end);
