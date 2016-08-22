@@ -108,13 +108,13 @@ istsos.widget.Chart.prototype = {
      * @param {istsos.widget.Chart} chart
      */
     setChart: function(chart) {
-        this.offering = offering;
+        this.chart = chart;
     },
     /**
      * @returns {istsos.widget.Chart}
      */
     getChart: function() {
-        return this.offering;
+        return this.chart;
     },
     /**
      * @param {String} offering
@@ -185,7 +185,7 @@ istsos.widget.Chart.prototype = {
 
     //METHOD FOR BUILDING THE CHART WIDGET
     /**
-     * @returns {istsos.widget.Map}
+     * @returns {istsos.widget.Chart}
      */ 
     build: function() {
         var config = this.getConfig();
