@@ -99,7 +99,7 @@ istsos.widget.Chart.prototype = {
      */
     getCode: function(conf) {
         var chartCode = "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.22/webcomponents.min.js\"></script>\n" +
-            "<link rel=\"import\" href=\"http://localhost/html/VistSOS-1/src/default-widget.html\" async>\n";
+            "<link rel=\"import\" href=\"http://localhost/VistSOS-1/src/default-widget.html\" async>\n";
         var code = istsos.widget.getCode(conf);
         return chartCode + code;
     },
