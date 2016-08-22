@@ -9,11 +9,6 @@ An Online Web Application for building feature­rich web widget that will be eas
 <i>Chart creator tool depends on another framework called <b>VistSOS - Data visualization framework</b>, which can be downloaded or cloned [here](https://github.com/felipe07/VistSOS-1).
 Just clone <b>istsos Web widget creator</b> and <b>VistSOS</b> and put them as folders, next to each other</i>, inside your Apache public folder (e.g. ```./var/www/...```). 
 Inside <b>VistSOS</b>, you should find ```./src/util/util.js``` and change the ```specPath``` from default to ```../VistSOS-1/src/specs/```. 
-Also, you should find ```.src/default-widget.html``` and <b>remove</b> istsos-core library script tag from it:
-```HTML 
-<!-- REMOVE/COMMENT OUT THIS TAG -->
-<script src=".../istsos-core-.*.js"></script>
-```
 
 #### Configuration:
 
