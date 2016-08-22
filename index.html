@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <!-- VistSOS INTEGRATION -->
+        <script type="text/javascript" src="../VistSOS-1/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+        <link rel="import" href="../VistSOS-1/src/default-widget.html" async>
+
+        <link rel="stylesheet" href="http://openlayers.org/en/v3.17.1/css/ol.css" type="text/css">
+        <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="src/style/main.css"/>
+        <link rel="stylesheet" type="text/css" href="bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+        
+        <script src="bower_components/jQuery/dist/jquery.min.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="bower_components/moment/min/moment.min.js"></script>
+        <script src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+
+        <!-- ISTSOS-CORE AND ISTSOS-WIDGET LIBRARIES -->
+        <script src="bower_components/javascript-core/compiled/istsos-core.js"></script>
+        <script src="src/compiled/istsos-widget.js"></script>
+
+        <!-- FORM AND CONTENT MANAGEMENT -->
+        <script src="src/javascript/mapForm.js"></script>
+        <script type="text/javascript" src="src/javascript/boxForm.js"></script>
+        <script type="text/javascript" src="src/javascript/chartForm.js"></script>
+        <script src="src/javascript/contentManagement.js"></script>
+        
+
+        <title>istSOS Widget Creator</title>
+        <script></script>
+    </head>
+    <body>
+        <div class="container-fluid text-center">
+            <div id="header" class="row">
+                <div id="categories" class="col-sm-6">
+                    <ul id="categories_list" class="nav nav-tabs">
+                        <li id="map_tool"><a>MAP TOOL</a></li>
+                        <li id="chart_tool"><a>CHART TOOL</a></li>
+                        <li id="box_tool"><a>BOX TOOL</a></li>
+                    </ul>
+                </div>
+                <div id="title" class="col-sm-6">
+                    <p>ISTSOS WEB WIDGET CREATOR</p>
+                </div>
+            </div>
+            <div id="content" class="row">
+                <table class="table table-bordered table-responsive">
+                    <tr>
+                        <td id="tools" rowspan="2">
+                            <div id="default_info">
+                                <h4>istSOS Web Widget Creator</h4>
+                                <div class="info_text">
+                                    <p>An Online Web Application for building feature­rich web widget that will be easily embeddable into existing web pages.</p>
+                                </div>
+                                <hr/>
+                                <h4>istSOS core library</h4>
+                                <div class="info_text">
+                                    <p><b>IstSOS Web widget creator</b> uses istSOS core JavaScript library for interacting with the istSOS server and its data.</p>
+                                </div>
+                                <hr/>
+                                <h4>Use tools or customize even more</h4>
+                                <div class="info_text">
+                                    <p>Developers can use <b>Web widget creator</b> tools to easily generate embeddable code, but, considering the fact that
+                                        this application is built upon istSOS core JavaScript library, developers can also use the library directly to raise customization
+                                    level even more</p>
+                                </div>
+                                <hr/>
+                                <h4>Links</h4>
+                                <div class="info_text">
+                                    <a href="http://istsos.org/" target="_blank">istSOS - OGC SOS server implementation</a><br/>
+                                    <a href="https://github.com/istSOS/javascript-core" target="_blank">istSOS core JavaScript library</a><br/>
+                                    <a href="https://github.com/istSOS/web-widget-creator" target="_blank">istSOS Web widget creator</a>
+                                </div>
+                                <hr/>
+                            </div>
+                            <!-- MAP TOOL CONTAINER -->
+                            <div id="map_tool_container">
+                                <div class="form-group">
+                                    <label for="service_list_map">SERVICE:</label>
+                                    <select class="form-control" id="service_list_map">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="offering_list_map">OFFERING:</label>
+                                    <select class="form-control" id="offering_list_map">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="procedure_list_map">PROCEDURE:</label>
+                                    <form role="form" id="procedure_list_map" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                                <div class="form-group">
+                                    <label for="op_list_map">OBSERVED PROPERTY:</label>
+                                    <select class="form-control" id="op_list_map">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <hr/>
+                            </div>
+                            
+                            <!-- CHART TOOL CONTAINER -->
+                            <div id="chart_tool_container">
+                                <div class="form-group">
+                                    <label for="service_list_chart">SERVICE:</label>
+                                    <select class="form-control" id="service_list_chart">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="offering_list_chart">OFFERING:</label>
+                                    <select class="form-control" id="offering_list_chart">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="procedure_list_chart">PROCEDURE:</label>
+                                    <form role="form" id="procedure_list_chart" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                                <div class="form-group">
+                                    <label for="op_list_chart">OBSERVED PROPERTY:</label>
+                                    <form role="form" id="op_list_chart" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                                <form class="form-horizontal" role="form" id="interval">
+                                    <div class="form-group">
+                                        <label for="beginTime" class="col-sm-3 control-label">FROM:</label>
+                                        <div class="col-sm-9">
+                                            <div class='input-group date interval' id='beginTimePicker'>
+                                                <input type='text' class="form-control" id="beginTime" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <br/><br/>
+                                        <label for="endTime" class="col-sm-3 control-label">TO:</label>
+                                        <div class="col-sm-9">
+                                            <div class='input-group date interval' id='endTimePicker'>
+                                                <input type='text' class="form-control" id="endTime" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <br/><br/>
+                                        <div class="col-sm-12">
+                                            <div class='form-group'>
+                                                <label for="chart_type" class="col-sm-3 control-label">GMT:</label>
+                                                <div class="col-sm-9">
+                                                    <select class="form-control" id="timeZone">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr/>
+                                <label>CHART SETTINGS</label>
+                                <br/>
+                                <br/>
+                                <form class="form-horizontal" role="form" id="chart_settings">
+                                    <div class="form-group">
+                                        <label for="chart_type" class="col-sm-3 control-label">TYPE:</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control" id="chart_type">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr/>
+                            </div>
+                            <!-- BOX TOOL CONTAINER -->
+                            <div id="box_tool_container">
+                                <div class="form-group">
+                                    <label for="service_list_box">SERVICE:</label>
+                                    <select class="form-control" id="service_list_box">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="offering_list_box">OFFERING:</label>
+                                    <select class="form-control" id="offering_list_box">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="procedure_list_box">PROCEDURE:</label>
+                                    <select class="form-control" id="procedure_list_box">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="op_list_box">OBSERVED PROPERTIES:</label>
+                                    <form role="form" id="op_list_box" class="text-left">
+                                        <hr/>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- COMMON WIDGET SETTINGS -->
+                            <div id=common_settings>
+                                <label>WIDGET SETTINGS</label>
+                                <br/>
+                                <br/>
+                                <form class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="elementId">ID:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control common-item" id="elementId"
+                                            placeholder="Enter element ID"
+                                            required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="css_class">CLASS:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control common-item" id="css_class"
+                                            placeholder="Enter CSS class">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="height">HEIGHT:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control common-item" id="height" placeholder="Enter widget height">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3" for="width">WIDTH:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control common-item" id="width" placeholder="Enter widget width">
+                                        </div>
+                                    </div>
+                                    <div class="widget-layout text-center">
+                                        <hr/>
+                                        <label>WIDGET LAYOUT</label>
+                                        <br/>
+                                        <form role="form">
+                                            <label id="horizontal" class="radio-inline"><input id="radHor" type="radio" name="layout" checked> HORIZONTAL</label>
+                                            <label id="vertical" class="radio-inline"><input id="radVert" type="radio" name="layout"> VERTICAL</label>
+                                        </form>
+                                    </div>
+                                    <br/>
+                                    <div id="update-container">
+                                        <form role="form">
+                                            <label id="auto-update-label" class="checkbox-inline"><input id="auto-update" type="checkbox"> AUTO-UPDATE</label>
+                                        </form>
+                                        <div class="form-group auto-update-interval" hidden>
+                                            <br/>
+                                            <label class="control-label col-sm-6" for="timeUnit">TIME UNIT:</label>
+                                            <div class="col-sm-6">
+                                                <select class="form-control" id="timeUnit">
+                                                    <option selected>sec</option>
+                                                    <option>min</option>
+                                                    <option>hr</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <br/>
+                                        <br/>
+                                        <div class="form-group auto-update-interval" hidden>
+                                            <label class="control-label col-sm-6" for="delay">START DELAY:</label>
+                                            <div class="col-sm-6">
+                                                <input type="number" class="form-control" id="delay">
+                                            </div>
+                                            <br/>
+                                            <br/>
+                                        </div>
+                                        <div class="form-group auto-update-interval" hidden>
+                                            <label class="control-label col-sm-6" for="update-interval">INTERVAL:</label>
+                                            <div class="col-sm-6">
+                                                <input type="number" class="form-control" id="update-interval">
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                        <hr/>
+                                    </div>
+                                </form>
+                                <br/>
+                            </div>
+                            <div id="map_button" class="form-group buttons">
+                                <div class="col-sm-offset-3">
+                                    <button id="generate_map" type="button" class="btn btn-default">Generate</button>
+                                </div>
+                            </div>
+                            <div id="chart_button" class="form-group buttons">
+                                <div class="col-sm-offset-3">
+                                    <button id="generate_chart" type="button" class="btn btn-default">Generate</button>
+                                </div>
+                            </div>
+                            <div id="box_button" class="form-group buttons">
+                                <div class="col-sm-offset-3">
+                                    <button id="generate_box" type="button" class="btn btn-default">Generate</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td id="preview" class="preview"></td>
+                        <td id="server_data" rowspan="2" class="text-left">
+                            <div id="home_info">
+                                
+                            </div>
+                            <div id="map_tool_info">
+                                <h4 class="text-center">MAP TOOL</h4>
+                                <hr/>
+                                <p>Use map tool to generate code, that will provide embedded OpenLayers 3 map. Map preview will be shown above
+                                the code.</p>
+                                <br/>
+                                <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
+                                    typing what he finds
+                                suitable.</p>
+                                <br/>
+                                <p>Code will be shown in textarea HTML element, which means that user can easily change the code by
+                                    typing what he finds
+                                suitable.</p>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="code">
+                            <div class="form-group">
+                                <label for="code_output">Embedded code:</label>
+                                <textarea class="form-control" rows="6" id="code_output"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="footer" class="row"><p><i>istSOS Web Widget Creator | 2016</i></p></div>
+        </div>
+        <script>
+        $(function () {
+            $('#beginTimePicker').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm:ss'
+            });
+            $('#endTimePicker').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm:ss'
+            });
+        }());
+        </script>
+    </body>
+</html>

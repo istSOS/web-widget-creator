@@ -1,0 +1,15 @@
+{
+  "name": "",
+  "url": "http://istsos.org/istsos",
+  "login": {
+    "user": "",
+    "password": ""
+  },
+  "db": {
+    "dbname": "istsos",
+    "host": "localhost",
+    "user": "postgres",
+    "password": "postgres",
+    "port": 5432
+  }
+}
