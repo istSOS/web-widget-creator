@@ -30,7 +30,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'intro': path.resolve(__dirname, 'src/components/intro/Intro.jsx')
+      'intro': path.resolve(__dirname, 'src/components/intro/Intro.jsx'),
+      'main': path.resolve(__dirname, 'src/components/main/Main.jsx')
     },
     extensions: [".js", ".jsx", ".json"]
   },
