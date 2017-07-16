@@ -1,8 +1,0 @@
-{
-    "chart-types-attr": {
-        "line": [],
-        "overview-detail": [],
-        "multivariable": [],
-        "histogram": ["aggregateInterval", "aggregateFunction","color", "color2"]
-    }
-}
