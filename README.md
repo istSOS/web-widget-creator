@@ -1,0 +1,1 @@
+<h1>IstSOS Web Widget Creator</h1>
