@@ -4,7 +4,8 @@
   "description": "IstSOS Web Widget Creator is a web application for generation of embeddable widgets, that display observation data from the IstSOS server.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",

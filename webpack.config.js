@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    'bundle': ['./src/app.jsx']
+    'bundle': ['./src/App.jsx']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -29,7 +29,9 @@ module.exports = {
     }]
   },
   resolve: {
-    alias: {},
+    alias: {
+      'intro': path.resolve(__dirname, 'src/components/intro/Intro.jsx')
+    },
     extensions: [".js", ".jsx", ".json"]
   },
   devServer: {
