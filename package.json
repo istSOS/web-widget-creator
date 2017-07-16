@@ -1,0 +1,19 @@
+{
+  "name": "web-widget-creator",
+  "version": "1.0.0",
+  "description": "IstSOS Web Widget Creator is a web application for generation of embeddable widgets, that display observation data from the IstSOS server.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luka-G/web-widget-creator.git"
+  },
+  "author": "Luka Glusica",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Luka-G/web-widget-creator/issues"
+  },
+  "homepage": "https://github.com/Luka-G/web-widget-creator#readme"
+}
