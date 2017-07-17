@@ -31,7 +31,11 @@ module.exports = {
   resolve: {
     alias: {
       'intro': path.resolve(__dirname, 'src/components/intro/Intro.jsx'),
-      'main': path.resolve(__dirname, 'src/components/main/Main.jsx')
+      'main': path.resolve(__dirname, 'src/components/main/Main.jsx'),
+      'header': path.resolve(__dirname, 'src/components/main/Header.jsx'),
+      'content': path.resolve(__dirname, 'src/components/main/content/Content.jsx'),
+      'footer': path.resolve(__dirname, 'src/components/main/Footer.jsx'),
+      'home': path.resolve(__dirname, 'src/components/main/content/Home.jsx'),
     },
     extensions: [".js", ".jsx", ".json"]
   },
