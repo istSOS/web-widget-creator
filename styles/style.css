@@ -1,0 +1,97 @@
+html, body {
+	font-family: Ubuntu, sans-serif;
+	width: 100%;
+	height: 100%;
+}
+
+/* INTRO */
+.intro {
+	position: absolute;
+  	width: 100%;
+  	height: 100%;
+	background-color: #19B019;
+}
+
+.intro .intro-container {
+	position: absolute;
+	top: 40%;
+   left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.intro .intro-heading {
+	padding: 20px;
+	font-size: 36pt;	
+	font-weight: bold;
+	color: #FFFFFF;
+}
+/* INTRO - END */
+
+/* HEADER */
+.header nav {
+	background-color: #19B019 !important;
+	border-radius: 0;
+	border: none;
+}
+
+.header nav a {
+	color: #FFFFFF !important;
+	font-weight: bold;
+}
+
+.header .active-tab, .header .header-tab:hover{
+	background-color: #EEEEEE;
+}
+
+.header .active-tab a, .header .header-tab:hover a {
+	color: #19B019 !important;
+}
+/* HEADER - END */
+ 
+/* HOME */
+.home .row {
+	padding: 5px !important;
+}
+
+.home h4 {
+	font-weight: bold;
+	font-size: 16pt;
+}
+
+.home h5 {
+	font-weight: bold;
+	font-size: 14pt;
+}
+
+.home .home-widget {
+	margin-left: 10px !important;
+}
+
+.home .home-widget-description {
+	line-height: 30px;
+	font-size: 12pt;
+	padding-right: 40px;	
+}
+
+.home .home-img img {
+	max-width: 100%;
+}
+
+.home-end {
+	margin-bottom: 100px !important;
+}
+/* HOME - END */
+
+/* FOOTER */
+.footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 20px;
+	background-color: #19B019;
+	color: #FFFFFF;
+	font-style: italic;
+	font-size: 12pt;
+}
+/* FOOTER - END */
