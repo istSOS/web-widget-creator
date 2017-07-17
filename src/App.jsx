@@ -11,6 +11,9 @@ class App extends Component {
 		this.state = {
 			intro: true
 		};
+
+		//this bindings
+		this.handleIntro = this.handleIntro.bind(this);
 	}
 
 	handleIntro() {
@@ -20,12 +23,11 @@ class App extends Component {
 	}
 
 	render() {
-		const intro = (this.state.intro) ? <Intro handleIntro={() => {this.handleIntro()}}/> : null;
+		const intro = (this.state.intro) ? <Intro handleIntro={this.handleIntro}/> : <Main />;
 
 		return (
 			<div>
 				{intro}
-				<Route exact path='/home' component={Main}/>
 			</div>
 		);
 	}
