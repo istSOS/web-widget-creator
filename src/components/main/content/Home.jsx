@@ -2,7 +2,7 @@ import React from 'react';
 
 const Home = (props) => {
 	return (
-		<div className="home">
+		<div className="home container">
 			<div className="row heading">
 				<div className="col-xs-12">
 					<h1>IstSOS Web Widget Creator</h1>
