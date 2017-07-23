@@ -82,6 +82,16 @@ html, body {
 }
 /* HOME - END */
 
+table.sidebar-table {
+	max-width: 400px;
+}
+
+.preview-container {
+	border: 1px solid #CCCCCC;
+	min-height: 400px;
+	max-height: 600px;
+}
+
 /* FOOTER */
 .footer {
 	position: fixed;

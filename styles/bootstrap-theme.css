@@ -1,0 +1,72 @@
+.btn {
+	border-radius: 0;
+}
+
+.btn:focus, .btn:active {
+	outline: none;
+}
+
+.btn a {
+	text-decoration: none;
+}
+
+.btn-default {
+	border-radius: 0;
+	color: #19B019;
+	font-weight: bold;
+	min-width: 80px;
+	padding: 10px;
+}
+
+.btn-default:hover {
+	background: #EEEEEE
+}
+
+.btn-default:focus, .btn-default:active {
+	outline: none;
+}
+
+
+.btn-default a, .btn-default a:hover {
+	color: #19B019;
+}
+
+.btn-success {
+	background: #19B019;
+	border-radius: 0;
+	color: white;
+	font-weight: bold;
+	min-width: 80px;
+	padding: 10px;
+}
+
+.btn-succsess:hover {
+	background: #008000
+}
+
+.btn-succsess:focus, .btn-succsess:active {
+	outline: none;
+}
+
+
+.btn-succsess a, .btn-succsess a:hover {
+	color: white;;
+}
+
+.form-control {
+	border-radius: 0;
+}
+
+select.form-control {
+	min-width: 140px;
+}
+
+.table, .table thead, .table tbody, .table tr, .table th, .table td {
+	border: none;
+	border-radius: 0;
+	margin: 0 auto !important;
+}
+
+tbody tr td {
+	border: none !important;
+}
