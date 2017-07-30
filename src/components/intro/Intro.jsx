@@ -6,9 +6,11 @@ const Intro = (props) => {
 		<div className="text-center intro">
 			<div className="intro-container">
 				<h1 className="intro-heading">IstSOS Web Widget Creator</h1>
-				<button className="btn btn-default intro-button" onClick={props.handleIntro}>
-					<Link to="/home">Enter</Link>
-				</button>
+				<Link to="/home">
+					<button className="btn btn-default intro-button" onClick={props.handleIntro}>
+						Enter
+					</button>
+				</Link>
 			</div>
 		</div>
 	);
