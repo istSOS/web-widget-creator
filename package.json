@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Luka-G/web-widget-creator#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "istsos-javascript-core": "^0.9.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.1"
