@@ -8,7 +8,7 @@ class Preview extends Component {
 	render() {
 		return (
 			<div className="preview">
-				<h4 for="preview">PREVIEW:</h4>
+				<h4 htmlFor="preview">PREVIEW:</h4>
 				<div id="preview" className="preview-container"></div>
 			</div>
 		)
