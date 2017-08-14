@@ -70,6 +70,8 @@ class Tool extends Component {
       this.updateModel = this.updateModel.bind(this);
       this.changeTab = this.changeTab.bind(this);
       this.populateOfferings = this.populateOfferings.bind(this);
+      this.populateProcedures = this.populateProcedures.bind(this);
+      this.filterPropertiesByProcedures = this.filterPropertiesByProcedures.bind(this);
       this.getOfferings = this.getOfferings.bind(this);
    }
 
@@ -123,6 +125,65 @@ class Tool extends Component {
 		this.setState({offerings: list})
 	}
 
+   populateProcedures(data) {
+      console.log(data)
+      let list = data.map((o) => {
+         return o.name
+      })
+      this.setState({procedures: list})
+   }
+
+   populateProperties(data) {
+      console.log(data)
+      let list = data.map((o) => {
+         return o.name
+      })
+      this.setState({properties: list})
+   }
+
+   getIntersection(first, second) {
+      let intersection = new Set(first).inter
+      return intersection;
+   }
+
+   filterPropertiesByProcedures(procedures) {
+
+      // JEDAN SENSOR
+      let properties = [];
+      let unique = [];
+      let occurencies = {};
+      if(procedures.length == 1) {
+         unique = procedures[0].observedproperties.map((prop) => {
+            return prop.name;
+         });
+      }
+
+      // VISE SENZORA
+      if (procedures.length > 1) {
+         procedures.forEach((procedure) => {
+            procedure.observedproperties.forEach((property) => {
+               properties.push(property.name)
+            })
+         })
+
+         for (var i = 0; i < properties.length; i++) {
+            if (typeof occurencies[properties[i]] == "undefined") {
+               occurencies[properties[i]] = 1;
+            } else {
+               occurencies[properties[i]]++;
+            }
+         }
+
+         for(let property in occurencies) {
+            if(occurencies[property] > 1) {
+               unique.push(property)
+            }
+         }
+      }
+      
+      this.setState({properties: unique})
+   }
+
 	getProcedures() {
 
 	}
@@ -162,6 +223,9 @@ class Tool extends Component {
 											 update={this.updateModel} 
 											 model={this.state.mapModel}
 											 updateOfferings={this.populateOfferings}
+                                  updateProcedures={this.populateProcedures}
+                                  updateProperties={this.populateProperties}
+                                  filterProperties={this.filterPropertiesByProcedures}
 											 config={this.state.config}
 											 />
 				break;
