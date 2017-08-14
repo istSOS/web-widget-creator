@@ -71,6 +71,7 @@ class Tool extends Component {
       this.changeTab = this.changeTab.bind(this);
       this.populateOfferings = this.populateOfferings.bind(this);
       this.populateProcedures = this.populateProcedures.bind(this);
+      this.populateProperties = this.populateProperties.bind(this);
       this.filterPropertiesByProcedures = this.filterPropertiesByProcedures.bind(this);
       this.getOfferings = this.getOfferings.bind(this);
    }
@@ -118,7 +119,6 @@ class Tool extends Component {
 	}
 
 	populateOfferings(data) {
-		console.log(data)
 		let list = data.map((o) => {
 			return o.name
 		})
@@ -126,7 +126,6 @@ class Tool extends Component {
 	}
 
    populateProcedures(data) {
-      console.log(data)
       let list = data.map((o) => {
          return o.name
       })
@@ -134,7 +133,6 @@ class Tool extends Component {
    }
 
    populateProperties(data) {
-      console.log(data)
       let list = data.map((o) => {
          return o.name
       })
@@ -184,33 +182,45 @@ class Tool extends Component {
       this.setState({properties: unique})
    }
 
-	getProcedures() {
-
-	}
-
-	getProperties() {
-
-	}
-
 	updateModel(tool, key, value) {
-		switch(tool) {
+		let model;
+      switch(tool) {
 			case 'map':
-				let model = this.state.mapModel;
-				console.log(model)
+				model = this.state.mapModel;
 				model[key] = value;
 				this.setState({mapModel: model})
 				break;
 			case 'box':
+            model = this.state.boxModel;
+            model[key] = value;
 				this.setState({boxModel: model})
 				break;
 			case 'chart':
+            model = this.state.chartModel;
+            model[key] = value;
 				this.setState({chartModel: model})
 				break;
 			default: 
 				break;
 		}
-		console.log(this.state)
 	}
+
+   generateWidget(type) {
+      switch (type) {
+         case 'map':
+            // statements_1
+            break;
+         case 'box':
+            // statements_1
+            break;
+         case 'chart':
+            // statements_1
+            break;
+         default:
+            // statements_def
+            break;
+      }
+   }
 
 	render() {
 		let Sidebar;
@@ -227,10 +237,22 @@ class Tool extends Component {
                                   updateProperties={this.populateProperties}
                                   filterProperties={this.filterPropertiesByProcedures}
 											 config={this.state.config}
+                                  generateWidget={this.generateWidget}
 											 />
 				break;
 			case 'box':
-				Sidebar = <SidebarBox services={this.state.services} update={this.updateModel} model={this.state.boxModel}/>
+				Sidebar = <SidebarBox services={this.state.services}
+                                  offerings={this.state.offerings}
+                                  procedures={this.state.procedures}
+                                  properties={this.state.properties}
+                                  updateOfferings={this.populateOfferings}
+                                  updateProcedures={this.populateProcedures}
+                                  updateProperties={this.populateProperties}
+                                  update={this.updateModel} 
+                                  model={this.state.boxModel}
+                                  config={this.state.config}
+                                  generateWidget={this.generateWidget}
+                                  />
 				break;
 			case 'chart':
 				Sidebar = <SidebarChart services={this.state.services} update={this.updateModel} model={this.state.chartModel}/>
