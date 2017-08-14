@@ -237,7 +237,7 @@ class SidebarMap extends Component {
 				<hr/>
 				<div className="row text-center home-end">
 					<div className="col-xs-12">
-						<button className="btn btn-danger">GENERATE</button>
+						<button className="btn btn-danger" onClick={() => {generateWidget('map')}}>GENERATE</button>
 					</div>
 				</div>
 			</div>
