@@ -20,6 +20,17 @@ class SidebarMap extends Component {
 		this.props.update('map', key, value);
 	}
 
+	filterProcedures(list, condition_list) {
+		let filtered = [];
+		list.forEach((procedure) => {
+			if(condition_list.indexOf(procedure.name) != -1) {
+				filtered.push(procedure)
+			}
+		})
+
+		return filtered
+	}
+
 	generateOptions(list) {
 		return list.map((item, i) => {
 			return <option key={i} value={item}>{item}</option>
@@ -37,14 +48,36 @@ class SidebarMap extends Component {
 	}
 
 	handleProceduresList(e) {
-		let checked = this.state.checkedProcedures;
-		if(e.target.checked) {
-			checked.push(e.target.value)
-		} else {
-			checked.splice(checked.indexOf(e.target.value), 1);
-		}
-		this.setState({checkedProcedures: checked});
-		this.updateMapModel('procedures', this.state.checkedProcedures);
+		let eventValue = e.target.value;
+		let eventChecked = e.target.checked;
+		let service = new istsos.Service({
+			name: this.props.model.service,
+			server: this.props.config.server,
+			opt_config: new istsos.Configuration({
+				serviceName: this.props.model.service,
+				server: this.props.config.server
+			})
+		});
+
+		service.getProcedures()
+			.then((result) => {
+				let checked = this.state.checkedProcedures;
+
+				if (eventChecked) {
+					checked.push(eventValue)
+				} else {
+					checked.splice(checked.indexOf(eventValue), 1);
+				}
+
+				let filtered = this.filterProcedures(result.data, checked);
+				this.props.filterProperties(filtered);
+
+				this.setState({
+					checkedProcedures: checked
+				});
+				this.updateMapModel('procedures', this.state.checkedProcedures);
+			})
+		
 	}
 
 	render() {
@@ -59,7 +92,6 @@ class SidebarMap extends Component {
 							<td className="text-right">SERVICE:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									console.log(istsos)
 									let service = new istsos.Service({
 										name: e.target.value,
 										server: this.props.config.server,
@@ -83,7 +115,28 @@ class SidebarMap extends Component {
 						<tr>
 							<td className="text-right">OFFERING:</td>
 							<td>
-								<select className="form-control" onChange={(e) => {this.updateMapModel('offering', e.target.value)}}>
+								<select className="form-control" onChange={(e) => {
+									let service = new istsos.Service({
+										name: this.props.model.service,
+										server: this.props.config.server,
+										opt_config: new istsos.Configuration({
+											serviceName: this.props.model.service,
+											server: this.props.config.server
+										})
+									});
+
+									let offering = new istsos.Offering({
+										offeringName: e.target.value,
+										active: true,
+										service: service
+									})
+
+									offering.getMemberProcedures()
+										.then((result) => {
+											this.props.updateProcedures(result.data);
+										})
+
+									this.updateMapModel('offering', e.target.value)}}>
 									{this.generateOptions(this.props.offerings)}
 								</select>
 							</td>
