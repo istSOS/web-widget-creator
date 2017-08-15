@@ -4,7 +4,6 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     'bundle': ['./src/App.jsx'],
-    'istsos-widget': ['./lib/index.js']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
