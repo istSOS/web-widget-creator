@@ -15,8 +15,9 @@ module.exports = {
    resolve: {
       alias: {
       	'WidgetTypes': path.resolve(__dirname, 'lib/WidgetTypes.js'),
-      	'WidgetFunctions': path.resolve(__dirname, 'lib/WidgetFunctions.js')
-      	'Widget': path.resolve(__dirname, 'lib/Widget.js')
+      	'WidgetFunctions': path.resolve(__dirname, 'lib/WidgetFunctions.js'),
+         'Widget': path.resolve(__dirname, 'lib/Widget.js'),
+      	'Map': path.resolve(__dirname, 'lib/Map.js')
       }
    },
    module: {
