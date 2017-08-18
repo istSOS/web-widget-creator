@@ -348,6 +348,8 @@ class Tool extends Component {
             this.getObservations(this.state.mapModel)
                .then((result) => {
                   console.log(result.data)
+                  //EXTRACT GML
+                  //LAST OBSERVATION (DATE, VALUE)
                })
             widget = new Map(this.state.mapModel);
             break;
