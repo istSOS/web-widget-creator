@@ -12,6 +12,7 @@ class Tool extends Component {
 
       this.state = {
       	config: {},
+         observedPropertyMap: null,
       	services: [],
       	offerings: [],
       	procedures: [],
@@ -83,37 +84,45 @@ class Tool extends Component {
    }
 
    componentDidMount() {
-      const db = new istsos.Database({
-         dbname: 'istsos',
-         host: 'localhost',
-         user: 'postgres',
-         password: 'postgres',
-         port: 5432
-      });
+      fetch('./spec/server_config.json', {
+         method: "get",
+      }).then((result) => {
+            result.json().then((json) => {
+               const db = new istsos.Database(json.db);
 
-      const server = new istsos.Server({
-         name: 'test',
-         url: 'http://istsos.org/istsos/',
-         defaultDb: db
-      });
-
-      this.setState({config: {
-      	db: db,
-      	server: server
-      }})
-
-      server.getServices()
-      	.then((result) => {
-      		let services = result.data.map((s) => {
-               const service = new istsos.Service({
-                  name: s.service,
-                  opt_db: this.state.config.db,
-                  server: this.state.config.server
+               const server = new istsos.Server({
+                  name: json.name,
+                  url: json.url,
+                  defaultDb: db
                });
-      			return service;
-      		})
-      		this.setState({services: services})
-      	})
+
+               this.setState({config: {
+                  db: db,
+                  server: server
+               }});
+
+               server.getServices()
+                  .then((result) => {
+                     let services = result.data.map((s) => {
+                        const service = new istsos.Service({
+                           name: s.service,
+                           opt_db: this.state.config.db,
+                           server: this.state.config.server
+                        });
+                        return service;
+                     })
+                     this.setState({services: services})
+                  })
+            })
+         })
+      fetch('./spec/observed_properties.json', {
+         method: "get",
+      }).then((result) => {
+         result.json().then((json) => {
+            this.setState({observedPropertyMap: json});
+         })
+      })
+
    }
 
 	changeTab(tab) {
@@ -127,6 +136,7 @@ class Tool extends Component {
       procedure.observedproperties.forEach((property) => {
          let prop = new istsos.ObservedProperty({
             observedName: property.name,
+            definitionUrn: this.state.observedPropertyMap[property.name].urn,
             active: true,
             service: this.state.mapModel.service,
             constraintType: 'lessThan',
@@ -134,9 +144,7 @@ class Tool extends Component {
          });
          properties[procedure.name].push(prop);
          list.push(prop)
-      })
-
-      properties['list'] = 
+      }) 
 
       this.setState({allProperties: properties})
    }
@@ -323,11 +331,25 @@ class Tool extends Component {
 		}
 	}
 
+   getObservations(options) {
+      return options.service.getObservations({
+         offering: options.offering,
+         procedures: options.procedures,
+         observedProperties: [options.property],
+         begin: options.samplingTime.begin,
+         end: options.samplingTime.end
+      })
+   }
+
    generateWidget(type) {
       let widget;
       switch (type) {
          case 'map':
-            console.log(this.state.mapModel)
+            this.getObservations(this.state.mapModel)
+               .then((result) => {
+                  console.log(result.data)
+               })
+            widget = new Map(this.state.mapModel);
             break;
          case 'box':
             break;

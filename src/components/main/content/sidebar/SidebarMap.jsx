@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import istsos from 'istsos-javascript-core';
+import {WidgetFunctions} from 'istsos-widget';
 
 class SidebarMap extends Component {
 	constructor(props) {
@@ -21,10 +22,22 @@ class SidebarMap extends Component {
 	}
 
 	getSamplingInterval(procedures) {
-		//get list of intervals from tool state
-		//for each begin find latest
-		//for each end find earliest
-		//store in object {begin: '', end: ''}
+		let intervalList = [];
+		procedures.forEach((p) => {
+			intervalList.push({
+				begin: this.props.samplingTime[p.name].begin,
+				end: this.props.samplingTime[p.name].end,
+			});
+		})
+
+		let begin = intervalList[0].begin;
+		let end = intervalList[0].end;
+
+		for (let i = 1; i < intervalList.length - 1; i++) {
+			begin = WidgetFunctions.newerDate(begin, intervalList[i].begin);
+			end = WidgetFunctions.olderDate(end, intervalList[i].end);
+		}
+		return {begin, end};
 	}
 
 	filterProcedures(list, condition_list) {
@@ -105,9 +118,9 @@ class SidebarMap extends Component {
 					checkedProcedures: checked
 				});
 
-				let timeModel = {}
+				let timeModel = this.getSamplingInterval(checked)
 				
-
+				this.updateMapModel('samplingTime', timeModel);
 				this.updateMapModel('procedures', this.state.checkedProcedures);
 			})
 		
