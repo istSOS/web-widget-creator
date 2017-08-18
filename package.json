@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "webpack-dev-server --inline --hot --output-public-path=/dist/",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "build-widget": "webpack --config webpack.widget.config.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,7 @@
   "homepage": "https://github.com/Luka-G/web-widget-creator#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "istsos-javascript-core": "^0.9.1",
+    "istsos-javascript-core": "^0.9.6",
     "openlayers": "^4.3.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
