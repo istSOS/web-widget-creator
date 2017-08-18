@@ -4,7 +4,7 @@ import SidebarBox from 'sidebar-box';
 import SidebarChart from 'sidebar-chart';
 import Display from 'display';
 import istsos from 'istsos-javascript-core';
-
+import {Map} from 'istsos-widget';
 
 class Tool extends Component {
    constructor(props) {
@@ -15,11 +15,14 @@ class Tool extends Component {
       	services: [],
       	offerings: [],
       	procedures: [],
+         samplingTime: {},
       	properties: [],
+         allProperties: {},
          mapModel: {
             service: "",
             offering: "",
             procedures: [],
+            samplingTime: {},
             property: "",
             id: "",
             class: "",
@@ -68,12 +71,15 @@ class Tool extends Component {
 
          //this binding
       this.updateModel = this.updateModel.bind(this);
+      this.initProperty = this.initProperty.bind(this);
+      this.initSamplingTime = this.initSamplingTime.bind(this);
       this.changeTab = this.changeTab.bind(this);
+      this.getItemByName = this.getItemByName.bind(this);
       this.populateOfferings = this.populateOfferings.bind(this);
       this.populateProcedures = this.populateProcedures.bind(this);
       this.populateProperties = this.populateProperties.bind(this);
+      this.generateWidget = this.generateWidget.bind(this);
       this.filterPropertiesByProcedures = this.filterPropertiesByProcedures.bind(this);
-      this.getOfferings = this.getOfferings.bind(this);
    }
 
    componentDidMount() {
@@ -99,7 +105,12 @@ class Tool extends Component {
       server.getServices()
       	.then((result) => {
       		let services = result.data.map((s) => {
-      			return s.service;
+               const service = new istsos.Service({
+                  name: s.service,
+                  opt_db: this.state.config.db,
+                  server: this.state.config.server
+               });
+      			return service;
       		})
       		this.setState({services: services})
       	})
@@ -109,32 +120,106 @@ class Tool extends Component {
 		this.setState({active: tab});
 	}
 
-	getOfferings(serviceName) {
-		let service = new istsos.Service({
-			name: serviceName,
-			server: this.state.config.server
-		});
+   initProperty(procedure) {
+      let list = [];
+      let properties = this.state.allProperties; 
+      properties[procedure.name] = []
+      procedure.observedproperties.forEach((property) => {
+         let prop = new istsos.ObservedProperty({
+            observedName: property.name,
+            active: true,
+            service: this.state.mapModel.service,
+            constraintType: 'lessThan',
+            value: 1000
+         });
+         properties[procedure.name].push(prop);
+         list.push(prop)
+      })
 
-		return service.getOfferings();
-	}
+      properties['list'] = 
+
+      this.setState({allProperties: properties})
+   }
+
+   initSamplingTime(data) {
+      this.setState({samplingTime: data})
+   }
+
+   getItemByName(name, type) {
+      switch(type) {
+         case 'service':
+            for (let i = 0; i < this.state.services.length; i++) {
+               if(this.state.services[i].name == name) {    
+                  return this.state.services[i];
+               }
+            }
+            break;
+         case 'offering':
+            for (let i = 0; i < this.state.offerings.length; i++) {
+               if(this.state.offerings[i].offeringName == name) {    
+                  return this.state.offerings[i];
+               }
+            }
+            break;
+         case 'procedure':
+            for (let i = 0; i < this.state.procedures.length; i++) {
+               if(this.state.procedures[i].name == name) {    
+                  return this.state.procedures[i];
+               }
+            }
+            break;
+         case 'property':
+            for (let i = 0; i < this.state.properties.length; i++) {
+               if(this.state.properties[i].observedName == name) {    
+                  return this.state.properties[i];
+               }
+            }
+            break;
+         default:
+            break;
+      }
+   }
 
 	populateOfferings(data) {
 		let list = data.map((o) => {
-			return o.name
+         let offering = new istsos.Offering({
+            offeringName: o.name,
+            service: this.state.mapModel.service
+         })
+			return offering
 		})
 		this.setState({offerings: list})
 	}
 
    populateProcedures(data) {
+      let samplingTime = {};
       let list = data.map((o) => {
-         return o.name
+         let procedure = new istsos.Procedure({
+            name: o.name,
+            outputs: [],
+            service: this.state.mapModel.service,
+            epsg: 3857,
+            x: 22,
+            y: 22,
+            z: 33,
+            foi_name: 'test',
+            systemType: 'insitu-fixed-point'
+         });
+         return procedure
       })
+
       this.setState({procedures: list})
    }
 
    populateProperties(data) {
       let list = data.map((o) => {
-         return o.name
+         let property = new istsos.ObservedProperty({
+            observedName: o.name,
+            service: this.state.mapModel.service,
+            constraintType: 'lessThan',
+            value: 1000
+         })
+         return property;
       })
       this.setState({properties: list})
    }
@@ -145,41 +230,74 @@ class Tool extends Component {
    }
 
    filterPropertiesByProcedures(procedures) {
-
       // JEDAN SENSOR
-      let properties = [];
-      let unique = [];
-      let occurencies = {};
-      if(procedures.length == 1) {
-         unique = procedures[0].observedproperties.map((prop) => {
-            return prop.name;
-         });
+      let props = [];
+      let all = [];
+      procedures.forEach((p) => {
+         let lst = []
+         this.state.allProperties[p.name].forEach((p1) => {
+            lst.push(p1.observedName)
+            all.push(p1)
+         })
+         props.push(lst);
+         
+      });
+
+      if(props.length == 1) {
+         this.setState({properties: this.state.allProperties[procedures[0].name]})
       }
 
-      // VISE SENZORA
-      if (procedures.length > 1) {
-         procedures.forEach((procedure) => {
-            procedure.observedproperties.forEach((property) => {
-               properties.push(property.name)
-            })
+      if(props.length == 2) {
+         let t;
+         if(props[1].length > props[0].length) {
+            t = props[1];
+            props[1] = props[0];
+            props[0] = t;
+         }
+
+         let prop_names = props[0].filter((p) => {
+            return props[1].indexOf(p) > -1;
+         });
+
+         let unique = [];
+
+         prop_names.forEach((name) => {
+            for(let i=0; i < all.length; i++) {
+               if(all[i].observedName == name) {
+                  unique.push(all[i]);
+                  break;
+               }
+            }
          })
 
-         for (var i = 0; i < properties.length; i++) {
-            if (typeof occurencies[properties[i]] == "undefined") {
-               occurencies[properties[i]] = 1;
-            } else {
-               occurencies[properties[i]]++;
-            }
-         }
-
-         for(let property in occurencies) {
-            if(occurencies[property] > 1) {
-               unique.push(property)
-            }
-         }
+         this.setState({properties: unique})
       }
-      
-      this.setState({properties: unique})
+
+      if(props.length > 2) {
+         let prop_names = [];
+         for(let i = 0; i < props.length - 1; i++) {
+            if(props[i+1].length > props[i].length) {
+               let t = props[i+1];
+               props[i+1] = props[i];
+               props[i] = t;
+            }
+            prop_names = props[i].filter((p) => {
+               return props[i+1].indexOf(p) > -1;
+            });
+
+         }
+         let unique = [];
+         prop_names.forEach((name) => {
+            for(let i=0; i < all.length; i++) {
+               if(all[i].observedName == name) {
+                  unique.push(all[i]);
+                  break;
+               }
+            }
+         })
+
+         this.setState({properties: unique});
+      }
    }
 
 	updateModel(tool, key, value) {
@@ -206,18 +324,16 @@ class Tool extends Component {
 	}
 
    generateWidget(type) {
+      let widget;
       switch (type) {
          case 'map':
-            // statements_1
+            console.log(this.state.mapModel)
             break;
          case 'box':
-            // statements_1
             break;
          case 'chart':
-            // statements_1
             break;
          default:
-            // statements_def
             break;
       }
    }
@@ -230,8 +346,13 @@ class Tool extends Component {
 											 offerings={this.state.offerings}
 											 procedures={this.state.procedures}
 											 properties={this.state.properties}
+                                  initProperty={this.initProperty}
+                                  allProperties={this.state.allProperties}
 											 update={this.updateModel} 
 											 model={this.state.mapModel}
+                                  samplingTime={this.state.samplingTime}
+                                  initSamplingTime={this.initSamplingTime}
+                                  getItemByName={this.getItemByName}
 											 updateOfferings={this.populateOfferings}
                                   updateProcedures={this.populateProcedures}
                                   updateProperties={this.populateProperties}

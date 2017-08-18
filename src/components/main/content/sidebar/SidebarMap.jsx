@@ -20,20 +20,38 @@ class SidebarMap extends Component {
 		this.props.update('map', key, value);
 	}
 
+	getSamplingInterval(procedures) {
+		//get list of intervals from tool state
+		//for each begin find latest
+		//for each end find earliest
+		//store in object {begin: '', end: ''}
+	}
+
 	filterProcedures(list, condition_list) {
 		let filtered = [];
-		list.forEach((procedure) => {
-			if(condition_list.indexOf(procedure.name) != -1) {
-				filtered.push(procedure)
+		for(let i = 0; i < list.length; i++) {
+			if(condition_list.indexOf(list[i]) > -1) {
+				filtered.push(list[i]);
 			}
-		})
-
-		return filtered
+		}
+		return filtered;
 	}
 
 	generateOptions(list) {
 		return list.map((item, i) => {
-			return <option key={i} value={item}>{item}</option>
+			return <option key={i} value={item.name}>{item.name}</option>
+		});
+	}
+
+	generateOfferingOptions(list) {
+		return list.map((item, i) => {
+			return <option key={i} value={item.offeringName}>{item.offeringName}</option>
+		});
+	}
+
+	generatePropertiesOptions(list) {
+		return list.map((item, i) => {
+			return <option key={i} value={item.observedName}>{item.observedName}</option>
 		});
 	}
 
@@ -41,40 +59,55 @@ class SidebarMap extends Component {
 		return list.map((item, i) => {
 			return (
 				<div key={i} className="checkbox">
-  					<label><input type='checkbox' key={i} value={item} onChange={this.handleProceduresList}/> {item}</label>
+  					<label><input type='checkbox' key={i} value={item.name} onChange={this.handleProceduresList}/> {item.name}</label>
 				</div>
 				)
 		});
 	}
 
 	handleProceduresList(e) {
-		let eventValue = e.target.value;
+		let service = this.props.getItemByName(this.props.model.service.name, 'service');
+		let procedure = this.props.getItemByName(e.target.value, 'procedure');
 		let eventChecked = e.target.checked;
-		let service = new istsos.Service({
-			name: this.props.model.service,
-			server: this.props.config.server,
-			opt_config: new istsos.Configuration({
-				serviceName: this.props.model.service,
-				server: this.props.config.server
-			})
-		});
-
 		service.getProcedures()
 			.then((result) => {
-				let checked = this.state.checkedProcedures;
+				if(Object.keys(this.props.samplingTime).length == 0) {
+					let samplingTime = {}
+				
+					result.data.forEach((p) => {
+						samplingTime[p.name] = {
+							begin: p.samplingTime.beginposition,
+							end: p.samplingTime.endposition
+						}
+					});
 
-				if (eventChecked) {
-					checked.push(eventValue)
-				} else {
-					checked.splice(checked.indexOf(eventValue), 1);
+					this.props.initSamplingTime(samplingTime);
 				}
+				
 
-				let filtered = this.filterProcedures(result.data, checked);
+
+				if(Object.keys(this.props.allProperties) == 0) {
+					result.data.forEach((procedure) => {
+						this.props.initProperty(procedure)
+					})
+				}
+				let checked = this.state.checkedProcedures;
+				if (eventChecked) {
+					checked.push(procedure)
+				} else {
+					checked.splice(checked.indexOf(procedure), 1);
+				}
+				let filtered = this.filterProcedures(this.props.procedures, checked);
+				
 				this.props.filterProperties(filtered);
 
 				this.setState({
 					checkedProcedures: checked
 				});
+
+				let timeModel = {}
+				
+
 				this.updateMapModel('procedures', this.state.checkedProcedures);
 			})
 		
@@ -92,21 +125,13 @@ class SidebarMap extends Component {
 							<td className="text-right">SERVICE:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let service = new istsos.Service({
-										name: e.target.value,
-										server: this.props.config.server,
-										opt_config: new istsos.Configuration({
-											serviceName: e.target.value,
-											server: this.props.config.server
-										})
-									});
-
+									let service = this.props.getItemByName(e.target.value, 'service');
 									service.getOfferings()
 										.then((result) => {
 											this.props.updateOfferings(result.data);
-										})
+										});
 										
-									this.updateMapModel('service', e.target.value)
+									this.updateMapModel('service', service);
 								}}>
 									{this.generateOptions(this.props.services)}
 								</select>
@@ -116,28 +141,17 @@ class SidebarMap extends Component {
 							<td className="text-right">OFFERING:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let service = new istsos.Service({
-										name: this.props.model.service,
-										server: this.props.config.server,
-										opt_config: new istsos.Configuration({
-											serviceName: this.props.model.service,
-											server: this.props.config.server
-										})
-									});
-
-									let offering = new istsos.Offering({
-										offeringName: e.target.value,
-										active: true,
-										service: service
-									})
+									let service = this.props.getItemByName(this.props.model.service.name, 'service');
+									let offering = this.props.getItemByName(e.target.value, 'offering');
 
 									offering.getMemberProcedures()
 										.then((result) => {
 											this.props.updateProcedures(result.data);
 										})
 
-									this.updateMapModel('offering', e.target.value)}}>
-									{this.generateOptions(this.props.offerings)}
+									this.updateMapModel('offering', offering)
+								}}>
+									{this.generateOfferingOptions(this.props.offerings)}
 								</select>
 							</td>
 						</tr>
@@ -148,8 +162,11 @@ class SidebarMap extends Component {
 						<tr>
 							<td className="text-right">PROPERTY:</td>
 							<td>
-								<select className="form-control" onChange={(e) => {this.updateMapModel('property', e.target.value)}}>
-									{this.generateOptions(this.props.properties)}
+								<select className="form-control" onChange={(e) => {
+									let property = this.props.getItemByName(e.target.value, 'property')
+									this.updateMapModel('property', property);
+								}}>
+									{this.generatePropertiesOptions(this.props.properties)}
 								</select>
 							</td>
 						</tr>
@@ -237,7 +254,7 @@ class SidebarMap extends Component {
 				<hr/>
 				<div className="row text-center home-end">
 					<div className="col-xs-12">
-						<button className="btn btn-danger" onClick={() => {generateWidget('map')}}>GENERATE</button>
+						<button className="btn btn-danger" onClick={() => {this.props.generateWidget('map')}}>GENERATE</button>
 					</div>
 				</div>
 			</div>
