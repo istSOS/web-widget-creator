@@ -1,0 +1,58 @@
+{
+	"air-rainfall": {
+		"display": "RAINFALL",
+		"urn": ""
+	},
+	"air-heat-index": {
+		"display": "HEAT INDEX",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:heatindex"
+	},
+	"air-pressure": {
+		"display": "AIR PRESSURE",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:pressure"
+	},
+	"air-relative-humidity": {
+		"display": "RELATIVE HUMIDITY",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:humidity:relative"
+	},
+	"air-temperature": {
+		"display": "TEMPERATURE",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:temperature"
+	},
+	"air-temperature-internal": {
+		"display": "INTERNAL TEMPERATURE",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:air:temperature:internal"
+	},
+	"air-wind-direction": {
+		"display": "WIND DIRECTION",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:air:wind:direction"
+	},
+	"air-wind-velocity": {
+		"display": "WIND VELOCITY",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:wind:velocity"
+	},
+	"light": {
+		"display": "LIGHT",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:light"
+	},
+	"river-discharge": {
+		"display": "WATER DISCHARGE",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:river:water:discharge"
+	},
+	"river-height": {
+		"display": "RIVER WATER HEIGHT",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:river:water:height"
+	},
+	"soil-humidity": {
+		"display": "RELATIVE SOIL HUMIDITY",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:soil:humidity:relative"
+	},
+	"solar-radiation": {
+		"display": "SOLAR RADIATION",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:solar:radiation"
+	},
+	"soil-evapotranspiration": {
+		"display": "SOIL EVAPOTRANSPIRATION",
+		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:soil:evapotranspiration"
+	}
+}
