@@ -47,6 +47,7 @@ class Tool extends Component {
             offering: "",
             procedure: "",
             properties: [],
+            samplingTime: {},
             layout: 'horizontal',
             id: "",
             class: "",
@@ -319,16 +320,15 @@ class Tool extends Component {
    generateWidget(type) {
       document.getElementById('preview').innerHTML = "";
       let widget;
-      switch (type) {
-         case 'map':
-            let conf = {
+      let conf = {
                service: this.state.activeSettings.service,
                offering: this.state.activeSettings.offering,
                procedures: this.state.activeSettings.procedures,
-               observedProperties: this.state.activeSettings.properties,
-               samplingTime: this.state.mapModel.samplingTime
+               observedProperties: this.state.activeSettings.properties
             }
-
+      switch (type) {
+         case 'map': 
+            conf["samplingTime"] = this.state.mapModel.samplingTime;
             this.getObservations(conf)
                .then((result) => {
                   let parser = new DOMParser();
@@ -365,6 +365,42 @@ class Tool extends Component {
             
             break;
          case 'box':
+            conf["samplingTime"] = this.state.boxModel.samplingTime;
+            this.getObservations(conf)
+               .then((result) => {
+                  let parser = new DOMParser();
+                  let serializer = new XMLSerializer();
+                  let data = {}
+                  result.data.forEach((sensor) => {
+                     
+                     let gmlParsed = parser.parseFromString(sensor.featureOfInterest.geom, 'text/xml');
+
+                     let coordObj = gmlParsed.childNodes[0].childNodes[1].childNodes[0];
+                     let coordinates = serializer.serializeToString(coordObj)
+                        .split(',')
+                        .slice(0, 2);
+                     coordinates.forEach((coordinate, index, array) => {
+                        array[index] = parseFloat(coordinate);
+                     });
+
+                     data[sensor.name] = {
+                        observedSpec: this.state.activeSettings.properties.map((propName) => {
+                           return this.state.observedPropertyMap[propName]
+                        }),
+                        coordinates: coordinates,
+                        lastObservation: {
+                           date: sensor.result.DataArray.values[sensor.result.DataArray.values.length - 1][0],
+                           value: sensor.result.DataArray.values[sensor.result.DataArray.values.length - 1][1]
+                        }
+                     }
+
+                  })
+                  data["library_path"] = this.state.config.widget_lib;
+                  this.updateModel('box','data', data);
+                  this.updateModel('box', 'type', WidgetTypes.TYPE_MAP)
+                  let widget_result = WidgetFunctions.build(this.state.boxModel, 'Box');
+                  this.setState({code: widget_result.code});
+               })
             break;
          case 'chart':
             break;
@@ -404,12 +440,18 @@ class Tool extends Component {
                                   offerings={this.state.offerings}
                                   procedures={this.state.procedures}
                                   properties={this.state.properties}
+                                  activeSettings={this.state.activeSettings}
+                                  setActive={this.setActiveObject}
+                                  model={this.state.mapModel}
+                                  samplingTime={this.state.samplingTime}
+                                  initSamplingTime={this.initSamplingTime}
                                   updateOfferings={this.populateOfferings}
                                   updateProcedures={this.populateProcedures}
                                   updateProperties={this.populateProperties}
                                   update={this.updateModel} 
                                   model={this.state.boxModel}
                                   config={this.state.config}
+                                  observedPropertyMap={this.state.observedPropertyMap}
                                   generateWidget={this.generateWidget}
                                   />
 				break;

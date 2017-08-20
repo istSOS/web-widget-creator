@@ -37,7 +37,6 @@ class SidebarBox extends Component {
 	handleLayout(e) {
 		this.setState({checkedLayout: e.target.value})
 		this.updateBoxModel('layout', e.target.value)
-		console.log(this.props.model)
 	}
 
 	handlePropertiesList(e) {
@@ -51,8 +50,23 @@ class SidebarBox extends Component {
 			} else {
 				checked.splice(checked.indexOf(eventValue), 1);
 			}
+
+			let activeProperties = [];
+			checked.forEach((propName) => {
+				let property = new istsos.ObservedProperty({
+					observedName: propName,
+					definitionUrn: this.props.observedPropertyMap[e.target.value].urn,
+					service: this.props.activeSettings.service,
+					constraintType: 'lessThan',
+					value: 1000
+				})
+				console.log(property)
+				activeProperties.push(property);
+			});
+
+			this.props.setActive('properties', activeProperties)
+
 			this.updateBoxModel('properties', checked);
-			console.log(this.props.model)
 	}
 
 	render() {
@@ -76,6 +90,8 @@ class SidebarBox extends Component {
 										})
 									});
 
+									this.props.setActive('service', service);
+
 									service.getOfferings()
 										.then((result) => {
 											this.props.updateOfferings(result.data);
@@ -91,21 +107,15 @@ class SidebarBox extends Component {
 							<td className="text-right">OFFERING:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									console.log(this.props.model)
-									let service = new istsos.Service({
-										name: this.props.model.service,
-										server: this.props.config.server,
-										opt_config: new istsos.Configuration({
-											serviceName: this.props.model.service,
-											server: this.props.config.server
-										})
-									});
+									let service = this.props.activeSettings.service;
 
 									let offering = new istsos.Offering({
 										offeringName: e.target.value,
 										active: true,
 										service: service
 									})
+
+									this.props.setActive('offering', offering);
 
 									offering.getMemberProcedures()
 										.then((result) => {
@@ -121,14 +131,7 @@ class SidebarBox extends Component {
 							<td className="text-right">PROCEDURE:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let service = new istsos.Service({
-										name: this.props.model.service,
-										server: this.props.config.server,
-										opt_config: new istsos.Configuration({
-											serviceName: this.props.model.service,
-											server: this.props.config.server
-										})
-									});
+									let service = this.props.activeSettings.service;
 
 									let procedure = new istsos.Procedure({
 										name: e.target.value,
@@ -142,10 +145,17 @@ class SidebarBox extends Component {
 										service: service
 									})
 
+									this.props.setActive('procedures', [procedure]);
+
 									service.getProcedure(procedure)
 										.then((result) => {
+											let samplingTime = {
+												begin: result.data.outputs[0].constraint.interval[0],
+												end: result.data.outputs[0].constraint.interval[1]
+											};
+
+											this.updateBoxModel('samplingTime', samplingTime);
 											let properties = result.data.outputs.splice(1, result.data.outputs.length - 1);
-											console.log(properties)
 											this.props.updateProperties(properties)
 										})
 
@@ -246,7 +256,7 @@ class SidebarBox extends Component {
 				<hr/>
 				<div className="row text-center home-end">
 					<div className="col-xs-12">
-						<button className="btn btn-danger" onClick={() => {generateWidget('box')}}>GENERATE</button>
+						<button className="btn btn-danger" onClick={() => {this.props.generateWidget('box')}}>GENERATE</button>
 					</div>
 				</div>
 			</div>
