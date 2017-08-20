@@ -5,6 +5,7 @@ import SidebarChart from 'sidebar-chart';
 import Display from 'display';
 import istsos from 'istsos-javascript-core';
 import {WidgetFunctions} from 'istsos-widget';
+import {WidgetTypes} from 'istsos-widget';
 
 class Tool extends Component {
    constructor(props) {
@@ -357,6 +358,7 @@ class Tool extends Component {
                   })
                   data["library_path"] = this.state.config.widget_lib;
                   this.updateModel('map','data', data);
+                  this.updateModel('map', 'type', WidgetTypes.TYPE_MAP)
                   let widget_result = WidgetFunctions.build(this.state.mapModel, 'Map');
                   this.setState({code: widget_result.code});
                })

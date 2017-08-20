@@ -215,7 +215,6 @@ class SidebarMap extends Component {
 									})
 									this.props.setActive('properties', [activeProperty]);
 									this.updateMapModel('property', e.target.value);
-									console.log(this.props.model)
 								}}>
 									{this.generateOptions(this.props.properties)}
 								</select>
