@@ -9,8 +9,8 @@ module.exports = {
    output: {
       path: path.resolve(__dirname, './dist'),
       filename: 'istsos-widget.min.js',
-      library: 'istsos.widget',
-      libraryTarget: 'umd'
+      library: 'istsosWidget',
+      libraryTarget: 'umd',
    },
    resolve: {
       alias: {
@@ -34,14 +34,14 @@ module.exports = {
          }
       ],
    },
-   plugins: [
-      new ClosureCompilerPlugin({
-         compiler: {
-            language_in: 'ECMASCRIPT6',
-            language_out: 'ECMASCRIPT5',
-            compilation_level: 'WHITESPACE_ONLY'
-         },
-         concurrency: 3,
-      })
-   ]
+   // plugins: [
+   //    new ClosureCompilerPlugin({
+   //       compiler: {
+   //          language_in: 'ECMASCRIPT6',
+   //          language_out: 'ECMASCRIPT5',
+   //          compilation_level: 'WHITESPACE_ONLY'
+   //       },
+   //       concurrency: 3,
+   //    })
+   // ]
 };
