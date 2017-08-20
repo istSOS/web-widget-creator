@@ -17,7 +17,8 @@ module.exports = {
       	'WidgetTypes': path.resolve(__dirname, 'lib/WidgetTypes.js'),
       	'WidgetFunctions': path.resolve(__dirname, 'lib/WidgetFunctions.js'),
          'Widget': path.resolve(__dirname, 'lib/Widget.js'),
-      	'Map': path.resolve(__dirname, 'lib/Map.js')
+      	'Map': path.resolve(__dirname, 'lib/Map.js'),
+         'Box': path.resolve(__dirname, 'lib/Box.js')
       }
    },
    module: {
