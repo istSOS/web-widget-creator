@@ -15,7 +15,7 @@ class Display extends Component {
 				</div>
 				<hr/>
 				<div className="row">
-					<Code />
+					<Code code={this.props.code}/>
 				</div>
 			</div>
 		)

@@ -4,7 +4,7 @@ import SidebarBox from 'sidebar-box';
 import SidebarChart from 'sidebar-chart';
 import Display from 'display';
 import istsos from 'istsos-javascript-core';
-import {Map} from 'istsos-widget';
+import {WidgetFunctions} from 'istsos-widget';
 
 class Tool extends Component {
    constructor(props) {
@@ -19,12 +19,18 @@ class Tool extends Component {
          samplingTime: {},
       	properties: [],
          allProperties: {},
+         activeSettings: {
+            service: null,
+            offering: null,
+            procedures: [],
+            properties: []
+         },
          mapModel: {
             service: "",
             offering: "",
             procedures: [],
-            samplingTime: {},
             property: "",
+            samplingTime: {},
             id: "",
             class: "",
             width: "",
@@ -32,7 +38,8 @@ class Tool extends Component {
             auto_update: false,
             time_unit: "",
             start_delay: 0,
-            interval: 0
+            interval: 0,
+            data: {},
          },
          boxModel: {
             service: "",
@@ -75,6 +82,7 @@ class Tool extends Component {
       this.initProperty = this.initProperty.bind(this);
       this.initSamplingTime = this.initSamplingTime.bind(this);
       this.changeTab = this.changeTab.bind(this);
+      this.setActiveObject = this.setActiveObject.bind(this);
       this.getItemByName = this.getItemByName.bind(this);
       this.populateOfferings = this.populateOfferings.bind(this);
       this.populateProcedures = this.populateProcedures.bind(this);
@@ -97,6 +105,7 @@ class Tool extends Component {
                });
 
                this.setState({config: {
+                  widget_lib: json.widget_lib_path,
                   db: db,
                   server: server
                }});
@@ -104,12 +113,7 @@ class Tool extends Component {
                server.getServices()
                   .then((result) => {
                      let services = result.data.map((s) => {
-                        const service = new istsos.Service({
-                           name: s.service,
-                           opt_db: this.state.config.db,
-                           server: this.state.config.server
-                        });
-                        return service;
+                        return s.service;
                      })
                      this.setState({services: services})
                   })
@@ -129,23 +133,18 @@ class Tool extends Component {
 		this.setState({active: tab});
 	}
 
+   setActiveObject(key, value) {
+      let active = this.state.activeSettings;
+      active[key] = value;
+      this.setState({active: active});
+    }
+
    initProperty(procedure) {
-      let list = [];
       let properties = this.state.allProperties; 
       properties[procedure.name] = []
       procedure.observedproperties.forEach((property) => {
-         let prop = new istsos.ObservedProperty({
-            observedName: property.name,
-            definitionUrn: this.state.observedPropertyMap[property.name].urn,
-            active: true,
-            service: this.state.mapModel.service,
-            constraintType: 'lessThan',
-            value: 1000
-         });
-         properties[procedure.name].push(prop);
-         list.push(prop)
+         properties[procedure.name].push(property.name);
       }) 
-
       this.setState({allProperties: properties})
    }
 
@@ -156,11 +155,7 @@ class Tool extends Component {
    getItemByName(name, type) {
       switch(type) {
          case 'service':
-            for (let i = 0; i < this.state.services.length; i++) {
-               if(this.state.services[i].name == name) {    
-                  return this.state.services[i];
-               }
-            }
+            return this.state.services[this.state.services.indexOf(name)]
             break;
          case 'offering':
             for (let i = 0; i < this.state.offerings.length; i++) {
@@ -190,11 +185,7 @@ class Tool extends Component {
 
 	populateOfferings(data) {
 		let list = data.map((o) => {
-         let offering = new istsos.Offering({
-            offeringName: o.name,
-            service: this.state.mapModel.service
-         })
-			return offering
+			return o.name
 		})
 		this.setState({offerings: list})
 	}
@@ -202,18 +193,7 @@ class Tool extends Component {
    populateProcedures(data) {
       let samplingTime = {};
       let list = data.map((o) => {
-         let procedure = new istsos.Procedure({
-            name: o.name,
-            outputs: [],
-            service: this.state.mapModel.service,
-            epsg: 3857,
-            x: 22,
-            y: 22,
-            z: 33,
-            foi_name: 'test',
-            systemType: 'insitu-fixed-point'
-         });
-         return procedure
+         return o.name
       })
 
       this.setState({procedures: list})
@@ -221,13 +201,7 @@ class Tool extends Component {
 
    populateProperties(data) {
       let list = data.map((o) => {
-         let property = new istsos.ObservedProperty({
-            observedName: o.name,
-            service: this.state.mapModel.service,
-            constraintType: 'lessThan',
-            value: 1000
-         })
-         return property;
+         return o.name
       })
       this.setState({properties: list})
    }
@@ -239,39 +213,39 @@ class Tool extends Component {
 
    filterPropertiesByProcedures(procedures) {
       // JEDAN SENSOR
-      let props = [];
+      let properties = [];
       let all = [];
-      procedures.forEach((p) => {
-         let lst = []
-         this.state.allProperties[p.name].forEach((p1) => {
-            lst.push(p1.observedName)
-            all.push(p1)
+      procedures.forEach((procedure) => {
+         let procedureProperties = []
+         this.state.allProperties[procedure].forEach((property) => {
+            procedureProperties.push(property)
+            all.push(property)
          })
-         props.push(lst);
+         properties.push(procedureProperties);
          
       });
 
-      if(props.length == 1) {
-         this.setState({properties: this.state.allProperties[procedures[0].name]})
+      if(properties.length == 1) {
+         this.setState({properties: this.state.allProperties[procedures[0]]})
       }
 
-      if(props.length == 2) {
+      if(properties.length == 2) {
          let t;
-         if(props[1].length > props[0].length) {
-            t = props[1];
-            props[1] = props[0];
-            props[0] = t;
+         if(properties[1].length > properties[0].length) {
+            t = properties[1];
+            properties[1] = properties[0];
+            properties[0] = t;
          }
 
-         let prop_names = props[0].filter((p) => {
-            return props[1].indexOf(p) > -1;
+         let prop_names = properties[0].filter((p) => {
+            return properties[1].indexOf(p) > -1;
          });
 
          let unique = [];
 
          prop_names.forEach((name) => {
             for(let i=0; i < all.length; i++) {
-               if(all[i].observedName == name) {
+               if(all[i] == name) {
                   unique.push(all[i]);
                   break;
                }
@@ -281,23 +255,23 @@ class Tool extends Component {
          this.setState({properties: unique})
       }
 
-      if(props.length > 2) {
+      if(properties.length > 2) {
          let prop_names = [];
-         for(let i = 0; i < props.length - 1; i++) {
-            if(props[i+1].length > props[i].length) {
-               let t = props[i+1];
-               props[i+1] = props[i];
-               props[i] = t;
+         for(let i = 0; i < properties.length - 1; i++) {
+            if(properties[i+1].length > properties[i].length) {
+               let t = properties[i+1];
+               properties[i+1] = properties[i];
+               properties[i] = t;
             }
-            prop_names = props[i].filter((p) => {
-               return props[i+1].indexOf(p) > -1;
+            prop_names = properties[i].filter((p) => {
+               return properties[i+1].indexOf(p) > -1;
             });
 
          }
          let unique = [];
          prop_names.forEach((name) => {
             for(let i=0; i < all.length; i++) {
-               if(all[i].observedName == name) {
+               if(all[i] == name) {
                   unique.push(all[i]);
                   break;
                }
@@ -335,23 +309,58 @@ class Tool extends Component {
       return options.service.getObservations({
          offering: options.offering,
          procedures: options.procedures,
-         observedProperties: [options.property],
+         observedProperties: options.observedProperties,
          begin: options.samplingTime.begin,
          end: options.samplingTime.end
       })
    }
 
    generateWidget(type) {
+      document.getElementById('preview').innerHTML = "";
       let widget;
       switch (type) {
          case 'map':
-            this.getObservations(this.state.mapModel)
+            let conf = {
+               service: this.state.activeSettings.service,
+               offering: this.state.activeSettings.offering,
+               procedures: this.state.activeSettings.procedures,
+               observedProperties: this.state.activeSettings.properties,
+               samplingTime: this.state.mapModel.samplingTime
+            }
+
+            this.getObservations(conf)
                .then((result) => {
-                  console.log(result.data)
-                  //EXTRACT GML
-                  //LAST OBSERVATION (DATE, VALUE)
+                  let parser = new DOMParser();
+                  let serializer = new XMLSerializer();
+                  let data = {}
+                  result.data.forEach((sensor) => {
+                     
+                     let gmlParsed = parser.parseFromString(sensor.featureOfInterest.geom, 'text/xml');
+
+                     let coordObj = gmlParsed.childNodes[0].childNodes[1].childNodes[0];
+                     let coordinates = serializer.serializeToString(coordObj)
+                        .split(',')
+                        .slice(0, 2);
+                     coordinates.forEach((coordinate, index, array) => {
+                        array[index] = parseFloat(coordinate);
+                     });
+
+                     data[sensor.name] = {
+                        observedSpec: this.state.observedPropertyMap[this.state.activeSettings.properties[0].observedName],
+                        coordinates: coordinates,
+                        lastObservation: {
+                           date: sensor.result.DataArray.values[sensor.result.DataArray.values.length - 1][0],
+                           value: sensor.result.DataArray.values[sensor.result.DataArray.values.length - 1][1]
+                        }
+                     }
+
+                  })
+                  data["library_path"] = this.state.config.widget_lib;
+                  this.updateModel('map','data', data);
+                  let widget_result = WidgetFunctions.build(this.state.mapModel, 'Map');
+                  this.setState({code: widget_result.code});
                })
-            widget = new Map(this.state.mapModel);
+            
             break;
          case 'box':
             break;
@@ -370,6 +379,8 @@ class Tool extends Component {
 											 offerings={this.state.offerings}
 											 procedures={this.state.procedures}
 											 properties={this.state.properties}
+                                  activeSettings={this.state.activeSettings}
+                                  setActive={this.setActiveObject}
                                   initProperty={this.initProperty}
                                   allProperties={this.state.allProperties}
 											 update={this.updateModel} 
@@ -382,6 +393,7 @@ class Tool extends Component {
                                   updateProperties={this.populateProperties}
                                   filterProperties={this.filterPropertiesByProcedures}
 											 config={this.state.config}
+                                  observedPropertyMap={this.state.observedPropertyMap}
                                   generateWidget={this.generateWidget}
 											 />
 				break;
@@ -413,7 +425,7 @@ class Tool extends Component {
 						{Sidebar}
 					</div>
 					<div className="col-md-8 col-sm-6">
-						<Display />
+						<Display code={this.state.code}/>
 					</div>
 				</div>
 			</div>

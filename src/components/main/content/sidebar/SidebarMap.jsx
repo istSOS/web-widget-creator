@@ -23,10 +23,10 @@ class SidebarMap extends Component {
 
 	getSamplingInterval(procedures) {
 		let intervalList = [];
-		procedures.forEach((p) => {
+		procedures.forEach((procedure) => {
 			intervalList.push({
-				begin: this.props.samplingTime[p.name].begin,
-				end: this.props.samplingTime[p.name].end,
+				begin: this.props.samplingTime[procedure].begin,
+				end: this.props.samplingTime[procedure].end,
 			});
 		})
 
@@ -52,7 +52,7 @@ class SidebarMap extends Component {
 
 	generateOptions(list) {
 		return list.map((item, i) => {
-			return <option key={i} value={item.name}>{item.name}</option>
+			return <option key={i} value={item}>{item}</option>
 		});
 	}
 
@@ -72,43 +72,42 @@ class SidebarMap extends Component {
 		return list.map((item, i) => {
 			return (
 				<div key={i} className="checkbox">
-  					<label><input type='checkbox' key={i} value={item.name} onChange={this.handleProceduresList}/> {item.name}</label>
+  					<label><input type='checkbox' key={i} value={item} onChange={this.handleProceduresList}/> {item}</label>
 				</div>
-				)
+			)
 		});
 	}
 
 	handleProceduresList(e) {
-		let service = this.props.getItemByName(this.props.model.service.name, 'service');
-		let procedure = this.props.getItemByName(e.target.value, 'procedure');
-		let eventChecked = e.target.checked;
+		let service = this.props.activeSettings.service;
+		let procedureValue = e.target.value;
+		let procedureChecked = e.target.checked;
 		service.getProcedures()
 			.then((result) => {
 				if(Object.keys(this.props.samplingTime).length == 0) {
 					let samplingTime = {}
 				
-					result.data.forEach((p) => {
-						samplingTime[p.name] = {
-							begin: p.samplingTime.beginposition,
-							end: p.samplingTime.endposition
+					result.data.forEach((procedure) => {
+						samplingTime[procedure.name] = {
+							begin: procedure.samplingTime.beginposition,
+							end: procedure.samplingTime.endposition
 						}
 					});
 
 					this.props.initSamplingTime(samplingTime);
 				}
 				
-
-
 				if(Object.keys(this.props.allProperties) == 0) {
 					result.data.forEach((procedure) => {
 						this.props.initProperty(procedure)
 					})
 				}
+
 				let checked = this.state.checkedProcedures;
-				if (eventChecked) {
-					checked.push(procedure)
+				if (procedureChecked) {
+					checked.push(procedureValue)
 				} else {
-					checked.splice(checked.indexOf(procedure), 1);
+					checked.splice(checked.indexOf(procedureValue), 1);
 				}
 				let filtered = this.filterProcedures(this.props.procedures, checked);
 				
@@ -118,7 +117,25 @@ class SidebarMap extends Component {
 					checkedProcedures: checked
 				});
 
-				let timeModel = this.getSamplingInterval(checked)
+				let timeModel = this.getSamplingInterval(checked);
+
+				let activeProcedures = [];
+				checked.forEach((name) => {
+					let procedure = new istsos.Procedure({
+						name: name,
+						foi_name: 'wwc',
+						epsg: 3857,
+						x: 5,
+						y: 5,
+						z: 5,
+						outputs: [],
+						systemType: 'insitu-fixed-point',
+						service: this.props.activeSettings.service
+					});
+					activeProcedures.push(procedure);
+				})
+
+				this.props.setActive('procedures', activeProcedures);
 				
 				this.updateMapModel('samplingTime', timeModel);
 				this.updateMapModel('procedures', this.state.checkedProcedures);
@@ -138,13 +155,20 @@ class SidebarMap extends Component {
 							<td className="text-right">SERVICE:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let service = this.props.getItemByName(e.target.value, 'service');
+									let service = new istsos.Service({
+										name: e.target.value,
+										opt_db: this.props.config.db,
+										server: this.props.config.server	
+									});
+
+									this.props.setActive('service', service);
+
 									service.getOfferings()
 										.then((result) => {
 											this.props.updateOfferings(result.data);
 										});
 										
-									this.updateMapModel('service', service);
+									this.updateMapModel('service', e.target.value);
 								}}>
 									{this.generateOptions(this.props.services)}
 								</select>
@@ -154,17 +178,23 @@ class SidebarMap extends Component {
 							<td className="text-right">OFFERING:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let service = this.props.getItemByName(this.props.model.service.name, 'service');
-									let offering = this.props.getItemByName(e.target.value, 'offering');
+									let service = this.props.activeSettings.service;
+									let offering = new istsos.Offering({
+										offeringName: e.target.value,
+										active: true,
+										service: service
+									})
+
+									this.props.setActive('offering', offering);
 
 									offering.getMemberProcedures()
 										.then((result) => {
 											this.props.updateProcedures(result.data);
 										})
 
-									this.updateMapModel('offering', offering)
+									this.updateMapModel('offering', e.target.value)
 								}}>
-									{this.generateOfferingOptions(this.props.offerings)}
+									{this.generateOptions(this.props.offerings)}
 								</select>
 							</td>
 						</tr>
@@ -176,10 +206,18 @@ class SidebarMap extends Component {
 							<td className="text-right">PROPERTY:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let property = this.props.getItemByName(e.target.value, 'property')
-									this.updateMapModel('property', property);
+									let activeProperty = new istsos.ObservedProperty({
+										observedName: e.target.value,
+										definitionUrn: this.props.observedPropertyMap[e.target.value].urn,
+										service: this.props.activeSettings.service,
+										constraintType: 'lessThan',
+										value: 1000
+									})
+									this.props.setActive('properties', [activeProperty]);
+									this.updateMapModel('property', e.target.value);
+									console.log(this.props.model)
 								}}>
-									{this.generatePropertiesOptions(this.props.properties)}
+									{this.generateOptions(this.props.properties)}
 								</select>
 							</td>
 						</tr>
