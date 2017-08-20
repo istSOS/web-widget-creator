@@ -1,6 +1,7 @@
 {
   "name": "test",
   "url": "http://istsos.org/istsos/",
+  "widget_lib_path": "./dist/istsos-widget.min.js",
   "login": {
     "user": "",
     "password": ""
