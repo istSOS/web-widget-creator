@@ -55,17 +55,15 @@ class SidebarBox extends Component {
 			checked.forEach((propName) => {
 				let property = new istsos.ObservedProperty({
 					observedName: propName,
-					definitionUrn: this.props.observedPropertyMap[e.target.value].urn,
+					definitionUrn: this.props.observedPropertyMap[propName].urn,
 					service: this.props.activeSettings.service,
 					constraintType: 'lessThan',
 					value: 1000
 				})
-				console.log(property)
 				activeProperties.push(property);
 			});
 
 			this.props.setActive('properties', activeProperties)
-
 			this.updateBoxModel('properties', checked);
 	}
 

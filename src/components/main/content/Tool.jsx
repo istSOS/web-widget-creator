@@ -308,6 +308,7 @@ class Tool extends Component {
 	}
 
    getObservations(options) {
+      console.log(options)
       return options.service.getObservations({
          offering: options.offering,
          procedures: options.procedures,

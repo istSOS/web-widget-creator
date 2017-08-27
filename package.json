@@ -20,7 +20,7 @@
   "homepage": "https://github.com/Luka-G/web-widget-creator#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "istsos-javascript-core": "^0.9.6",
+    "istsos-javascript-core": "^0.9.9",
     "json-stringify-safe": "^5.0.1",
     "jsx-to-string": "^1.1.0",
     "openlayers": "^4.3.1",
