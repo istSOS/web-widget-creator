@@ -11,7 +11,7 @@ class Display extends Component {
 		return (
 			<div className="container-fluid">
 				<div className="row">
-					<Preview />
+					<Preview preview={this.props.preview} />
 				</div>
 				<hr/>
 				<div className="row">

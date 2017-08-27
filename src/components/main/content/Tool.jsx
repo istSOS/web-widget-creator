@@ -368,6 +368,7 @@ class Tool extends Component {
             conf["samplingTime"] = this.state.boxModel.samplingTime;
             this.getObservations(conf)
                .then((result) => {
+                  console.log(result)
                   let parser = new DOMParser();
                   let serializer = new XMLSerializer();
                   let data = {}
@@ -384,8 +385,8 @@ class Tool extends Component {
                      });
 
                      data[sensor.name] = {
-                        observedSpec: this.state.activeSettings.properties.map((propName) => {
-                           return this.state.observedPropertyMap[propName]
+                        observedSpec: this.state.activeSettings.properties.map((prop) => {
+                           return this.state.observedPropertyMap[prop.observedName]
                         }),
                         coordinates: coordinates,
                         lastObservation: {
@@ -400,6 +401,8 @@ class Tool extends Component {
                   this.updateModel('box', 'type', WidgetTypes.TYPE_MAP)
                   let widget_result = WidgetFunctions.build(this.state.boxModel, 'Box');
                   this.setState({code: widget_result.code});
+                  this.setState({boxPreview: widget_result.preview});
+
                })
             break;
          case 'chart':
@@ -469,7 +472,7 @@ class Tool extends Component {
 						{Sidebar}
 					</div>
 					<div className="col-md-8 col-sm-6">
-						<Display code={this.state.code}/>
+						<Display code={this.state.code} preview={this.state.boxPreview}/>
 					</div>
 				</div>
 			</div>

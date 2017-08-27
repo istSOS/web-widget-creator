@@ -43,6 +43,7 @@ module.exports = {
       'display': path.resolve(__dirname, 'src/components/main/content/display/Display.jsx'),
       'preview': path.resolve(__dirname, 'src/components/main/content/display/preview/Preview.jsx'),
       'code': path.resolve(__dirname, 'src/components/main/content/display/code/Code.jsx'),
+      'box-widget': path.resolve(__dirname, 'src/components/main/content/display/preview/BoxWidget.jsx'),
       'istsos-widget': path.resolve(__dirname, 'dist/istsos-widget.min.js'),
     },
     extensions: [".js", ".jsx", ".json"]
