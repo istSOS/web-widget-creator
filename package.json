@@ -5,7 +5,7 @@
   "main": "dist/istsos-widget.min.js",
   "scripts": {
     "start": "webpack-dev-server --inline --hot --output-public-path=/dist/",
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js && webpack --config webpack.widget.config.js",
     "build-widget": "webpack --config webpack.widget.config.js"
   },
   "repository": {
