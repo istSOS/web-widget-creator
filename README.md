@@ -22,10 +22,10 @@ In order for IstSOS Web Widget Creator to work as expected, there are couple of 
 Installation steps:
 <ol>
 	<li>Clone the repository:<br/><br/>
-		<code>git clone https://github.com/istSOS/web-widget-creator.git</code>
+		<code>git clone https://github.com/istSOS/web-widget-creator.git</code><br/><br/>
 	</li>
 	<li>Install dependencies:<br/><br/>
-		<code>npm install</code>
+		<code>npm install</code><br/><br/>
 	</li>
 	<li>Put the application on your server</li>
 </ol>
