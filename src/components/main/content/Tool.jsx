@@ -392,9 +392,16 @@ class Tool extends Component {
                         coordinates: coordinates,
                         lastObservation: {
                            date: sensor.result.DataArray.values[sensor.result.DataArray.values.length - 1][0],
-                           value: sensor.result.DataArray.values[sensor.result.DataArray.values.length - 1][1]
+                           properties: {}
                         }
                      }
+                     for(let i = 0; i < sensor.result.DataArray.values[sensor.result.DataArray.values.length-1].length; i++) {
+                        if((i != 0) && (i % 2)) {
+                           data[sensor.name]["lastObservation"]["properties"][sensor.result.DataArray.field[i].name] = sensor.result.DataArray.values[sensor.result.DataArray.values.length-1][i];
+                        }
+                     }
+
+                     console.log(data[sensor.name])
 
                   })
                   data["library_path"] = this.state.config.widget_lib;

@@ -29,13 +29,12 @@ class SidebarMap extends Component {
 				end: this.props.samplingTime[procedure].end,
 			});
 		})
-
 		let begin = intervalList[0].begin;
 		let end = intervalList[0].end;
 
-		for (let i = 1; i < intervalList.length - 1; i++) {
-			begin = WidgetFunctions.newerDate(begin, intervalList[i].begin);
-			end = WidgetFunctions.olderDate(end, intervalList[i].end);
+		for (let i = 1; i < intervalList.length; i++) {
+			begin = WidgetFunctions.olderDate(begin, intervalList[i].begin);
+			end = WidgetFunctions.newerDate(end, intervalList[i].end);
 		}
 		return {begin, end};
 	}

@@ -5,16 +5,26 @@ class BoxWidget extends Component {
 		super(props);
 	}
 
-	generateItems(properties) {
+   getUrlByValue(value, list) {
+      for (let i = 0; i < list.length; i++) {
+         if (parseFloat(value) >= list[i].from && value < list[i].to) {
+            return list[i].url
+         }
+      }
+   }
+
+	generateItems(values, properties) {
+		console.log(properties)
 		return properties.map((prop, i) => {
+			let imgUrl = (this.getUrlByValue(values[prop.name], prop.intervals) != undefined) ? this.getUrlByValue(values[prop.name], prop.intervals): "https://live.osgeo.org/_images/logo-istsos.png";
 			return (
 			<div key={i} className="col-xs-12 col-sm-6 col-md-4 col-lg-4" style={{padding: "5px"}}>
-			   <img style={{maxWidth: "100px", maxHeight: "100px"}} src="http://static.renishaw.com/media/thumbnails/240high/7c748c7af2984880b33363a275565bad.jpg"/>
+			   <img style={{maxWidth: "100px", maxHeight: "100px"}} src={imgUrl}/>
 			   <table>
 			   	<tbody>
 				      <tr>
 				        <td>{prop.display}:</td>
-				        <td>&nbsp;&nbsp;<i>{prop.value} {prop.uom}</i></td>
+				        <td>&nbsp;&nbsp;<i>{values[prop.name]} {prop.uom}</i></td>
 				      </tr>
 			      </tbody>
 			   </table>
@@ -42,7 +52,7 @@ class BoxWidget extends Component {
 			    <div className="col-sm-3 text-center"><i>GMT: {data.gmt}</i></div>
 			  </div>
 			  <div className="row">
-			  	 {this.generateItems(this.props.preview.dataConfig[this.props.preview.procedure].observedSpec)} 
+			  	 {this.generateItems(this.props.preview.dataConfig[this.props.preview.procedure].lastObservation.properties, this.props.preview.dataConfig[this.props.preview.procedure].observedSpec)} 
 			  </div>
 			</div>
 		)
