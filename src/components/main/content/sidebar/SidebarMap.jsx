@@ -50,21 +50,11 @@ class SidebarMap extends Component {
 	}
 
 	generateOptions(list) {
-		return list.map((item, i) => {
+		let none = [<option key={-1} value="none">-- Select from the list --</option>];
+		let options = list.map((item, i) => {
 			return <option key={i} value={item}>{item}</option>
 		});
-	}
-
-	generateOfferingOptions(list) {
-		return list.map((item, i) => {
-			return <option key={i} value={item.offeringName}>{item.offeringName}</option>
-		});
-	}
-
-	generatePropertiesOptions(list) {
-		return list.map((item, i) => {
-			return <option key={i} value={item.observedName}>{item.observedName}</option>
-		});
+		return none.concat(options)
 	}
 
 	generateCheckboxes(list) {
@@ -108,6 +98,11 @@ class SidebarMap extends Component {
 				} else {
 					checked.splice(checked.indexOf(procedureValue), 1);
 				}
+
+				if(checked.length == 0) {
+					this.props.updateProperties([])
+				}
+
 				let filtered = this.filterProcedures(this.props.procedures, checked);
 				
 				this.props.filterProperties(filtered);
@@ -154,20 +149,29 @@ class SidebarMap extends Component {
 							<td className="text-right">SERVICE:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let service = new istsos.Service({
-										name: e.target.value,
-										opt_db: this.props.config.db,
-										server: this.props.config.server	
-									});
+					            if (e.target.value !== 'none') {
+					               let service = new istsos.Service({
+					                  name: e.target.value,
+					                  opt_db: this.props.config.db,
+					                  server: this.props.config.server
+					               });
 
-									this.props.setActive('service', service);
+					               this.props.setActive('service', service);
 
-									service.getOfferings()
-										.then((result) => {
-											this.props.updateOfferings(result.data);
-										});
-										
-									this.updateMapModel('service', e.target.value);
+					               service.getOfferings()
+					                  .then((result) => {
+					                     this.props.updateOfferings(result.data);
+					                     this.props.updateProcedures([]);
+					            			this.props.updateProperties([]);
+					                  });
+
+					               this.updateMapModel('service', e.target.value);
+
+					            } else {
+					            	this.props.updateOfferings([]);
+					            	this.props.updateProcedures([]);
+					            	this.props.updateProperties([]);
+					            }
 								}}>
 									{this.generateOptions(this.props.services)}
 								</select>
@@ -189,6 +193,7 @@ class SidebarMap extends Component {
 									offering.getMemberProcedures()
 										.then((result) => {
 											this.props.updateProcedures(result.data);
+											this.props.updateProperties([]);
 										})
 
 									this.updateMapModel('offering', e.target.value)
