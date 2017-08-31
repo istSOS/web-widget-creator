@@ -185,10 +185,10 @@ class SidebarBox extends Component {
 				<div className="row text-center">
 					<div className="col-xs-12">
 						<h4>WIDGET SETTINGS</h4>
-						<span>LAYOUT</span><br/>
+						{/*<span>LAYOUT</span><br/>
 						<label className="radio-inline"><input type="radio" name="optradio" value="horizontal" checked={this.state.checkedLayout === 'horizontal'} onChange={this.handleLayout}/>HORIZONTAL</label>
 						<label className="radio-inline"><input type="radio" name="optradio" value="vertical" checked={this.state.checkedLayout === 'vertical'} onChange={this.handleLayout}/>VERTICAL</label>
-						<table className="table sidebar-table">
+						*/}<table className="table sidebar-table">
 							<tbody>
 								<tr>
 									<td className="text-right">ID:</td>
