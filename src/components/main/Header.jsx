@@ -18,7 +18,7 @@ class Header extends Component {
 					      <li className={'header-tab ' + ((this.props.activeTab === 'home') ? 'active-tab' : '')}><Link onClick={() => {this.props.changeTab('home')}} to="/home">HOME</Link></li>
 					      <li className={'header-tab ' + ((this.props.activeTab === 'map') ? 'active-tab' : '')}><Link onClick={() => {this.props.changeTab('map')}} to="/map">MAP</Link></li>
 					      <li className={'header-tab ' + ((this.props.activeTab === 'box') ? 'active-tab' : '')}><Link onClick={() => {this.props.changeTab('box')}} to="/box">BOX</Link></li>
-					      <li className={'header-tab ' + ((this.props.activeTab === 'chart') ? 'active-tab' : '')}><Link onClick={() => {this.props.changeTab('chart')}} to="/chart">CHART</Link></li>
+					      {/*<li className={'header-tab ' + ((this.props.activeTab === 'chart') ? 'active-tab' : '')}><Link onClick={() => {this.props.changeTab('chart')}} to="/chart">CHART</Link></li>*/}
 				    	</ul>
 				  	</div>
 				</nav>
