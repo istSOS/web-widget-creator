@@ -1,34 +1,34 @@
 {
 	"air-rainfall": {
-		"display": "RAINFALL",
+		"display": "Rainfall",
 		"name": "air-rainfall",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:rainfall",
 		"uom": "mm",
 		"intervals": []
 	},
 	"air-heat-index": {
-		"display": "HEAT INDEX",
+		"display": "Heat index",
 		"name": "air-heat-index",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:heatindex",
 		"uom": "",
 		"intervals": []
 	},
 	"air-pressure": {
-		"display": "AIR PRESSURE",
+		"display": "Air pressure",
 		"name": "air-pressure",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:pressure",
 		"uom": "",
 		"intervals": []
 	},
 	"air-relative-humidity": {
-		"display": "RELATIVE HUMIDITY",
+		"display": "Relative humidity",
 		"name": "air-relative-humidity",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:humidity:relative",
 		"uom": "",
 		"intervals": []
 	},
 	"air-temperature": {
-		"display": "TEMPERATURE",
+		"display": "Temperature",
 		"name": "air-temperature",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:temperature",
 		"uom": "\u00B0C",
@@ -63,63 +63,63 @@
 		}]
 	},
 	"air-temperature-internal": {
-		"display": "INTERNAL TEMPERATURE",
+		"display": "Internal temperature",
 		"name": "air-temperature-internal",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:air:temperature:internal",
 		"uom": "",
 		"intervals": []
 	},
 	"air-wind-direction": {
-		"display": "WIND DIRECTION",
+		"display": "Wind direction",
 		"name": "air-wind-direction",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:air:wind:direction",
 		"uom": "",
 		"intervals": []
 	},
 	"air-wind-velocity": {
-		"display": "WIND VELOCITY",
+		"display": "Wind velocity",
 		"name": "air-wind-velocity",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:wind:velocity",
 		"uom": "",
 		"intervals": []
 	},
 	"light": {
-		"display": "LIGHT",
+		"display": "Light",
 		"name": "light",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:light",
 		"uom": "",
 		"intervals": []
 	},
 	"river-discharge": {
-		"display": "WATER DISCHARGE",
+		"display": "Water discharge",
 		"name": "river-discharge",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:river:water:discharge",
 		"uom": "",
 		"intervals": []
 	},
 	"river-height": {
-		"display": "RIVER WATER HEIGHT",
+		"display": "River water height",
 		"name": "river-height",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:river:water:height",
 		"uom": "",
 		"intervals": []
 	},
 	"soil-humidity": {
-		"display": "RELATIVE SOIL HUMIDITY",
+		"display": "Relative soil humidity",
 		"name": "soil-humidity",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:soil:humidity:relative",
 		"uom": "",
 		"intervals": []
 	},
 	"solar-radiation": {
-		"display": "SOLAR RADIATION",
+		"display": "Solar radiation",
 		"name": "solar-radiation",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:solar:radiation",
 		"uom": "",
 		"intervals": []
 	},
 	"soil-evapotranspiration": {
-		"display": "SOIL EVAPOTRANSPIRATION",
+		"display": "Soil evapotranspiration",
 		"name": "soil-evapotranspiration",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:soil:evapotranspiration",
 		"uom": "",

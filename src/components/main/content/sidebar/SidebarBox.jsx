@@ -19,9 +19,11 @@ class SidebarBox extends Component {
 	}
 
 	generateOptions(list) {
-		return list.map((item, i) => {
+		let none = [<option key={-1} value="none">-- Select from the list --</option>];
+		let options = list.map((item, i) => {
 			return <option key={i} value={item}>{item}</option>
 		});
+		return none.concat(options)
 	}
 
 	generateCheckboxes(list) {
@@ -79,23 +81,31 @@ class SidebarBox extends Component {
 							<td className="text-right">SERVICE:</td>
 							<td>
 								<select className="form-control" onChange={(e) => {
-									let service = new istsos.Service({
-										name: e.target.value,
-										server: this.props.config.server,
-										opt_config: new istsos.Configuration({
-											serviceName: e.target.value,
-											server: this.props.config.server
-										})
-									});
+					            if (e.target.value !== 'none') {
+					               let service = new istsos.Service({
+					                  name: e.target.value,
+					                  server: this.props.config.server,
+					                  opt_config: new istsos.Configuration({
+					                     serviceName: e.target.value,
+					                     server: this.props.config.server
+					                  })
+					               });
 
-									this.props.setActive('service', service);
+					               this.props.setActive('service', service);
 
-									service.getOfferings()
-										.then((result) => {
-											this.props.updateOfferings(result.data);
-										})
-										
-									this.updateBoxModel('service', e.target.value)
+					               service.getOfferings()
+					                  .then((result) => {
+					                     this.props.updateOfferings(result.data);
+					                     this.props.updateProcedures([]);
+					                     this.props.updateProperties([]);
+					                  })
+
+					               this.updateBoxModel('service', e.target.value)
+					            } else {
+					               this.props.updateOfferings([]);
+					               this.props.updateProcedures([]);
+					               this.props.updateProperties([]);
+					            }
 								}}>
 									{this.generateOptions(this.props.services)}
 								</select>
@@ -114,10 +124,10 @@ class SidebarBox extends Component {
 									})
 
 									this.props.setActive('offering', offering);
-
 									offering.getMemberProcedures()
 										.then((result) => {
-											this.props.updateProcedures(result.data)
+											this.props.updateProcedures(result.data);
+											this.props.updateProperties([])
 										})
 
 									this.updateBoxModel('offering', e.target.value)}}>
@@ -238,13 +248,13 @@ class SidebarBox extends Component {
 								<tr>
 									<td className="text-right">START DELAY:</td>
 									<td>
-										<input type="text" className="form-control" onChange={(e) => {this.updateBoxModel('start_delay', e.target.value)}}/>
+										<input type="number" min="0" className="form-control" onChange={(e) => {this.updateBoxModel('start_delay', e.target.value)}}/>
 									</td>
 								</tr>
 								<tr>
 									<td className="text-right">INTERVAL:</td>
 									<td>
-										<input type="text" className="form-control" onChange={(e) => {this.updateBoxModel('interval', e.target.value)}}/>
+										<input type="number" min="0" className="form-control" onChange={(e) => {this.updateBoxModel('interval', e.target.value)}}/>
 									</td>
 								</tr>
 							</tbody>
