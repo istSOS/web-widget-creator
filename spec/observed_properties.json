@@ -80,7 +80,7 @@
 		"display": "Wind velocity",
 		"name": "air-wind-velocity",
 		"urn": "urn:ogc:def:parameter:x-istsos:1.0:meteo:air:wind:velocity",
-		"uom": "",
+		"uom": "m/s",
 		"intervals": []
 	},
 	"light": {
