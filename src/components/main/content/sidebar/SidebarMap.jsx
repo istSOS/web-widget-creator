@@ -292,13 +292,13 @@ class SidebarMap extends Component {
 								<tr>
 									<td className="text-right">START DELAY:</td>
 									<td>
-										<input type="text" className="form-control" onChange={(e) => {this.updateMapModel('start_delay', e.target.value)}}/>
+										<input type="number" min="0" className="form-control" onChange={(e) => {this.updateMapModel('start_delay', e.target.value)}}/>
 									</td>
 								</tr>
 								<tr>
 									<td className="text-right">INTERVAL:</td>
 									<td>
-										<input type="text" className="form-control" onChange={(e) => {this.updateMapModel('interval', e.target.value)}}/>
+										<input type="number" min="0" className="form-control" onChange={(e) => {this.updateMapModel('interval', e.target.value)}}/>
 									</td>
 								</tr>
 							</tbody>
